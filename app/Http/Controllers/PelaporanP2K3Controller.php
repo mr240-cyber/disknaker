@@ -1,25 +1,34 @@
 <?php
-require_once "./config/db.php";
 
-class PelaporanP2K3Controller {
-    public function store() {
-        $db = (new Database())->getConnection();
-        $data = json_decode(file_get_contents("php://input"), true);
+namespace App\Http\Controllers;
 
-        $stmt = $db->prepare("
-            INSERT INTO pelaporan_p2k3 
-            (nama_pelapor, jabatan, uraian, dokumen) 
-            VALUES (?,?,?,?)
-        ");
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
-        $stmt->execute([
-            $data['nama_pelapor'],
-            $data['jabatan'],
-            $data['uraian'],
-            $data['dokumen']
+class PelaporanP2K3Controller extends Controller
+{
+    public function store(Request $request)
+    {
+        // Validation...
+
+        $userId = Auth::id() ?? 1;
+
+        // Map to 'pelaporan_p2k3' table
+        DB::table('pelaporan_p2k3')->insert([
+            'user_id' => $userId,
+            'nama_perusahaan' => $request->json('nama_pelapor') ?? $request->input('nama_pelapor'), // Mapping pelapor to perusahaan for now
+            'catatan' => "Jabatan: " . ($request->json('jabatan') ?? $request->input('jabatan')),
+            'temuan' => $request->json('uraian') ?? $request->input('uraian'),
+            'file_laporan' => $request->json('dokumen') ?? $request->input('dokumen'),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        echo json_encode(["status"=>"success","message"=>"Pelaporan P2K3 berhasil disimpan"]);
+        return response()->json([
+            "status" => "success",
+            "message" => "Pelaporan P2K3 berhasil disimpan"
+        ]);
     }
 }
-?>
+

@@ -4,11 +4,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <title>Pelayanan Bidang Pengawasan K3 - Pengguna</title>
   <style>
     :root {
-      --blue: #0c2c66;
-      --blue-2: #123b7a;
+      --blue: #198754;
+      /* SIPENAKER Green */
+      --blue-2: #146c43;
       --muted: #6b7280
     }
 
@@ -34,7 +37,7 @@
 
     .sidebar {
       width: 240px;
-      background: #0e3060;
+      background: #198754;
       color: #fff;
       padding: 18px 14px
     }
@@ -260,25 +263,113 @@
 </head>
 
 <body>
-  <header>Pelayanan Bidang Pengawasan K3 – Pengguna</header>
+  <header style="display: flex; align-items: center; gap: 15px;">
+    <button id="toggleSidebar" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">
+      <i class="fas fa-bars"></i>
+    </button>
+    <img src="{{ asset('logo_k3.png') }}" alt="Logo K3" style="height: 40px;">
+    <span style="font-weight: 600; font-size: 1.1rem;">Pelayanan Bidang Pengawasan K3 – Pengguna</span>
+  </header>
 
   <div class="layout">
     <aside class="sidebar">
-      <h3>Menu Pengguna</h3>
+      <div style="font-size: 20px; font-weight: bold; margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-industry"></i> SIPENAKER
+      </div>
       <ul>
-        <li onclick="showPage('dashboard')">Dashboard</li>
-        <li onclick="showPage('pelayanan')">Pelayanan</li>
-        <li onclick="showPage('story')">Riwayat</li>
-        <li onclick="showPage('unduhDok')">Unduh Dokumen K3</li>
+        <li onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt" style="width: 25px;"></i> Dashboard</li>
+        <li onclick="showPage('pelayanan')"><i class="fas fa-concierge-bell" style="width: 25px;"></i> Pelayanan</li>
+        <li onclick="showPage('story')"><i class="fas fa-history" style="width: 25px;"></i> Riwayat Proses</li>
+        <li onclick="showPage('unduhDok')"><i class="fas fa-download" style="width: 25px;"></i> Unduh Dokumen</li>
       </ul>
     </aside>
 
     <main>
       <!-- DASHBOARD -->
       <div id="dashboard" class="page">
+        <h2 style="color: var(--blue); margin-bottom: 20px;">Dashboard Pengguna</h2>
+
+        <!-- Stats Grid -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
+          <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
+            <h3 style="color: #666; font-size: 14px;">Layanan Masuk</h3>
+            <div style="font-size: 32px; font-weight: bold; color: #333;">0</div>
+          </div>
+          <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
+            <h3 style="color: #666; font-size: 14px;">Sedang Diproses</h3>
+            <div style="font-size: 32px; font-weight: bold; color: #333;">1</div>
+          </div>
+          <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
+            <h3 style="color: #666; font-size: 14px;">Selesai</h3>
+            <div style="font-size: 32px; font-weight: bold; color: #333;">1</div>
+          </div>
+          <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
+            <h3 style="color: #666; font-size: 14px;">Revisi</h3>
+            <div style="font-size: 32px; font-weight: bold; color: #333;">1</div>
+          </div>
+        </div>
+
+        <!-- Progress Bars -->
         <div class="card">
-          <h2>Dashboard</h2>
-          <p class="small">Selamat datang di Sistem Pelayanan Bidang Pengawasan K3.</p>
+          <h3
+            style="color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 10px; margin-bottom: 20px;">
+            Rekap Status Layanan</h3>
+
+          <div style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; mb-2;">
+              <span>Layanan Masuk</span>
+              <span style="font-weight: bold; color: var(--blue);">0</span>
+            </div>
+            <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
+              <div style="width: 0%; height: 100%; background: var(--blue);"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; mb-2;">
+              <span>Sedang Diproses</span>
+              <span style="font-weight: bold; color: var(--blue);">1</span>
+            </div>
+            <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
+              <div style="width: 100%; height: 100%; background: var(--blue);"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; mb-2;">
+              <span>Selesai</span>
+              <span style="font-weight: bold; color: var(--blue);">1</span>
+            </div>
+            <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
+              <div style="width: 100%; height: 100%; background: var(--blue);"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; mb-2;">
+              <span>Revisi</span>
+              <span style="font-weight: bold; color: var(--blue);">1</span>
+            </div>
+            <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
+              <div style="width: 100%; height: 100%; background: var(--blue);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart Placeholder -->
+        <div class="card">
+          <h3
+            style="color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 10px; margin-bottom: 20px;">
+            Grafik Pengajuan per Bulan</h3>
+          <div
+            style="display: flex; align-items: flex-end; justify-content: space-around; height: 200px; padding-top: 20px;">
+            <div style="width: 40px; height: 40%; background: var(--blue); border-radius: 4px 4px 0 0;"></div>
+            <div style="width: 40px; height: 70%; background: var(--blue); border-radius: 4px 4px 0 0;"></div>
+            <div style="width: 40px; height: 30%; background: var(--blue); border-radius: 4px 4px 0 0;"></div>
+            <div style="width: 40px; height: 90%; background: var(--blue); border-radius: 4px 4px 0 0;"></div>
+            <div style="width: 40px; height: 50%; background: var(--blue); border-radius: 4px 4px 0 0;"></div>
+            <div style="width: 40px; height: 80%; background: var(--blue); border-radius: 4px 4px 0 0;"></div>
+          </div>
         </div>
       </div>
 
@@ -1297,7 +1388,8 @@
 
           <p class="note">
             Form ini adalah implementasi persyaratan administratif (Undang-undang dan Permenaker). <br>
-            Catatan: Jika sudah mengisi Google Form, tidak perlu mengirim berkas fisik lagi ke Dinas (Alamat: Jl. Jend.
+            Catatan: jika sudah mengisi formulir di website, tidak perlu mengirim berkas fisik lagi ke Dinas (Alamat:
+            Jl. Jend.
             A. Yani Km 6 No 23 Banjarmasin).
           </p>
 
@@ -1384,7 +1476,8 @@
             <!-- Upload Dokumen Persyaratan -->
             <div id="uploads" class="fieldset hidden">
               <label>Unggah Dokumen Persyaratan (PDF, maks 1 MB tiap file)</label>
-              <div class="file-hint">Jika sudah mengisi Google Form, tidak perlu mengirim berkas fisik lagi ke Dinas.
+              <div class="file-hint">jika sudah mengisi formulir di website, tidak perlu mengirim berkas fisik lagi ke
+                Dinas.
               </div>
 
               <label>Surat Permohonan Pengesahan Pelayanan Kesehatan Kerja <span class="small">*</span></label>
@@ -2045,8 +2138,13 @@
       }
 
       try {
-        const resp = await fetch('http://localhost:3000/submit', {
+        const resp = await fetch('/submit-pengesahan', {
           method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            // 'Content-Type': 'multipart/form-data', // Do NOT set this manually for FormData, browser does it automatically with boundary
+            'Accept': 'application/json'
+          },
           body: formData
         });
         const json = await resp.json();
