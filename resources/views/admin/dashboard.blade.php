@@ -706,6 +706,7 @@
                             return;
                         }
 
+                        // 1. Render Basic Info
                         let html = `
                         <p><strong>ID:</strong> ${b.id}</p>
                         <p><strong>Perusahaan:</strong> ${b.subtitle || '-'}</p>
@@ -714,22 +715,22 @@
                         <p><strong>Pemohon:</strong> ${b.applicant_name || '-'}</p>
                         <p><strong>Status Saat Ini:</strong> <span style="color: #198754; font-weight: bold;">${b.status}</span></p>
                         <hr>
-                        <h4>Data Pengajuan:</h4>
-                        // Define preferred order for text fields
+                        <h4>Data Pengajuan:</h4>`;
+
+                        // 2. Prepare Data Fields
                         const fieldOrder = [
-                            'email', 'jenis_pengajuan', 
-                            'tanggal_pengusulan', 'nama_perusahaan', 
-                            'alamat_perusahaan', 'sektor', 'sektor_usaha',
-                            'nama_dokter', 'ttl_dokter', 
-                            'nomor_skp_dokter', 'masa_berlaku_skp', 
-                            'nomor_hiperkes', 'nomor_str', 
-                            'nomor_sip', 'kontak', 'kontak_dokter',
-                            'nama_paramedis', 'hiperkes_paramedis',
-                            'nama_korban', 'jabatan_korban', 'jenis_kecelakaan',
-                            'tanggal_kejadian', 'kronologi'
+                             'email', 'jenis_pengajuan', 
+                             'tanggal_pengusulan', 'nama_perusahaan', 
+                             'alamat_perusahaan', 'sektor', 'sektor_usaha',
+                             'nama_dokter', 'ttl_dokter', 
+                             'nomor_skp_dokter', 'masa_berlaku_skp', 
+                             'nomor_hiperkes', 'nomor_str', 
+                             'nomor_sip', 'kontak', 'kontak_dokter',
+                             'nama_paramedis', 'hiperkes_paramedis',
+                             'nama_korban', 'jabatan_korban', 'jenis_kecelakaan',
+                             'tanggal_kejadian', 'kronologi'
                         ];
 
-                        // Separate data into ordered text, other text, and files
                         let orderedFields = {};
                         let otherFields = {};
                         let fileFields = {};
@@ -740,19 +741,22 @@
                         });
 
                         for (const [key, value] of Object.entries(data)) {
-                            // Skip system fields
-                            if (['id', 'user_id', 'created_at', 'updated_at', 'file_balasan', 'status_pengajuan', 'catatan'].includes(key)) continue;
-                            
-                            // Skip if already in ordered list
-                            if (orderedFields[key]) continue;
+                             // Skip system fields
+                             if (['id', 'user_id', 'created_at', 'updated_at', 'file_balasan', 'status_pengajuan', 'catatan'].includes(key)) continue;
+                             
+                             // Skip if already in ordered list
+                             if (orderedFields[key]) continue;
 
-                            // Check for file columns
-                            if ((key.startsWith('f_') || key.startsWith('file_')) && value) {
-                                fileFields[key] = value;
-                            } else if (value && typeof value === 'string') {
-                                otherFields[key] = value;
-                            }
+                             // Check for file columns
+                             if ((key.startsWith('f_') || key.startsWith('file_')) && value) {
+                                 fileFields[key] = value;
+                             } else if (value && typeof value === 'string') {
+                                 otherFields[key] = value;
+                             }
                         }
+
+                        // 3. Render Fields to HTML
+                        html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">`;
 
                         // Render Ordered Text Fields
                         for (const [key, value] of Object.entries(orderedFields)) {
@@ -791,7 +795,7 @@
 
                         html += `</div>`;
 
-                        // Show existing note if any
+                        // 4. Show Note
                         if (data.catatan) {
                             html += `<div style="margin-top: 15px; padding: 10px; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px;">
                             <strong>Catatan Sebelumnya:</strong><br>${data.catatan}
