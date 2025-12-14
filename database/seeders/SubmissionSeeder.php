@@ -20,7 +20,7 @@ class SubmissionSeeder extends Seeder
             $user = \App\Models\User::firstOrCreate(
                 ['email' => "pemohon$i@example.com"],
                 [
-                    'name' => "Pemohon $i", // Fixed column name (was nama_lengkap)
+                    'nama_lengkap' => "Pemohon $i", // Reverted to nama_lengkap
                     'password' => Hash::make('password'),
                     'role' => 'pengguna',
                     'email_verified_at' => now(),
