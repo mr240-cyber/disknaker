@@ -283,17 +283,17 @@
         <aside class="sidebar">
             <div
                 style="font-size: 20px; font-weight: bold; margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-industry"></i> SIPENAKER
+                SIPENAKER
             </div>
             <ul>
-                <li onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt" style="width: 25px;"></i> Dashboard
+                <li onclick="showPage('dashboard')"> Dashboard
                 </li>
-                <li onclick="showPage('pelayanan')"><i class="fas fa-concierge-bell" style="width: 25px;"></i> Pelayanan
+                <li onclick="showPage('pelayanan')"> Pelayanan
                 </li>
-                <li onclick="showPage('story')"><i class="fas fa-history" style="width: 25px;"></i> Riwayat Proses</li>
-                <li onclick="showPage('unduhDok')"><i class="fas fa-download" style="width: 25px;"></i> Unduh Dokumen
+                <li onclick="showPage('story')"> Riwayat Proses</li>
+                <li onclick="showPage('unduhDok')"> Unduh Dokumen
                 </li>
-            <li onclick="window.location.href='{{ route('profile') }}'"><i class="fas fa-user" style="width: 25px;"></i> Profil</li>
+                <li onclick="window.location.href='{{ route('profile') }}'"> Profil</li>
             </ul>
             <form method="POST" action="{{ route('logout') }}" style="padding: 20px 0;">
                 @csrf
@@ -313,19 +313,20 @@
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
                     <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
                         <h3 style="color: #666; font-size: 14px;">Layanan Masuk</h3>
-                        <div style="font-size: 32px; font-weight: bold; color: #333;">0</div>
+                        <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['total'] ?? 0 }}</div>
                     </div>
                     <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
                         <h3 style="color: #666; font-size: 14px;">Sedang Diproses</h3>
-                        <div style="font-size: 32px; font-weight: bold; color: #333;">1</div>
+                        <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['diproses'] ?? 0 }}
+                        </div>
                     </div>
                     <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
                         <h3 style="color: #666; font-size: 14px;">Selesai</h3>
-                        <div style="font-size: 32px; font-weight: bold; color: #333;">1</div>
+                        <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['selesai'] ?? 0 }}</div>
                     </div>
                     <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
                         <h3 style="color: #666; font-size: 14px;">Revisi</h3>
-                        <div style="font-size: 32px; font-weight: bold; color: #333;">1</div>
+                        <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['revisi'] ?? 0 }}</div>
                     </div>
                 </div>
 
@@ -338,7 +339,7 @@
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Layanan Masuk</span>
-                            <span style="font-weight: bold; color: var(--blue);">0</span>
+                            <span style="font-weight: bold; color: var(--blue);">{{ $stats['total'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
                             <div style="width: 0%; height: 100%; background: var(--blue);"></div>
@@ -348,7 +349,7 @@
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Sedang Diproses</span>
-                            <span style="font-weight: bold; color: var(--blue);">1</span>
+                            <span style="font-weight: bold; color: var(--blue);">{{ $stats['diproses'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
                             <div style="width: 100%; height: 100%; background: var(--blue);"></div>
@@ -358,7 +359,7 @@
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Selesai</span>
-                            <span style="font-weight: bold; color: var(--blue);">1</span>
+                            <span style="font-weight: bold; color: var(--blue);">{{ $stats['selesai'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
                             <div style="width: 100%; height: 100%; background: var(--blue);"></div>
@@ -368,7 +369,7 @@
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Revisi</span>
-                            <span style="font-weight: bold; color: var(--blue);">1</span>
+                            <span style="font-weight: bold; color: var(--blue);">{{ $stats['revisi'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
                             <div style="width: 100%; height: 100%; background: var(--blue);"></div>
@@ -396,6 +397,76 @@
                         <div style="width: 40px; height: 80%; background: var(--blue); border-radius: 4px 4px 0 0;">
                         </div>
                     </div>
+                </div>
+                <!-- Riwayat Pengajuan -->
+                <div class="card" style="margin-top: 30px;">
+                    <h3
+                        style="color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 10px; margin-bottom: 20px;">
+                        Riwayat Pengajuan Saya</h3>
+
+                    @if(count($history) > 0)
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #f3f4f6; text-align: left;">
+                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Layanan</th>
+                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Perusahaan</th>
+                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Tanggal</th>
+                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Status</th>
+                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($history as $s)
+                                    @php
+                                        $badges = [
+                                            'BERKAS DITERIMA' => 'background: #e0f2fe; color: #0284c7;',
+                                            'VERIFIKASI BERKAS' => 'background: #fef9c3; color: #ca8a04;',
+                                            'DOKUMEN TERSEDIA' => 'background: #dcfce7; color: #16a34a;',
+                                            'DITOLAK' => 'background: #fee2e2; color: #dc2626;',
+                                            'PERLU REVISI' => 'background: #ffedd5; color: #ea580c;'
+                                        ];
+                                        $style = $badges[$s->status] ?? 'background: #f3f4f6; color: #374151;';
+                                    @endphp
+                                    <tr style="border-bottom: 1px solid #eee;">
+                                        <td style="padding: 10px;">{{ $s->type }}</td>
+                                        <td style="padding: 10px;">{{ $s->subtitle ?? '-' }}</td>
+                                        <td style="padding: 10px;">{{ \Carbon\Carbon::parse($s->date)->format('d M Y') }}</td>
+                                        <td style="padding: 10px;">
+                                            <span
+                                                style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; {{ $style }}">
+                                                {{ $s->status }}
+                                            </span>
+                                            @if($s->catatan)
+                                                <div style="font-size: 11px; color: #666; margin-top: 4px;">Admin: {{ $s->catatan }}
+                                                </div>
+                                            @endif
+
+                                            @if(in_array($s->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)']))
+                                                <div style="margin-top: 5px;">
+                                                    <button onclick="editSubmission({{ $s->id }}, '{{ $s->type }}')"
+                                                        style="padding: 4px 8px; border: 1px solid #ea580c; background: #fff7ed; color: #ea580c; border-radius: 4px; cursor: pointer; font-size: 11px;">
+                                                        ✏️ Perbaiki
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td style="padding: 10px;">
+                                            @if($s->status == 'DOKUMEN TERSEDIA' && !empty($s->file_balasan))
+                                                <a href="{{ asset('storage/' . $s->file_balasan) }}" target="_blank"
+                                                    style="display: inline-block; padding: 6px 12px; background: #0c2c66; color: white; border-radius: 4px; text-decoration: none; font-size: 13px;">
+                                                    📥 Download Surat
+                                                </a>
+                                            @else
+                                                <span style="color: #ccc;">-</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                    @endif
                 </div>
             </div>
 
@@ -957,7 +1028,111 @@
                         });
 
                         // prevent actual submit
+                        (default behavior)
                         formEl.addEventListener('submit', e => { e.preventDefault(); });
+
+                        // REAL SUBMIT TO SERVER
+                        async function submitReport() {
+                            if (!validateRequired()) {
+                                formMsg.textContent = 'Masih ada kolom wajib yang kosong. Periksa kolom berwarna merah.';
+                                formMsg.style.color = '#b91c1c';
+                                return;
+                            }
+                            if (!confirm('Kirim laporan ke database?')) return;
+
+                            const fd = new FormData();
+                            // Common fields
+                            const getVal = (id) => (document.getElementById(id) ? document.getElementById(id).value : '');
+
+                            // Map to Controller Expectation (KKPAKController)
+                            // Controller expects: jenis, nama_pekerja, alamat, pekerjaan, uraian, dokumen (file)
+                            // Plus: kpj, unit, upah, tgl_lahir in 'catatan' field or separate if schema supports.
+                            // Schema 'pelaporan_kk_pak': nama_perusahaan, alamat_perusahaan, nama_korban, jabatan_korban, jenis_kecelakaan, kronologi, tanggal_kejadian, file_bukti, catatan
+
+                            const jenis = root.querySelector('input[name="jenisPelaporan"]:checked').value;
+                            fd.append('jenis', jenis); // 'kk' or 'pak'
+
+                            // Reporter & Company Info (shared)
+                            fd.append('nama_perusahaan', getVal('companyName'));
+                            fd.append('alamat', getVal('companyAddress'));
+
+                            if (jenis === 'kk') {
+                                fd.append('nama_pekerja', getVal('victimName'));
+                                fd.append('pekerjaan', getVal('victimJob')); // maps to jabatan_korban
+                                fd.append('uraian', getVal('accidentDesc')); // maps to kronologi
+                                fd.append('tanggal_kejadian', getVal('accidentDate')); // schema has nullable date
+
+                                // Extra info for 'catatan'
+                                fd.append('kpj', getVal('victimKpj'));
+                                fd.append('unit', getVal('victimUnit'));
+                                fd.append('upah', getVal('victimWage'));
+                                fd.append('tgl_lahir', getVal('victimBirthplace'));
+
+                                // File
+                                const f = reportFile.files[0];
+                                if (f) fd.append('dokumen', f);
+
+                            } else {
+                                // PAK
+                                fd.append('nama_pekerja', getVal('pakVictimName'));
+                                fd.append('pekerjaan', getVal('pakJob'));
+                                fd.append('uraian', getVal('pakCause')); // kronologi = cause ? or workDesc? Controller uses 'uraian' -> kronologi
+
+                                // Extra info
+                                fd.append('kpj', getVal('pakKpj'));
+                                fd.append('unit', getVal('pakUnit'));
+                                fd.append('upah', getVal('pakWage'));
+                                fd.append('tgl_lahir', getVal('pakBirthplace'));
+
+                                const f = pakReportFile.files[0];
+                                if (f) fd.append('dokumen', f);
+                            }
+
+                            try {
+                                const resp = await fetch('/submit-kkpak', {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                        'Accept': 'application/json'
+                                    },
+                                    body: fd
+                                });
+
+                                if (resp.status === 419) {
+                                    alert('⏳ Sesi Anda telah berakhir. Silakan refresh halaman dan login kembali.');
+                                    window.location.reload();
+                                    return;
+                                }
+
+                                const json = await resp.json();
+                                if (!resp.ok) throw json;
+                                alert('Sukses: ' + (json.message || 'Laporan terkirim'));
+                                window.location.reload();
+                            } catch (err) {
+                                console.error(err);
+                                alert('Gagal: ' + (err.message || JSON.stringify(err)));
+                            }
+                        }
+
+                        // Add a button for Real Submit if not exists or replace the Preview logic? 
+                        // The user UI has "Pratinjau & Simpan (Unduh JSON)". 
+                        // Let's add a separate "Kirim ke Database" button next to "Preview" or change the logic.
+                        // I will add a new button dynamically for clarity.
+                        const btnArea = root.querySelector('.flex-buttons');
+                        const sendBtn = document.createElement('button');
+                        sendBtn.type = 'button';
+                        sendBtn.className = 'btn-primary'; // assume btn-primary exists or btn
+                        sendBtn.textContent = 'Kirim Laporan (Database)';
+                        sendBtn.style.marginLeft = '10px';
+                        sendBtn.style.backgroundColor = '#0c2c66';
+                        sendBtn.style.color = 'white';
+                        sendBtn.onclick = submitReport;
+
+                        // Check if already added to avoid dupes on re-run (though this is page load script)
+                        if (!btnArea.querySelector('button[data-real-submit]')) {
+                            sendBtn.setAttribute('data-real-submit', 'true');
+                            btnArea.insertBefore(sendBtn, btnArea.firstChild);
+                        }
                     })();
                 </script>
 
@@ -1392,19 +1567,72 @@
                         });
 
                         // simple submit handler (demo)
-                        form.addEventListener('submit', (e) => {
+                        // simple submit handler (updated to Real Submit)
+                        form.addEventListener('submit', async (e) => {
                             e.preventDefault();
+
                             // final validation
+                            let isValid = true;
                             if (jenis.value === 'p2k3') {
-                                if (!validateFileMax10MB(document.getElementById('p2k3_file_report'), 'p2k3_err_file')) { alert('Periksa file laporan P2K3'); return; }
+                                if (!validateFileMax10MB(document.getElementById('p2k3_file_report'), 'p2k3_err_file')) isValid = false;
                             } else if (jenis.value === 'pelkes') {
-                                if (!validateFileMax10MB(document.getElementById('pelkes_file_report'), 'pelkes_err_file')) { alert('Periksa file laporan Pelayanan Kesehatan Kerja'); return; }
+                                if (!validateFileMax10MB(document.getElementById('pelkes_file_report'), 'pelkes_err_file')) isValid = false;
                             } else {
                                 alert('Pilih jenis laporan'); return;
                             }
+                            if (!isValid) return;
 
-                            // For now just show preview as "submitted"
-                            alert('Form berhasil diverifikasi. Gunakan endpoint server untuk mengirim berkas.');
+                            if (!confirm('Kirim Laporan P2K3 ke Dinas?')) return;
+
+                            const fd = new FormData();
+                            // Collect all inputs automatically
+                            // This is a short-cut to collect p2k3_ data
+                            form.querySelectorAll('input, select, textarea').forEach(el => {
+                                if (el.id && el.type !== 'file' && el.type !== 'radio' && el.type !== 'checkbox') {
+                                    fd.append(el.id, el.value);
+                                }
+                                if (el.type === 'radio' && el.checked) {
+                                    fd.append(el.name, el.value);
+                                }
+                                if (el.type === 'checkbox' && el.checked) {
+                                    fd.append(el.name, el.value); // handles array if name has []
+                                }
+                            });
+
+                            // Files
+                            if (jenis.value === 'p2k3') {
+                                const f = document.getElementById('p2k3_file_report').files[0];
+                                if (f) fd.append('dokumen', f);
+                            } else {
+                                const f = document.getElementById('pelkes_file_report').files[0];
+                                if (f) fd.append('dokumen', f);
+                            }
+
+                            try {
+                                const resp = await fetch('/submit-pelaporan-p2k3', {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                        'Accept': 'application/json'
+                                    },
+                                    body: fd
+                                });
+
+                                if (resp.status === 419) {
+                                    alert('⏳ Sesi Anda telah berakhir. Silakan refresh halaman dan login kembali.');
+                                    window.location.reload();
+                                    return;
+                                }
+
+                                const json = await resp.json();
+                                if (!resp.ok) throw json;
+                                alert('Sukses: ' + (json.message || 'Laporan terkirim'));
+                                // optional reset
+                                window.location.reload();
+                            } catch (err) {
+                                console.error(err);
+                                alert('Gagal: ' + (err.message || JSON.stringify(err)));
+                            }
                         });
 
                         // reset form
@@ -1424,71 +1652,126 @@
                 <!-- ======= FORM SINGKAT: Pengajuan SK Pengesahan P2K3 ======= -->
                 <div id="form_pelkes" class="card formdata hidden">
                     <h2>Form Pengajuan SK Pengesahan P2K3</h2>
-                    <form>
-                        <label>Jenis Pengajuan *</label>
-                        <select id="form_pelkes_jenis" required>
+                    <form id="real_form_sk_p2k3" onsubmit="handleSkP2k3Submit(event)">
+                        <label>Jenis Pengajuan <span class="text-red-500">*</span></label>
+                        <select id="sk_jenis" required>
                             <option value="">-- Pilih --</option>
                             <option value="baru">Pembuatan Baru SK Pengesahan P2K3</option>
                             <option value="perubahan">Perubahan SK Pengesahan P2K3</option>
                         </select>
 
+                        <div id="div_sk_lama" class="hidden" style="margin-top:10px;">
+                            <label>Dokumen SK Pengesahan P2K3 Lama</label>
+                            <input id="sk_file_lama" type="file" accept="application/pdf">
+                        </div>
 
-                        <label>Dokumen SK Pengesahan P2K3 (Jika Memilih Perubahan)</label>
-                        <input type="file" accept="application/pdf">
+                        <label>Nama Perusahaan <span class="text-red-500">*</span></label>
+                        <input id="sk_nama_perusahaan" type="text" required placeholder="PT...">
+
+                        <label>Alamat Perusahaan <span class="text-red-500">*</span></label>
+                        <textarea id="sk_alamat" required placeholder="Alamat Lengkap"></textarea>
+
+                        <label>Sektor Perusahaan <span class="text-red-500">*</span></label>
+                        <input id="sk_sektor" type="text" required>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>Jumlah Tenaga Kerja (Laki-Laki) <span class="text-red-500">*</span></label>
+                                <input id="sk_tk_laki" type="number" required min="0">
+                            </div>
+                            <div class="col">
+                                <label>Jumlah Tenaga Kerja (Perempuan) <span class="text-red-500">*</span></label>
+                                <input id="sk_tk_perempuan" type="number" required min="0">
+                            </div>
+                        </div>
+
+                        <label>Surat Permohonan Pengesahan P2K3 <span class="text-red-500">*</span> (PDF)</label>
+                        <input id="sk_file_permohonan" type="file" accept="application/pdf" required>
+
+                        <label>Nama Ahli K3 / Sekretaris P2K3 <span class="text-red-500">*</span></label>
+                        <input id="sk_ahli_k3" type="text" required>
+
+                        <label>Sertifikat Ahli K3, SKP dan Kartu Kewenangan <span class="text-red-500">*</span>
+                            (PDF)</label>
+                        <input id="sk_file_sertifikat" type="file" accept="application/pdf" required>
+
+                        <label>Sertifikat Ahli K3 Tambahan (Jika Ada) (PDF)</label>
+                        <input id="sk_file_tambahan" type="file" accept="application/pdf">
+
+                        <label>Tanda Bukti Kepesertaan BPJS Ketenagakerjaan <span class="text-red-500">*</span>
+                            (PDF)</label>
+                        <input id="sk_file_bpjs_tk" type="file" accept="application/pdf" required>
+
+                        <label>Tanda Bukti Kepesertaan BPJS Kesehatan <span class="text-red-500">*</span> (PDF)</label>
+                        <input id="sk_file_bpjs_kes" type="file" accept="application/pdf" required>
+
+                        <label>Tanda Bukti Pengisian WLKP <span class="text-red-500">*</span> (PDF)</label>
+                        <input id="sk_file_wlkp" type="file" accept="application/pdf" required>
+
+                        <label>Nomor yang bisa dihubungi <span class="text-red-500">*</span></label>
+                        <input id="sk_kontak" type="tel" placeholder="0812xxxxxxx" required>
+
+                        <div style="margin-top: 20px;">
+                            <button type="submit" class="btn-primary">Kirim Pengajuan SK P2K3</button>
+                        </div>
+                    </form>
+
+                    <script>
+                        document.getElementById('sk_jenis').addEventListener('change', function (e) {
+                            const val = e.target.value;
+                            document.getElementById('div_sk_lama').classList.toggle('hidden', val !== 'perubahan');
+                        });
+
+                        async function handleSkP2k3Submit(e) {
+                            e.preventDefault();
+                            if (!confirm('Apakah data sudah benar?')) return;
+
+                            const fd = new FormData();
+                            fd.append('jenis', document.getElementById('sk_jenis').value);
+                            fd.append('nama_perusahaan', document.getElementById('sk_nama_perusahaan').value);
+                            fd.append('alamat', document.getElementById('sk_alamat').value);
+                            fd.append('sektor', document.getElementById('sk_sektor').value);
+                            fd.append('jumlah_tk', document.getElementById('sk_tk_laki').value); // Controller expects jumlah_tk
+                            fd.append('tk_perempuan', document.getElementById('sk_tk_perempuan').value); // We will update controller to read this
+                            fd.append('ahli_k3', document.getElementById('sk_ahli_k3').value);
+                            fd.append('kontak', document.getElementById('sk_kontak').value);
+
+                            // Files
+                            const appendFile = (id, key) => {
+                                const el = document.getElementById(id);
+                                if (el && el.files[0]) fd.append(key, el.files[0]);
+                            };
+
+                            appendFile('sk_file_lama', 'dokumen'); // Controller maps 'dokumen' to f_sk_lama
+                            appendFile('sk_file_permohonan', 'f_surat_permohonan');
+                            appendFile('sk_file_sertifikat', 'f_sertifikat_ahli_k3');
+                            appendFile('sk_file_tambahan', 'f_sertifikat_tambahan');
+                            appendFile('sk_file_bpjs_tk', 'f_bpjs_kt');
+                            appendFile('sk_file_bpjs_kes', 'f_bpjs_kes');
+                            appendFile('sk_file_wlkp', 'f_wlkp');
+
+                            try {
+                                const resp = await fetch('/submit-p2k3', {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                        'Accept': 'application/json'
+                                    },
+                                    body: fd
+                                });
+                                const json = await resp.json();
+                                if (!resp.ok) throw json;
+                                alert('Berhasil: ' + (json.message || 'Pengajuan terkirim'));
+                                window.location.reload();
+                            } catch (err) {
+                                console.error(err);
+                                alert('Gagal: ' + (err.message || JSON.stringify(err)));
+                            }
+                        }
+                    </script>
 
 
-                        <label>Nama Perusahaan *</label>
-                        <input type="text" required>
-
-
-                        <label>Alamat Perusahaan *</label>
-                        <textarea required></textarea>
-
-
-                        <label>Sektor Perusahaan *</label>
-                        <input type="text" required>
-
-
-                        <label>Jumlah Tenaga Kerja (Laki-Laki) *</label>
-                        <input type="number" required>
-
-
-                        <label>Jumlah Tenaga Kerja (Perempuan) *</label>
-                        <input type="number" required>
-
-
-                        <label>Surat Permohonan Pengesahan P2K3 *</label>
-                        <input type="file" accept="application/pdf, .doc, .docx" required>
-
-
-                        <label>Nama Ahli K3 / Sekretaris P2K3 *</label>
-                        <input type="text" required>
-
-
-                        <label>Sertifikat Ahli K3, SKP dan Kartu Kewenangan *</label>
-                        <input type="file" accept="application/pdf" required>
-
-
-                        <label>Sertifikat Ahli K3 Tambahan (Jika Ada)</label>
-                        <input type="file" accept="application/pdf" multiple>
-
-                        <label>Tanda Bukti Kepesertaan BPJS Ketenagakerjaan *</label>
-                        <input type="file" accept="application/pdf" required>
-
-
-                        <label>Tanda Bukti Kepesertaan BPJS Kesehatan *</label>
-                        <input type="file" accept="application/pdf" required>
-
-
-                        <label>Tanda Bukti Pengisian WLKP *</label>
-                        <input type="file" accept="application/pdf" required>
-
-
-                        <label>Nomor yang bisa dihubungi *</label>
-                        <input type="tel" placeholder="0812xxxxxxx" required>
-
-
-                        <button type="submit">Kirim Pengajuan</button>
+                    <button type="submit">Kirim Pengajuan</button>
                     </form>
                 </div>
 
@@ -1506,6 +1789,8 @@
                     </p>
 
                     <form id="form" enctype="multipart/form-data" novalidate>
+                        <!-- Hidden ID for Updates -->
+                        <input type="hidden" id="editIdPengesahan">
                         <!-- Basic -->
                         <label>Email <span class="small">* (digunakan untuk notifikasi)</span></label>
                         <input id="email" type="email" placeholder="email@example.com" required>
@@ -1674,7 +1959,31 @@
             <div id="story" class="page hidden">
                 <div class="card">
                     <h2>Riwayat Proses Pengajuan</h2>
-                    <div id="storyList"></div>
+
+                    <div id="storyList">@if(isset($history) && count($history) > 0)
+                        @foreach($history as $item)
+                            <div class="status" style="margin-bottom: 10px; padding: 10px; border-bottom: 1px solid #eee;">
+                                <strong>{{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</strong> -
+                                {{ $item->title }}
+                                <div style="font-size: 13px; color: #555; margin-top: 2px;">{{ $item->subtitle ?? '' }}
+                                </div>
+                                <div style="margin-top: 4px;">
+                                    <span class="badge"
+                                        style="background: #e6fdf0; color: #198754; padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                    <span style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
+                                </div>
+                                @if(!empty($item->catatan))
+                                    <div
+                                        style="margin-top: 8px; background: #fff5f5; border-left: 3px solid #ef4444; padding: 8px; font-size: 13px; color: #b91c1c;">
+                                        <strong>Catatan Admin:</strong> {{ $item->catatan }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -2068,7 +2377,7 @@
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             const el = document.getElementById(pageId);
             if (el) el.classList.remove('hidden');
-            if (pageId === 'story') updateStory();
+            // if (pageId === 'story') updateStory(); // removed
         }
         showPage('dashboard');
 
@@ -2192,31 +2501,23 @@
             if (confirm('Reset semua isian?')) {
                 document.getElementById('form').reset();
                 document.getElementById('result').classList.add('hidden');
+                document.getElementById('editIdPengesahan').value = ''; // Clear edit ID on reset
             }
         });
 
         // story mock
-        let riwayat = [
-            { tanggal: "01/02", perusahaan: "PT Maju Terus", status: "BERKAS DITERIMA" },
-            { tanggal: "02/02", perusahaan: "PT Aman Sentosa", status: "VERIFIKASI BERKAS" },
-            { tanggal: "03/02", perusahaan: "PT Sehat Selalu", status: "DOKUMEN TERSEDIA" }
-        ];
-        function updateStory() {
-            const list = document.getElementById('storyList');
-            list.innerHTML = '';
-            riwayat.forEach(r => {
-                const d = document.createElement('div');
-                d.className = 'status';
-                d.textContent = `${r.tanggal} - ${r.perusahaan}: ${r.status}`;
-                list.appendChild(d);
-            });
-        }
+        // story mock removed  -  using server-side rendering
 
         // submitReal (attached to form submit)
         async function submitReal(e) {
             e.preventDefault();
             const formEl = document.getElementById('form');
             const formData = new FormData();
+
+            const editId = document.getElementById('editIdPengesahan').value;
+            if (editId) {
+                formData.append('id', editId); // Append ID for update
+            }
 
             // simple fields
             formData.append('email', document.getElementById('email').value);
@@ -2261,13 +2562,12 @@
             // validate files & append
             for (const [field, inputId] of Object.entries(mapFiles)) {
                 const inp = document.getElementById(inputId);
-                if (!inp || !inp.files || inp.files.length === 0) {
-                    alert('File belum lengkap: ' + inputId);
-                    return;
+                // Only validate and append if a new file is selected
+                if (inp && inp.files && inp.files.length > 0) {
+                    const ok = validateFileInput(inp);
+                    if (!ok) { alert('Periksa file: ' + inputId); return; }
+                    formData.append(field, inp.files[0], inp.files[0].name);
                 }
-                const ok = validateFileInput(inp);
-                if (!ok) { alert('Periksa file: ' + inputId); return; }
-                formData.append(field, inp.files[0], inp.files[0].name);
             }
 
             try {
@@ -2283,8 +2583,8 @@
                 const json = await resp.json();
                 if (!resp.ok) throw json;
                 alert('Terima kasih — ' + (json.message || 'Pengajuan sukses'));
-                // optional: push to riwayat (mock)
-                riwayat.push({ tanggal: new Date().toLocaleDateString(), perusahaan: document.getElementById('nama-perusahaan').value || 'Perusahaan Anda', status: 'BERKAS DIKIRIM (' + document.getElementById('jenis').value + ')' });
+                // window.location.reload();
+                window.location.reload();
             } catch (err) {
                 console.error(err);
                 alert('Gagal mengirim: ' + (err.message || JSON.stringify(err)));
@@ -2303,10 +2603,89 @@
 
         // When page loads, make sure file validation nodes exist (for preview)
         window.addEventListener('DOMContentLoaded', () => {
-            // nothing else for now
+            // nothing else for no      w
         });
-    </script>
 
+        async function editSubmission(id, typeRaw) {
+            // Map type label to internal type if needed
+            // Currently typeRaw is display label e.g 'Pelayanan Kesekerja'
+            // Need to map back to 'pelayanan_kesekerja'
+
+            let typeMap = {
+                'Pelayanan Kesekerja': 'pelayanan_kesekerja', // Corrected label from DB
+                'SK P2K3': 'sk_p2k3',
+                'Laporan KK/PAK': 'pelaporan_kk_pak',
+                'Laporan P2K3': 'pelaporan_p2k3'
+            };
+
+            let type = typeMap[typeRaw];
+            if (!type) return alert("Fitur edit belum tersedia untuk jenis layanan ini (" + typeRaw + ")");
+            if (type !== 'pelayanan_kesekerja') return alert("Maaf, saat ini baru Pengesahan Pelayanan K3 yang mendukung fitur Edit.");
+
+            // 1. Fetch Data
+            try {
+                let res = await fetch(`/user/submission/${type}/${id}`);
+                if (!res.ok) throw new Error("Gagal mengambil data");
+                let data = await res.json();
+
+                // 2. Open Form
+                document.getElementById('pelayanan').classList.remove('hidden');
+                document.getElementById('dashboard').classList.add('hidden'); // Hide dashboard if simple hide class used
+                // Or standard showPage if multiple tabs exist. Here standard is "page" class.
+                // Re-using exiting dashboard logic:
+                document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+                document.getElementById('pelayanan').classList.remove('hidden');
+
+                // 3. Select Service & Show Form
+                document.getElementById('pilihanLayanan').value = 'pelkes_full';
+                tampilForm(); // Existing function to toggle forms
+
+                // 4. Populate Form
+                document.getElementById('editIdPengesahan').value = data.id;
+
+                // Populate Inputs by ID assumption (ID matches column usually? No, ids use camelCase in HTML)
+                // Need manual mapping or consistent naming.
+                // HTML IDs: email, jenis, tanggal, nama-perusahaan, alamat, sektor
+                // DB Columns: email, jenis_pengajuan, tanggal_pengusulan, nama_perusahaan, alamat_perusahaan, sektor
+
+                document.getElementById('email').value = data.email || '';
+                document.getElementById('jenis').value = data.jenis_pengajuan || '';
+                // Trigger change event for 'jenis' to show data-umum and uploads sections
+                document.getElementById('jenis').dispatchEvent(new Event('change'));
+
+                document.getElementById('tanggal').value = data.tanggal_pengusulan || '';
+                document.getElementById('nama-perusahaan').value = data.nama_perusahaan || '';
+                document.getElementById('alamat').value = data.alamat_perusahaan || '';
+                document.getElementById('sektor').value = data.sektor || '';
+
+                // Tenaga Kerja
+                document.getElementById('wni-laki').value = data.tk_wni_laki || 0;
+                document.getElementById('wni-perempuan').value = data.tk_wni_perempuan || 0;
+                document.getElementById('wna-laki').value = data.tk_wna_laki || 0;
+                document.getElementById('wna-perempuan').value = data.tk_wna_perempuan || 0;
+
+                // Dokter details
+                document.getElementById('dokter').value = data.nama_dokter || '';
+                document.getElementById('ttl').value = data.ttl_dokter || '';
+                document.getElementById('nomor-skp').value = data.nomor_skp_dokter || '';
+                document.getElementById('masa-skp').value = data.masa_berlaku_skp || '';
+                document.getElementById('no-hiperkes').value = data.nomor_hiperkes || '';
+                document.getElementById('str').value = data.nomor_str || '';
+                document.getElementById('sip').value = data.nomor_sip || '';
+                document.getElementById('kontak').value = data.kontak || '';
+
+                // Scroll to form
+                document.getElementById('form_pelkes_full').scrollIntoView({ behavior: 'smooth' });
+
+                alert("Silakan perbaiki data dan submit ulang. File yang tidak diupload ulang akan tetap menggunakan file lama.");
+
+            } catch (e) {
+                console.error(e);
+                alert("Gagal memuat data pengajuan.");
+            }
+        }
+    </script>
 </body>
 
 </html>
+```

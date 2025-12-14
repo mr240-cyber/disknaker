@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SubmissionReceived;
 
 class PengesahanK3Controller extends Controller
 {
@@ -69,9 +71,89 @@ class PengesahanK3Controller extends Controller
             'updated_at' => now(),
         ], $uploadedPaths));
 
+        try {
+            $user = Auth::user() ?? \App\Models\User::find(1); // Fallback for testing if no auth
+            if ($user) {
+                Mail::to($user)->send(new SubmissionReceived($user, 'Pengesahan Pelayanan Kesehatan Kerja'));
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Mail Error: ' . $e->getMessage());
+        }
+
         return response()->json([
             "status" => "success",
             "message" => "Data pengesahan stored successfully"
+        ]);
+    }
+    public function update(Request $request)
+    {
+        $userId = Auth::id();
+        $id = $request->input('id');
+
+        // Verify ownership
+        $existing = DB::table('pelayanan_kesekerja')
+            ->where('id', $id)
+            ->where('user_id', $userId)
+            ->first();
+
+        if (!$existing) {
+            return response()->json(['status' => 'error', 'message' => 'Data not found'], 404);
+        }
+
+        // Handle File Uploads (Only replace if new file exists)
+        $fileFields = [
+            'permohonan' => 'f_permohonan',
+            'struktur' => 'f_struktur',
+            'pernyataan' => 'f_pernyataan',
+            'skp' => 'f_skp_dokter',
+            'hiperkes_dokter' => 'f_hiperkes_dokter',
+            'hiperkes_paramedis' => 'f_hiperkes_paramedis',
+            'str_dokter' => 'f_str_dokter',
+            'sip_dokter' => 'f_sip_dokter',
+            'sarana' => 'f_sarana',
+            'bpjs_ketenagakerjaan' => 'f_bpjs_kt',
+            'bpjs_kesehatan' => 'f_bpjs_kes',
+            'wlkp' => 'f_wlkp'
+        ];
+
+        $updateData = [
+            'email' => $request->input('email'),
+            'jenis_pengajuan' => $request->input('jenis'),
+            'tanggal_pengusulan' => $request->input('tanggal'),
+            'nama_perusahaan' => $request->input('nama_perusahaan'),
+            'alamat_perusahaan' => $request->input('alamat'),
+            'sektor' => $request->input('sektor'),
+            'tk_wni_laki' => $request->input('wni_laki', 0),
+            'tk_wni_perempuan' => $request->input('wni_perempuan', 0),
+            'tk_wna_laki' => $request->input('wna_laki', 0),
+            'tk_wna_perempuan' => $request->input('wna_perempuan', 0),
+            'nama_dokter' => $request->input('dokter_nama'),
+            'ttl_dokter' => $request->input('dokter_ttl'),
+            'nomor_skp_dokter' => $request->input('nomor_skp'),
+            'masa_berlaku_skp' => $request->input('masa_skp'),
+            'nomor_hiperkes' => $request->input('no_hiperkes'),
+            'nomor_str' => $request->input('str'),
+            'nomor_sip' => $request->input('sip'),
+            'kontak' => $request->input('kontak'),
+            'status_pengajuan' => 'BERKAS DITERIMA', // Reset status
+            'updated_at' => now(),
+        ];
+
+        foreach ($fileFields as $inputName => $dbColumn) {
+            if ($request->hasFile($inputName)) {
+                // Delete old file if exists? For now just overwrite reference
+                // if ($existing->$dbColumn) Storage::delete($existing->$dbColumn);
+
+                $path = $request->file($inputName)->store('uploads/pelkes', 'public');
+                $updateData[$dbColumn] = $path;
+            }
+        }
+
+        DB::table('pelayanan_kesekerja')->where('id', $id)->update($updateData);
+
+        return response()->json([
+            "status" => "success",
+            "message" => "Pengajuan berhasil diperbarui."
         ]);
     }
 }

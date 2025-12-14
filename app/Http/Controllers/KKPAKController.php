@@ -5,35 +5,61 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SubmissionReceived;
 
 class KKPAKController extends Controller
 {
     public function store(Request $request)
     {
-        // Validation (optional for now)
-        // $request->validate([...]);
+        $userId = Auth::id();
 
-        $userId = Auth::id() ?? 1;
+        $uploadPath = null;
+        if ($request->hasFile('dokumen')) {
+            $uploadPath = $request->file('dokumen')->store('uploads/kk_pak', 'public');
+        }
 
-        // Map inputs to 'pelaporan_kk_pak' table
+        // Extra info for 'catatan'
+        $extras = [
+            'kpj' => $request->input('kpj'),
+            'unit' => $request->input('unit'),
+            'upah' => $request->input('upah'),
+            'tgl_lahir' => $request->input('tgl_lahir'),
+        ];
+        // Format catatan readable string or JSON. Let's stick to string for now or JSON. 
+        // Previous code used string concat. Let's use JSON for cleaner data if needed, or string.
+        // User saw "KPJ: ..., Unit: ..." in previous code. Let's keep it similar but robust.
+        $catatan = "KPJ: " . ($extras['kpj'] ?? '-') .
+            ", Unit: " . ($extras['unit'] ?? '-') .
+            ", Upah: " . ($extras['upah'] ?? '-') .
+            ", Tgl Lahir: " . ($extras['tgl_lahir'] ?? '-');
+
         DB::table('pelaporan_kk_pak')->insert([
             'user_id' => $userId,
-            'jenis_kecelakaan' => strtoupper($request->json('jenis') ?? $request->input('jenis')), // KK or PAK
-            'nama_korban' => $request->json('nama_pekerja') ?? $request->input('nama_pekerja'),
-            'alamat_perusahaan' => $request->json('alamat') ?? $request->input('alamat'), // Assuming this maps to company address
-            // 'tgl_lahir' doesn't have direct column, putting in notes/catatan
-            'tanggal_kejadian' => now(), // Default to now as input is missing or ambiguous
-            'jabatan_korban' => $request->json('pekerjaan') ?? $request->input('pekerjaan'),
-            'kronologi' => $request->json('uraian') ?? $request->input('uraian'),
-            'file_bukti' => $request->json('dokumen') ?? $request->input('dokumen'),
-            'catatan' => "KPJ: " . ($request->json('kpj') ?? '') . ", Unit: " . ($request->json('unit') ?? '') . ", Upah: " . ($request->json('upah') ?? '') . ", Tgl Lahir: " . ($request->json('tgl_lahir') ?? ''),
+            'nama_perusahaan' => $request->input('nama_perusahaan'),
+            'alamat_perusahaan' => $request->input('alamat'),
+            'nama_korban' => $request->input('nama_pekerja'),
+            'jabatan_korban' => $request->input('pekerjaan'),
+            'jenis_kecelakaan' => strtoupper($request->input('jenis')), // KK or PAK
+            'kronologi' => $request->input('uraian'),
+            'tanggal_kejadian' => $request->input('tanggal_kejadian'),
+            'file_bukti' => $uploadPath,
+            'catatan' => $catatan,
+            'status_pengajuan' => 'BERKAS DITERIMA',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
+        try {
+            Mail::to(Auth::user())->send(new SubmissionReceived(Auth::user(), 'Laporan KK/PAK'));
+        } catch (\Exception $e) {
+            // Log error but don't fail the request
+            \Illuminate\Support\Facades\Log::error('Mail Error: ' . $e->getMessage());
+        }
+
         return response()->json([
             "status" => "success",
-            "message" => "Pelaporan KK/PAK berhasil disimpan"
+            "message" => "Laporan KK/PAK berhasil dikirim."
         ]);
     }
 }

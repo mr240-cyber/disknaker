@@ -30,20 +30,24 @@ Route::middleware(['auth'])->group(function () {
         return back()->with('message', 'Verification link sent!');
     })->middleware(['throttle:6,1'])->name('verification.resend');
 });
+use App\Http\Controllers\DashboardController;
+
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('user.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'userIndex'])->name('dashboard');
 
     Route::post('/submit-pengesahan', [PengesahanK3Controller::class, 'store']);
     Route::post('/submit-p2k3', [P2K3Controller::class, 'store']);
     Route::post('/submit-kkpak', [KKPAKController::class, 'store']);
     Route::post('/submit-pelaporan-p2k3', [PelaporanP2K3Controller::class, 'store']);
+    // New Routes for Edit/Revision
+    Route::get('/user/submission/{type}/{id}', [DashboardController::class, 'getUserSubmissionDetail']);
+    Route::post('/update-pengesahan', [PengesahanK3Controller::class, 'update']);
 });
 
 // Protected routes - Admin dashboard
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'adminIndex'])->name('admin.dashboard');
+    Route::get('/submission/{type}/{id}', [DashboardController::class, 'getSubmissionDetail'])->name('admin.submission.detail');
+    Route::post('/submission/update', [DashboardController::class, 'updateSubmissionStatus'])->name('admin.submission.update');
+    Route::post('/submission/upload', [DashboardController::class, 'uploadSurat'])->name('admin.submission.upload');
 });

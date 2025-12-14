@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Panel K3</title>
     <style>
         body {
@@ -28,7 +29,10 @@
             width: 260px;
             background: #198754;
             color: white;
-            min-height: 100vh;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
         }
 
         .sidebar h3 {
@@ -222,17 +226,17 @@
         <div class="sidebar">
             <h3>Menu Admin</h3>
             <ul>
-                <li onclick="showPage('dashboard')">📊 Dashboard</li>
-                <li onclick="showPage('validasi')">✅ Validasi Berkas</li>
-                <li onclick="showPage('surat')">📄 Pembuatan Surat</li>
-                <li onclick="showPage('riwayat')">📋 Riwayat Proses</li>
-                <li onclick="showPage('pengaturan')">⚙️ Pengaturan Admin</li>
+                <li onclick="showPage('dashboard')">Dashboard</li>
+                <li onclick="showPage('validasi')">Validasi Berkas</li>
+                <li onclick="showPage('surat')">Pembuatan Surat</li>
+                <li onclick="showPage('riwayat')">Riwayat Proses</li>
+                <li onclick="showPage('pengaturan')">Pengaturan Admin</li>
             </ul>
             <form method="POST" action="{{ route('logout') }}" style="padding: 20px;">
                 @csrf
                 <button type="submit"
                     style="width: 100%; padding: 12px; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 8px; cursor: pointer; font-size: 14px;">
-                    🚪 Keluar
+                    Keluar
                 </button>
             </form>
         </div>
@@ -248,19 +252,20 @@
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
                     <div class="card" style="text-align: center; border-left: 5px solid #198754;">
                         <h3 style="color: #666; font-size: 14px;">Layanan Masuk</h3>
-                        <div style="font-size: 32px; font-weight: bold; color: #333;">12</div>
+                        <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['masuk'] ?? 0 }}</div>
                     </div>
                     <div class="card" style="text-align: center; border-left: 5px solid #198754;">
                         <h3 style="color: #666; font-size: 14px;">Sedang Diproses</h3>
-                        <div style="font-size: 32px; font-weight: bold; color: #333;">5</div>
+                        <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['diproses'] ?? 0 }}
+                        </div>
                     </div>
                     <div class="card" style="text-align: center; border-left: 5px solid #198754;">
                         <h3 style="color: #666; font-size: 14px;">Selesai</h3>
-                        <div style="font-size: 32px; font-weight: bold; color: #333;">3</div>
+                        <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['selesai'] ?? 0 }}</div>
                     </div>
                     <div class="card" style="text-align: center; border-left: 5px solid #198754;">
-                        <h3 style="color: #666; font-size: 14px;">Butuh Validasi</h3>
-                        <div style="font-size: 32px; font-weight: bold; color: #333;">4</div>
+                        <h3 style="color: #666; font-size: 14px;">Revisi / Ditolak</h3>
+                        <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['revisi'] ?? 0 }}</div>
                     </div>
                 </div>
 
@@ -273,40 +278,48 @@
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Layanan Masuk</span>
-                            <span style="font-weight: bold; color: #198754;">12</span>
+                            <span style="font-weight: bold; color: #198754;">{{ $stats['total'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
-                            <div style="width: 50%; height: 100%; background: #198754;"></div>
+                            <div
+                                style="width: {{ $stats['total'] > 0 ? 100 : 0 }}%; height: 100%; background: #198754;">
+                            </div>
                         </div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Sedang Diproses</span>
-                            <span style="font-weight: bold; color: #198754;">5</span>
+                            <span style="font-weight: bold; color: #198754;">{{ $stats['diproses'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
-                            <div style="width: 100%; height: 100%; background: #198754;"></div>
+                            <div
+                                style="width: {{ $stats['total'] > 0 ? round(($stats['diproses'] / $stats['total']) * 100) : 0 }}%; height: 100%; background: #198754;">
+                            </div>
                         </div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Selesai</span>
-                            <span style="font-weight: bold; color: #198754;">3</span>
+                            <span style="font-weight: bold; color: #198754;">{{ $stats['selesai'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
-                            <div style="width: 75%; height: 100%; background: #198754;"></div>
+                            <div
+                                style="width: {{ $stats['total'] > 0 ? round(($stats['selesai'] / $stats['total']) * 100) : 0 }}%; height: 100%; background: #198754;">
+                            </div>
                         </div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
-                            <span>Butuh Validasi</span>
-                            <span style="font-weight: bold; color: #198754;">4</span>
+                            <span>Revisi / Ditolak</span>
+                            <span style="font-weight: bold; color: #198754;">{{ $stats['revisi'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
-                            <div style="width: 60%; height: 100%; background: #198754;"></div>
+                            <div
+                                style="width: {{ $stats['total'] > 0 ? round(($stats['revisi'] / $stats['total']) * 100) : 0 }}%; height: 100%; background: #198754;">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -349,21 +362,24 @@
             <!-- PEMBUATAN SURAT -->
             <div id="surat" class="page">
                 <div class="card">
-                    <h2>Pembuatan Surat</h2>
-                    <p>Generate surat resmi untuk pengajuan yang telah divalidasi.</p>
+                    <h2>Pembuatan Surat & Upload Dokumen</h2>
+                    <p>Buat draft surat untuk pengajuan yang telah diverifikasi, lalu upload hasil scan bertanda tangan.
+                    </p>
 
-                    <label><strong>Pilih Template Surat:</strong></label>
-                    <select id="pilihSurat" onchange="generatePreview()">
-                        <option value="">-- Pilih Template Surat --</option>
-                        <option value="sk_pengesahan">Surat Pengesahan</option>
-                        <option value="sk_peringatan">Surat Peringatan</option>
-                        <option value="surat_balasan">Surat Balasan</option>
-                    </select>
-
-                    <label><strong>Preview Surat:</strong></label>
-                    <textarea id="previewSurat" placeholder="Preview surat akan muncul di sini"></textarea>
-
-                    <button class="btn btn-doc" onclick="downloadSurat()">📥 Download Surat</button>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Perusahaan</th>
+                                <th>Layanan</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableSurat">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -408,160 +424,343 @@
             <h3>Detail Berkas</h3>
             <div id="detailContent"></div>
             <br>
+            <br>
+            <label><strong>Catatan (Revisi / Penolakan):</strong></label>
+            <textarea id="catatanInput" style="width: 100%; height: 80px; margin-bottom: 15px;"
+                placeholder="Tulis alasan penolakan atau catatan revisi di sini..."></textarea>
+
             <h4>Ubah Status:</h4>
-            <button class="btn btn-approve" onclick="setStatus('BERKAS DITERIMA')">✅ Berkas Diterima</button>
-            <button class="btn btn-reject" onclick="setStatus('BERKAS TIDAK LENGKAP')">❌ Tidak Lengkap</button>
-            <button class="btn btn-approve" onclick="setStatus('VERIFIKASI BERKAS')">🔍 Verifikasi</button>
-            <button class="btn btn-approve" onclick="setStatus('DOKUMEN TERSEDIA')">📄 Dokumen Tersedia</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-warning" onclick="setStatus('VERIFIKASI BERKAS')">🔍 Mulai Verifikasi</button>
+                <button class="btn btn-success" onclick="setStatus('DOKUMEN TERSEDIA')">📄 Selesai / Dokumen
+                    Tersedia</button>
+                <button class="btn btn-reject" onclick="setStatus('PERLU REVISI')">❌ Tolak / Revisi</button>
+            </div>
             <br><br>
             <button class="btn" onclick="closeModal()">Tutup</button>
         </div>
-    </div>
+        <!-- MODAL DRAFT SURAT -->
+        <div class="modal" id="modalDraft">
+            <div class="modal-content">
+                <h3>📝 Edit Draft Surat</h3>
+                <label><strong>Pilih Template:</strong></label>
+                <select id="draftTemplate" onchange="applyTemplate()">
+                    <option value="sk_pengesahan">Surat Pengesahan</option>
+                    <option value="sk_peringatan">Surat Peringatan</option>
+                    <option value="surat_balasan">Surat Balasan</option>
+                </select>
+                <label><strong>Isi Surat:</strong></label>
+                <textarea id="draftContent" style="height: 300px;"></textarea>
+                <br>
+                <div style="display: flex; justify-content: space-between;">
+                    <button class="btn btn-doc" onclick="downloadDraft()">💾 Download .txt</button>
+                    <button class="btn"
+                        onclick="document.getElementById('modalDraft').style.display='none'">Tutup</button>
+                </div>
+            </div>
+        </div>
 
-    <script>
-        /* PAGE SWITCHER */
-        function showPage(id) {
-            document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-            document.getElementById(id).classList.add("active");
-        }
+        <!-- MODAL UPLOAD SURAT -->
+        <div class="modal" id="modalUpload">
+            <div class="modal-content" style="max-width: 500px;">
+                <h3>📤 Upload Surat Bertanda Tangan</h3>
+                <p>Upload file PDF hasil scan surat yang sudah ditanda tangani.</p>
+                <input type="file" id="fileSuratInput" accept="application/pdf">
+                <br><br>
+                <button class="btn btn-approve" onclick="submitUpload()">Upload & Selesai</button>
+                <button class="btn" onclick="document.getElementById('modalUpload').style.display='none'">Batal</button>
+            </div>
+        </div>
 
-        /* DATA DEMO */
-        let berkas = [
-            { id: 1, perusahaan: "PT Maju Terus", layanan: "Pengesahan Pelayanan", status: "Menunggu" },
-            { id: 2, perusahaan: "PT Aman Sentosa", layanan: "Pelaporan P2K3", status: "Menunggu" },
-            { id: 3, perusahaan: "PT Sehat Selalu", layanan: "Pelaporan KK/PAK", status: "Menunggu" },
-        ];
+        <script>
+            /* PAGE SWITCHER */
+            function showPage(id) {
+                document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+                document.getElementById(id).classList.add("active");
+            }
 
-        let selectedIndex = null;
+            /* DATA DEMO */
+            let berkas = @json($submissions);
 
-        /* RENDER TABEL */
-        function renderValidasi() {
-            let html = "";
-            berkas.forEach((b, i) => {
-                html += `
+            let selectedIndex = null;
+
+            /* RENDER TABEL */
+            function renderValidasi() {
+                let html = "";
+                berkas.forEach((b, i) => {
+                    // Map properties if needed or use direct
+                    // Controller gives: title, subtitle (perusahaan), status, date, type
+                    html += `
             <tr>
                 <td>${b.id}</td>
-                <td>${b.perusahaan}</td>
-                <td>${b.layanan}</td>
+                <td>${b.subtitle || b.perusahaan || '-'}</td>
+                <td>${b.title || b.layanan || '-'}</td>
                 <td><strong>${b.status}</strong></td>
                 <td><button class="btn btn-view" onclick="viewDetail(${i})">👁️ Lihat</button></td>
             </tr>
         `;
-            });
-            document.getElementById("tableValidasi").innerHTML = html;
-        }
+                });
+                document.getElementById("tableValidasi").innerHTML = html;
+            }
 
-        /* DETAIL MODAL */
-        function viewDetail(i) {
-            selectedIndex = i;
-            let b = berkas[i];
-            document.getElementById("detailContent").innerHTML = `
-        <p><strong>ID:</strong> ${b.id}</p>
-        <p><strong>Perusahaan:</strong> ${b.perusahaan}</p>
-        <p><strong>Layanan:</strong> ${b.layanan}</p>
-        <p><strong>Status Saat Ini:</strong> <span style="color: #198754; font-weight: bold;">${b.status}</span></p>
-        <hr>
-        <p><strong>Dokumen yang Diupload:</strong></p>
-        <ul>
-            <li>📎 Surat Permohonan</li>
-            <li>📎 BPJS Ketenagakerjaan</li>
-            <li>📎 STR/SIP Dokter</li>
-            <li>📎 Sertifikat Ahli K3</li>
-        </ul>
-    `;
-            document.getElementById("modalDetail").style.display = "flex";
-        }
+            /* DETAIL MODAL */
+            /* DETAIL MODAL */
+            function viewDetail(i) {
+                selectedIndex = i;
+                let b = berkas[i];
 
-        function closeModal() {
-            document.getElementById("modalDetail").style.display = "none";
-        }
+                // Set basic info to modal first
+                document.getElementById("detailContent").innerHTML = `
+                <p><strong>ID:</strong> ${b.id}</p>
+                <p><strong>Perusahaan:</strong> ${b.subtitle || '-'}</p>
+                <p><strong>Layanan:</strong> ${b.title || '-'}</p>
+                <p><strong>Tanggal:</strong> ${b.date || '-'}</p>
+                <p><strong>Pemohon:</strong> ${b.applicant_name || '-'}</p>
+                <p><strong>Status Saat Ini:</strong> <span style="color: #198754; font-weight: bold;">${b.status}</span></p>
+                <hr>
+                <div style="text-align: center; color: #666;">⏳ Mengambil data lengkap...</div>
+            `;
 
-        function setStatus(status) {
-            berkas[selectedIndex].status = status;
-            alert("✅ Status berhasil diperbarui menjadi: " + status);
+                // Reset note
+                document.getElementById("catatanInput").value = "";
+                document.getElementById("modalDetail").style.display = "flex";
+
+                // Fetch detail from server
+                // Use 'type' which is the fixed table identifier, not 'title' which is the display name
+                fetch(`/admin/submission/${b.type}/${b.id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.error) {
+                            document.getElementById("detailContent").innerHTML += `<p style="color:red">Error: ${data.error}</p>`;
+                            return;
+                        }
+
+                        let html = `
+                        <p><strong>ID:</strong> ${b.id}</p>
+                        <p><strong>Perusahaan:</strong> ${b.subtitle || '-'}</p>
+                        <p><strong>Layanan:</strong> ${b.title || '-'}</p>
+                        <p><strong>Tanggal:</strong> ${b.date || '-'}</p>
+                        <p><strong>Pemohon:</strong> ${b.applicant_name || '-'}</p>
+                        <p><strong>Status Saat Ini:</strong> <span style="color: #198754; font-weight: bold;">${b.status}</span></p>
+                        <hr>
+                        <h4>Data Pengajuan:</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">
+                    `;
+
+                        // Loop fields
+                        for (const [key, value] of Object.entries(data)) {
+                            if (['id', 'user_id', 'created_at', 'updated_at'].includes(key)) continue;
+
+                            // If file
+                            if (key.startsWith('f_') && value) {
+                                html += `
+                                <div style="grid-column: span 2; background: #f8f9fa; padding: 5px; border-radius: 4px;">
+                                    <strong>${key.replace('f_', '').toUpperCase().replace(/_/g, ' ')}:</strong> 
+                                    <a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: bold;">📂 Download / Lihat File</a>
+                                </div>
+                            `;
+                            } else if (value && !key.startsWith('f_')) {
+                                html += `
+                                <div>
+                                    <strong style="color: #555;">${key.replace(/_/g, ' ').toUpperCase()}:</strong><br>
+                                    ${value}
+                                </div>
+                            `;
+                            }
+                        }
+
+                        html += `</div>`;
+
+                        // Show existing note if any
+                        if (data.catatan) {
+                            html += `<div style="margin-top: 15px; padding: 10px; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px;">
+                            <strong>Catatan Sebelumnya:</strong><br>${data.catatan}
+                        </div>`;
+                            document.getElementById("catatanInput").value = data.catatan;
+                        }
+
+                        document.getElementById("detailContent").innerHTML = html;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById("detailContent").innerHTML += `<p style="color:red">Gagal mengambil data detail.</p>`;
+                    });
+            }
+
+            function closeModal() {
+                document.getElementById("modalDetail").style.display = "none";
+            }
+
+            async function setStatus(status) {
+                if (!confirm(`Apakah Anda yakin mengubah status menjadi ${status}?`)) return;
+
+                let b = berkas[selectedIndex];
+                let catatan = document.getElementById("catatanInput").value;
+
+                try {
+                    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    let res = await fetch('/admin/submission/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({
+                            id: b.id,
+                            type: b.type, // Use b.type here too
+                            status: status,
+                            catatan: catatan
+                        })
+                    });
+
+                    if (res.status === 419) {
+                        alert('⏳ Sesi Anda telah berakhir. Silakan refresh halaman dan login kembali.');
+                        window.location.reload();
+                        return;
+                    }
+
+                    let result = await res.json();
+                    if (result.status === 'success') {
+                        alert("✅ Status berhasil diperbarui!");
+                        // Update local data just for UI
+                        berkas[selectedIndex].status = status;
+                        renderValidasi();
+                        closeModal();
+                        // Optional: reload page to refresh data strictly
+                        // window.location.reload(); 
+                    } else {
+                        alert("❌ Gagal memperbarui: " + result.message);
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert("❌ Terjadi kesalahan sistem.");
+                }
+            }
+
+            /* LEGACY FUNCTIONS REMOVED */
+
+            // Initialize
             renderValidasi();
-            closeModal();
-        }
+            renderSurat();
 
-        /* GENERATE SURAT */
-        function generatePreview() {
-            let jenis = document.getElementById("pilihSurat").value;
+            /* LOGIC SURAT */
+            function renderSurat() {
+                let html = "";
+                let dataSurat = berkas.filter(b => b.status === 'VERIFIKASI BERKAS' || b.status === 'DOKUMEN TERSEDIA');
 
-            if (jenis === "sk_pengesahan") {
-                document.getElementById("previewSurat").value =
-                    `SURAT PENGESAHAN
-BIDANG PENGAWASAN KESELAMATAN DAN KESEHATAN KERJA
--------------------------
+                dataSurat.forEach((b, i) => {
+                    // Find original index in 'berkas' to pass to functions
+                    let originalIndex = berkas.indexOf(b);
 
-Nomor: 001/SK-K3/2025
-Tanggal: ${new Date().toLocaleDateString('id-ID')}
+                    let btnUpload = `<button class="btn btn-approve" onclick="openUpload(${originalIndex})">📤 Upload</button>`;
+                    if (b.status === 'DOKUMEN TERSEDIA') {
+                        btnUpload = `<button class="btn btn-success" disabled>✅ Tersedia</button> 
+                                  <button class="btn btn-doc" onclick="openUpload(${originalIndex})" title="Re-upload">🔄</button>`;
+                    }
 
-Dengan ini menetapkan bahwa perusahaan:
-[Nama Perusahaan]
+                    html += `
+                    <tr>
+                        <td>${b.id}</td>
+                        <td>${b.subtitle || '-'}</td>
+                        <td>${b.title || '-'}</td>
+                        <td><strong>${b.status}</strong></td>
+                        <td>
+                            <button class="btn btn-warning" onclick="openDraft(${originalIndex})">📝 Draft</button>
+                            ${btnUpload}
+                        </td>
+                    </tr>
+                `;
+                });
 
-Telah memenuhi persyaratan penyelenggaraan pelayanan kesehatan kerja
-sesuai dengan peraturan yang berlaku.
+                if (dataSurat.length === 0) {
+                    html = `<tr><td colspan="5" style="text-align:center;">Belum ada berkas yang diverifikasi. Silakan validasi berkas terlebih dahulu.</td></tr>`;
+                }
 
-Tertanda,
-Kepala Bidang Pengawasan K3`;
+                document.getElementById("tableSurat").innerHTML = html;
             }
 
-            else if (jenis === "sk_peringatan") {
-                document.getElementById("previewSurat").value =
-                    `SURAT PERINGATAN
-BIDANG PENGAWASAN KESELAMATAN DAN KESEHATAN KERJA
--------------------------
+            let currentDraftIndex = null;
 
-Nomor: 002/SP-K3/2025
-Tanggal: ${new Date().toLocaleDateString('id-ID')}
+            function openDraft(i) {
+                currentDraftIndex = i;
+                let b = berkas[i];
 
-Dengan ini memberi peringatan kepada:
-[Nama Perusahaan]
-
-Agar segera melengkapi dokumen yang dipersyaratkan.
-
-Tertanda,
-Kepala Bidang Pengawasan K3`;
+                // Auto select template based on service type? For now default.
+                document.getElementById("draftContent").value = `[Memuat template...]`;
+                document.getElementById("modalDraft").style.display = "flex";
+                applyTemplate(); // Apply default
             }
 
-            else if (jenis === "surat_balasan") {
-                document.getElementById("previewSurat").value =
-                    `SURAT BALASAN
-BIDANG PENGAWASAN KESELAMATAN DAN KESEHATAN KERJA
--------------------------
+            function applyTemplate() {
+                let b = berkas[currentDraftIndex];
+                let jenis = document.getElementById("draftTemplate").value;
+                let text = "";
 
-Nomor: 003/SB-K3/2025
-Tanggal: ${new Date().toLocaleDateString('id-ID')}
-
-Menanggapi surat dari perusahaan [Nama Perusahaan]
-perihal pengajuan [Jenis Layanan].
-
-Dengan ini kami sampaikan bahwa...
-
-Tertanda,
-Kepala Bidang Pengawasan K3`;
+                if (jenis === "sk_pengesahan") {
+                    text = `SURAT PENGESAHAN\nNomor: 001/SK-K3/${new Date().getFullYear()}\n\nMemberikan pengesahan kepada:\nPerusahaan: ${b.subtitle}\nLayanan: ${b.title}\n\n...`;
+                } else if (jenis === "sk_peringatan") {
+                    text = `SURAT PERINGATAN\nKepada:\n${b.subtitle}\n\nHarap lengkapi kekurangan...`;
+                } else {
+                    text = `SURAT BALASAN\nKepada: ${b.subtitle}\nPerihal: ${b.title}\n\nKami sampaikan bahwa...`;
+                }
+                document.getElementById("draftContent").value = text;
             }
-        }
 
-        function downloadSurat() {
-            let isi = document.getElementById("previewSurat").value;
-            if (!isi.trim()) return alert("⚠️ Pilih jenis surat terlebih dahulu.");
+            function downloadDraft() {
+                let isi = document.getElementById("draftContent").value;
+                let blob = new Blob([isi], { type: "text/plain" });
+                let a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = "draft_surat.txt";
+                a.click();
+            }
 
-            let blob = new Blob([isi], { type: "text/plain" });
-            let url = URL.createObjectURL(blob);
+            let currentUploadIndex = null;
 
-            let a = document.createElement("a");
-            a.href = url;
-            a.download = "surat_admin_" + Date.now() + ".txt";
-            a.click();
+            function openUpload(i) {
+                currentUploadIndex = i;
+                document.getElementById("modalUpload").style.display = "flex";
+            }
 
-            alert("✅ Surat berhasil didownload!");
-        }
+            async function submitUpload() {
+                let fileInput = document.getElementById("fileSuratInput");
+                if (fileInput.files.length === 0) return alert("Pilih file PDF dulu!");
 
-        // Initialize
-        renderValidasi();
-    </script>
+                let b = berkas[currentUploadIndex];
+                let formData = new FormData();
+                formData.append('id', b.id);
+                formData.append('type', b.type);
+                formData.append('file_surat', fileInput.files[0]);
 
+                let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                try {
+                    let res = await fetch('/admin/submission/upload', {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': csrfToken }, // Don't set Content-Type for FormData
+                        body: formData
+                    });
+
+                    if (res.status === 419) {
+                        alert("Session expired"); window.location.reload(); return;
+                    }
+
+                    let data = await res.json();
+                    if (data.status === 'success') {
+                        alert("✅ Berhasil upload!");
+                        berkas[currentUploadIndex].status = "DOKUMEN TERSEDIA";
+                        renderSurat();
+                        renderValidasi(); // Update main table too
+                        document.getElementById("modalUpload").style.display = "none";
+                    } else {
+                        alert("❌ Gagal: " + data.message);
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert("❌ Error sistem.");
+                }
+            }
+        </script>
 </body>
 
 </html>

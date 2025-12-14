@@ -14,10 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        \App\Models\User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'), // Ensure you can login if needed
+        // Seed Submission Data
+        $this->call([
+            SubmissionSeeder::class,
         ]);
+
+        // Ensure Admin exists if not already seeded via AdminUserSeeder
+        // \App\Models\User::factory()->create([...]); 
     }
 }
