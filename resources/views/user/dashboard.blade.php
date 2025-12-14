@@ -2866,31 +2866,15 @@
                 alert("Gagal memuat data pengajuan.");
             }
         }
-        // Handle logout without browser warning
+        // Handle logout - simplified
         const userLogoutForm = document.getElementById('userLogoutForm');
         if (userLogoutForm) {
             userLogoutForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-
-                fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    credentials: 'same-origin'
-                })
-                    .then(() => {
-                        window.location.href = '/login';
-                    })
-                    .catch(() => {
-                        window.location.href = '/login';
-                    });
+                // Let form submit normally
+                return true;
             });
         }
-    // Toggle sidebar for mobile
+        // Toggle sidebar for mobile
         function toggleSidebar() {
             const sidebar = document.querySelector('aside');
             const overlay = document.querySelector('.overlay');

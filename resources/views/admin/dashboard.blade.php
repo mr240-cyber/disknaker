@@ -930,28 +930,12 @@
                 }
             }
 
-            // Handle logout without browser warning
+            // Handle logout - simplified
             const logoutForm = document.getElementById('logoutForm');
             if (logoutForm) {
                 logoutForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    const formData = new FormData(this);
-
-                    fetch(this.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        credentials: 'same-origin'
-                    })
-                        .then(() => {
-                            window.location.href = '/login';
-                        })
-                        .catch(() => {
-                            window.location.href = '/login';
-                        });
+                    // Let form submit normally
+                    return true;
                 });
             }
 
