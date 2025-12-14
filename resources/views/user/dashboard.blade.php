@@ -295,7 +295,7 @@
                 </li>
                 <li onclick="window.location.href='{{ route('profile') }}'"> Profil</li>
             </ul>
-            <form method="POST" action="{{ route('logout') }}" style="padding: 20px 0;">
+            <form method="POST" action="{{ route('logout') }}" style="padding: 20px 0;" id="userLogoutForm">
                 @csrf
                 <button type="submit"
                     style="width: 100%; padding: 12px; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 8px; cursor: pointer; font-size: 14px;">
@@ -2683,6 +2683,30 @@
                 console.error(e);
                 alert("Gagal memuat data pengajuan.");
             }
+        }
+    // Handle logout without browser warning
+        const userLogoutForm = document.getElementById('userLogoutForm');
+        if (userLogoutForm) {
+            userLogoutForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(() => {
+                    window.location.href = '/login';
+                })
+                .catch(() => {
+                    window.location.href = '/login';
+                });
+            });
         }
     </script>
 </body>

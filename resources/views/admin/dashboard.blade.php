@@ -232,7 +232,7 @@
                 <li onclick="showPage('riwayat')">Riwayat Proses</li>
                 <li onclick="showPage('pengaturan')">Pengaturan Admin</li>
             </ul>
-            <form method="POST" action="{{ route('logout') }}" style="padding: 20px;">
+            <form method="POST" action="{{ route('logout') }}" style="padding: 20px;" id="logoutForm">
                 @csrf
                 <button type="submit"
                     style="width: 100%; padding: 12px; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 8px; cursor: pointer; font-size: 14px;">
@@ -759,6 +759,31 @@
                     console.error(e);
                     alert("❌ Error sistem.");
                 }
+            }
+
+            // Handle logout without browser warning
+            const logoutForm = document.getElementById('logoutForm');
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin'
+                    })
+                    .then(() => {
+                        window.location.href = '/login';
+                    })
+                    .catch(() => {
+                        window.location.href = '/login';
+                    });
+                });
             }
         </script>
 </body>

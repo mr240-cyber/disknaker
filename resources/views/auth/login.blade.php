@@ -231,6 +231,56 @@
                 passwordInput.type = 'password';
             }
         }
+
+        // Handle form submission without browser warning
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.querySelector('form[action*="login"]');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalText = submitButton.textContent;
+                    
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Memproses...';
+                    
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin',
+                        redirect: 'manual'
+                    })
+                    .then(response => {
+                        if (response.type === 'opaqueredirect' || response.status === 0) {
+                            window.location.href = '/dashboard';
+                        } else if (response.redirected) {
+                            window.location.href = response.url;
+                        } else {
+                            return response.text();
+                        }
+                    })
+                    .then(html => {
+                        if (html) {
+                            document.open();
+                            document.write(html);
+                            document.close();
+                        }
+                    })
+                    .catch(error => {
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalText;
+                        // Fallback: submit normally
+                        this.removeEventListener('submit', arguments.callee);
+                        this.submit();
+                    });
+                });
+            }
+        });
     </script>
 </body>
 
