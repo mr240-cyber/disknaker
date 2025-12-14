@@ -15,8 +15,9 @@ Route::get('/', function () {
 
 // Setup Database Route (Hanya untuk inisialisasi awal)
 Route::get('/migrate', function () {
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear'); // Bersihkan cache config lama
     \Illuminate\Support\Facades\Artisan::call('migrate:fresh --seed --force');
-    return 'Database berhasil di-reset dan di-seed! Admin: syauqi032@gmail.com / 12345678';
+    return 'Cache dibersihkan. Database berhasil di-reset dan di-seed! Admin: syauqi032@gmail.com / 12345678';
 });
 
 // Authentication routes
