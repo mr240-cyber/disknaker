@@ -261,15 +261,197 @@
             margin-top: 6px
         }
 
-        @media(max-width:900px) {
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            gap: 4px;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* Overlay for mobile menu */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Mobile Responsive */
+        @media(max-width:1024px) {
+            aside {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s;
+                overflow-y: auto;
+            }
+
+            aside.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            main {
+                margin-left: 0;
+                padding: 80px 15px 20px 15px;
+            }
+
+            header {
+                padding-left: 60px;
+            }
+
             .row {
-                flex-direction: column
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            table th,
+            table td {
+                padding: 10px 8px;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-width: 95%;
+                padding: 20px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            input,
+            select,
+            textarea {
+                font-size: 16px !important;
+                /* Prevent zoom on iOS */
+            }
+
+            button {
+                min-height: 44px;
+                /* Touch-friendly */
+            }
+        }
+
+        @media(max-width:768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            main {
+                padding: 70px 10px 15px 10px;
+            }
+
+            header {
+                font-size: 14px;
+                padding: 12px 12px 12px 55px;
+            }
+
+            header img {
+                height: 30px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th,
+            table td {
+                padding: 8px 5px;
+            }
+
+            /* Make tables scrollable horizontally */
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media(max-width:480px) {
+            main {
+                padding: 65px 8px 12px 8px;
+            }
+
+            .stat-card h3 {
+                font-size: 0.9rem;
+            }
+
+            .stat-card .number {
+                font-size: 1.5rem;
+            }
+
+            button,
+            .btn {
+                font-size: 14px;
+                padding: 10px 15px;
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- Hamburger Menu Button -->
+    <div class="hamburger" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
     <header style="display: flex; align-items: center; gap: 15px;">
         <button id="toggleSidebar"
             style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">
@@ -2684,14 +2866,14 @@
                 alert("Gagal memuat data pengajuan.");
             }
         }
-    // Handle logout without browser warning
+        // Handle logout without browser warning
         const userLogoutForm = document.getElementById('userLogoutForm');
         if (userLogoutForm) {
-            userLogoutForm.addEventListener('submit', function(e) {
+            userLogoutForm.addEventListener('submit', function (e) {
                 e.preventDefault();
-                
+
                 const formData = new FormData(this);
-                
+
                 fetch(this.action, {
                     method: 'POST',
                     body: formData,
@@ -2700,13 +2882,26 @@
                     },
                     credentials: 'same-origin'
                 })
-                .then(() => {
-                    window.location.href = '/login';
-                })
-                .catch(() => {
-                    window.location.href = '/login';
-                });
+                    .then(() => {
+                        window.location.href = '/login';
+                    })
+                    .catch(() => {
+                        window.location.href = '/login';
+                    });
             });
+        }
+    // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.querySelector('aside');
+            const overlay = document.querySelector('.overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Also handle the existing toggle button
+        const toggleBtn = document.getElementById('toggleSidebar');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', toggleSidebar);
         }
     </script>
 </body>
