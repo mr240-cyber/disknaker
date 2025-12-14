@@ -45,6 +45,15 @@ Route::get('/migrate', function () {
         echo "Exit Code: $exitCode <br>";
         echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
 
+        // SAFETY: Force disconnect and reconnect to clear any stuck transaction states (common with Pgbouncer/Neon)
+        echo "<b>Disconnecting and Reconnecting...</b><br>";
+        try {
+            \Illuminate\Support\Facades\DB::rollBack();
+        } catch (\Exception $e) {
+        } // Just in case
+        \Illuminate\Support\Facades\DB::purge(config('database.default'));
+        \Illuminate\Support\Facades\DB::reconnect(config('database.default'));
+
         echo "<h3>3. Post-Wipe Table Check:</h3>";
         $tablesAfter = \Illuminate\Support\Facades\DB::select("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'");
         if (empty($tablesAfter)) {
