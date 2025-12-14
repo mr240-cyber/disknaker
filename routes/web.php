@@ -14,23 +14,38 @@ Route::get('/', function () {
 });
 
 // Setup Database Route (Hanya untuk inisialisasi awal)
+// Setup Database Route (Hanya untuk inisialisasi awal)
 Route::get('/migrate', function () {
+    // 1. Bersihkan Cache (Opsional, tapi bagus)
     \Illuminate\Support\Facades\Artisan::call('optimize:clear');
 
+    // Debug Output
     $conn = config('database.default');
     $host = config('database.connections.' . $conn . '.host');
     $db = config('database.connections.' . $conn . '.database');
-
     echo "<h1>Debug Info</h1>";
-    echo "Connection: <b>$conn</b> (Harusnya 'pgsql')<br>";
-    echo "Host: <b>$host</b><br>";
-    echo "Database: <b>$db</b><br><hr>";
+    echo "Connection: <b>$conn</b> | Host: <b>$host</b> | DB: <b>$db</b><br><hr>";
 
     try {
-        \Illuminate\Support\Facades\Artisan::call('migrate:fresh --seed --force');
-        return 'SUCCESS! Database berhasil di-reset dan di-seed! Admin: syauqi032@gmail.com';
+        // 2. Hapus semua tabel dulu (Reset total)
+        echo "Trying db:wipe... ";
+        \Illuminate\Support\Facades\Artisan::call('db:wipe --force');
+        echo "DONE.<br>";
+
+        // 3. Jalankan Migrasi
+        echo "Trying migrate... ";
+        \Illuminate\Support\Facades\Artisan::call('migrate --force');
+        echo "DONE.<br>";
+
+        // 4. Jalankan Seeder
+        echo "Trying seed... ";
+        \Illuminate\Support\Facades\Artisan::call('db:seed --force');
+        echo "DONE.<br>";
+
+        return '<hr><h1>SUCCESS! 🎉</h1> Database berhasil di-reset dan di-seed! <br>Admin: syauqi032@gmail.com / 12345678';
+
     } catch (\Exception $e) {
-        return 'ERROR MIGRASI: ' . $e->getMessage();
+        return '<hr><h1>ERROR 😭</h1>' . $e->getMessage() . '<br><pre>' . $e->getTraceAsString() . '</pre>';
     }
 });
 
