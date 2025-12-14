@@ -150,6 +150,25 @@
             margin-bottom: 20px;
             font-size: 14px;
         }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+            /* Slightly larger for emoji */
+            padding: 0;
+            line-height: 1;
+        }
     </style>
 </head>
 
@@ -177,7 +196,12 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()" title="Lihat Password">
+                            👁️
+                        </button>
+                    </div>
                 </div>
 
                 <div class="remember-me">
@@ -193,6 +217,20 @@
             </div>
         </div>
     </div>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.toggle-password');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈'; // Icon for 'Hide' or text 'Sembunyikan'
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️'; // Icon for 'Show' or text 'Lihat'
+            }
+        }
+    </script>
 </body>
 
 </html>
