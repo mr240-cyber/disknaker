@@ -12,14 +12,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Create Admin User
+        \App\Models\User::firstOrCreate(
+            ['email' => 'syauqi032@gmail.com'],
+            [
+                'nama_lengkap' => 'Admin K3',
+                'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+            ]
+        );
 
-        // Seed Submission Data
+        // Seed Submission Data (creates regular users)
         $this->call([
             SubmissionSeeder::class,
         ]);
-
-        // Ensure Admin exists if not already seeded via AdminUserSeeder
-        // \App\Models\User::factory()->create([...]); 
     }
 }
