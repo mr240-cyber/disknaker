@@ -196,11 +196,12 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="password" name="password" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword()" title="Lihat Password">
-                            👁️
-                        </button>
+                    <input type="password" id="password" name="password" required>
+                    <div style="margin-top: 10px; display: flex; align-items: center;">
+                        <input type="checkbox" id="showPass" onclick="togglePassword()">
+                        <label for="showPass"
+                            style="margin: 0 0 0 8px; font-weight: normal; cursor: pointer; font-size: 14px;">Tampilkan
+                            sandi</label>
                     </div>
                 </div>
 
@@ -221,7 +222,7 @@
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const toggleBtn = document.querySelector('.toggle-password');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 toggleBtn.textContent = '🙈'; // Icon for 'Hide' or text 'Sembunyikan'
