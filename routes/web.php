@@ -57,6 +57,11 @@ Route::get('/migrate', function () {
             echo "DONE.<br>";
         }
 
+        // SAFETY: Reconnect again before Seeding to prevent "cached plan" errors after DDL changes
+        echo "<b>Refreshing Connection before Seeding...</b><br>";
+        \Illuminate\Support\Facades\DB::purge(config('database.default'));
+        \Illuminate\Support\Facades\DB::reconnect(config('database.default'));
+
         // 4. Run Seeder
         echo "<h3>3. Running Seeder...</h3>";
         $seeder = new \Database\Seeders\DatabaseSeeder();
