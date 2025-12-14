@@ -15,9 +15,23 @@ Route::get('/', function () {
 
 // Setup Database Route (Hanya untuk inisialisasi awal)
 Route::get('/migrate', function () {
-    \Illuminate\Support\Facades\Artisan::call('optimize:clear'); // Bersihkan cache config lama
-    \Illuminate\Support\Facades\Artisan::call('migrate:fresh --seed --force');
-    return 'Cache dibersihkan. Database berhasil di-reset dan di-seed! Admin: syauqi032@gmail.com / 12345678';
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+
+    $conn = config('database.default');
+    $host = config('database.connections.' . $conn . '.host');
+    $db = config('database.connections.' . $conn . '.database');
+
+    echo "<h1>Debug Info</h1>";
+    echo "Connection: <b>$conn</b> (Harusnya 'pgsql')<br>";
+    echo "Host: <b>$host</b><br>";
+    echo "Database: <b>$db</b><br><hr>";
+
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh --seed --force');
+        return 'SUCCESS! Database berhasil di-reset dan di-seed! Admin: syauqi032@gmail.com';
+    } catch (\Exception $e) {
+        return 'ERROR MIGRASI: ' . $e->getMessage();
+    }
 });
 
 // Authentication routes
