@@ -27,19 +27,46 @@ Route::get('/migrate', function () {
     echo "Connection: <b>$conn</b> | Host: <b>$host</b> | DB: <b>$db</b><br><hr>";
 
     try {
+        echo "<h3>1. Initial Table Check:</h3>";
+        $tables = \Illuminate\Support\Facades\DB::select("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'");
+        if (empty($tables)) {
+            echo "Database is empty.<br>";
+        } else {
+            echo "<ul>";
+            foreach ($tables as $t) {
+                echo "<li>" . $t->tablename . "</li>";
+            }
+            echo "</ul>";
+        }
+
         // 2. Hapus semua tabel dulu (Reset total)
-        echo "Trying db:wipe... ";
-        \Illuminate\Support\Facades\Artisan::call('db:wipe --force');
-        echo "DONE.<br>";
+        echo "<h3>2. Trying db:wipe...</h3>";
+        $exitCode = \Illuminate\Support\Facades\Artisan::call('db:wipe --force');
+        echo "Exit Code: $exitCode <br>";
+        echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+
+        echo "<h3>3. Post-Wipe Table Check:</h3>";
+        $tablesAfter = \Illuminate\Support\Facades\DB::select("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'");
+        if (empty($tablesAfter)) {
+            echo "<b>SUCCESS: Database is clean.</b><br>";
+        } else {
+            echo "<b>WARNING: Tables still exist!</b><ul>";
+            foreach ($tablesAfter as $t) {
+                echo "<li>" . $t->tablename . "</li>";
+            }
+            echo "</ul>";
+        }
 
         // 3. Jalankan Migrasi
-        echo "Trying migrate... ";
+        echo "<h3>4. Trying migrate...</h3>";
         \Illuminate\Support\Facades\Artisan::call('migrate --force');
+        echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
         echo "DONE.<br>";
 
         // 4. Jalankan Seeder
-        echo "Trying seed... ";
+        echo "<h3>5. Trying seed...</h3>";
         \Illuminate\Support\Facades\Artisan::call('db:seed --force');
+        echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
         echo "DONE.<br>";
 
         return '<hr><h1>SUCCESS! 🎉</h1> Database berhasil di-reset dan di-seed! <br>Admin: syauqi032@gmail.com / 12345678';
