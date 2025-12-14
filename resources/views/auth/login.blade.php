@@ -233,51 +233,71 @@
         }
 
         // Handle form submission without browser warning
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const loginForm = document.querySelector('form[action*="login"]');
             if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
+                loginForm.addEventListener('submit', function (e) {
                     e.preventDefault();
-                    
-                    const formData = new FormData(this);
+
                     const submitButton = this.querySelector('button[type="submit"]');
                     const originalText = submitButton.textContent;
-                    
+
                     submitButton.disabled = true;
                     submitButton.textContent = 'Memproses...';
-                    
-                    fetch(this.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        credentials: 'same-origin',
-                        redirect: 'manual'
+
+                    // Get fresh CSRF token first
+                    fetch('/login', {
+                        method: 'GET',
+                        credentials: 'same-origin'
                     })
-                    .then(response => {
-                        if (response.type === 'opaqueredirect' || response.status === 0) {
-                            window.location.href = '/dashboard';
-                        } else if (response.redirected) {
-                            window.location.href = response.url;
-                        } else {
-                            return response.text();
-                        }
-                    })
-                    .then(html => {
-                        if (html) {
-                            document.open();
-                            document.write(html);
-                            document.close();
-                        }
-                    })
-                    .catch(error => {
-                        submitButton.disabled = false;
-                        submitButton.textContent = originalText;
-                        // Fallback: submit normally
-                        this.removeEventListener('submit', arguments.callee);
-                        this.submit();
-                    });
+                        .then(response => response.text())
+                        .then(html => {
+                            // Extract CSRF token from response
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newToken = doc.querySelector('input[name="_token"]')?.value;
+
+                            if (newToken) {
+                                // Update token in current form
+                                const tokenInput = loginForm.querySelector('input[name="_token"]');
+                                if (tokenInput) {
+                                    tokenInput.value = newToken;
+                                }
+                            }
+
+                            // Now submit with fresh token
+                            const formData = new FormData(loginForm);
+
+                            return fetch(loginForm.action, {
+                                method: 'POST',
+                                body: formData,
+                                credentials: 'same-origin',
+                                redirect: 'follow'
+                            });
+                        })
+                        .then(response => {
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                            } else if (response.ok) {
+                                return response.text();
+                            } else {
+                                throw new Error('Login failed');
+                            }
+                        })
+                        .then(html => {
+                            if (html) {
+                                // Show error page
+                                document.open();
+                                document.write(html);
+                                document.close();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            submitButton.disabled = false;
+                            submitButton.textContent = originalText;
+                            alert('Terjadi kesalahan. Silakan refresh halaman dan coba lagi.');
+                        });
                 });
             }
         });
