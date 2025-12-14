@@ -633,19 +633,24 @@
                                             @endif
                                         </td>
                                         <td style="padding: 10px;">
-                                            @if($s->status == 'DOKUMEN TERSEDIA' && !empty($s->file_balasan))
-                                                <a href="{{ asset('storage/' . $s->file_balasan) }}" target="_blank"
-                                                    style="display: inline-block; padding: 6px 12px; background: #0c2c66; color: white; border-radius: 4px; text-decoration: none; font-size: 13px;">
-                                                    📥 Download Surat
-                                                </a>
-                                            @else
-                                                <span style="color: #ccc;">-</span>
-                                            @endif
-                                        </td>
-                                    </tr>
+                                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                                        <button onclick="showDetailSubmission('{{ $s->type }}', {{ $s->id }})"
+                                                            style="padding: 6px 10px; background: var(--blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                                                            <i class="fas fa-eye"></i> Lihat
+                                                        </button>
+
+                                                        @if($s->status == 'DOKUMEN TERSEDIA' && !empty($s->file_balasan))
+                                                            <a href="{{ asset('storage/' . $s->file_balasan) }}" target="_blank"
+                                                                style="display: inline-block; padding: 6px 10px; background: #0c2c66; color: white; border-radius: 4px; text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                                                                <i class="fas fa-download"></i> Surat
+                                                            </a>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                            </tr>
                                 @endforeach
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
                     @else
                         <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
                     @endif
@@ -2163,8 +2168,8 @@
                             </div>
                         @endforeach
                     @else
-                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
-                        @endif
+                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                    @endif
                     </div>
                 </div>
             </div>

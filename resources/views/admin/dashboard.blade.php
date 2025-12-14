@@ -717,22 +717,28 @@
                     `;
 
                         // Loop fields
+                        // Loop fields
                         for (const [key, value] of Object.entries(data)) {
-                            if (['id', 'user_id', 'created_at', 'updated_at'].includes(key)) continue;
+                            if (['id', 'user_id', 'created_at', 'updated_at', 'file_balasan', 'status_pengajuan', 'catatan'].includes(key)) continue;
 
-                            // If file
-                            if (key.startsWith('f_') && value) {
+                            // Check for file columns (prefixes f_ or file_)
+                            if ((key.startsWith('f_') || key.startsWith('file_')) && value) {
+                                let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
                                 html += `
-                                <div style="grid-column: span 2; background: #f8f9fa; padding: 5px; border-radius: 4px;">
-                                    <strong>${key.replace('f_', '').toUpperCase().replace(/_/g, ' ')}:</strong> 
-                                    <a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: bold;">📂 Download / Lihat File</a>
+                                <div style="grid-column: span 2; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #eef2ff;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <strong style="color: #4b5563;">${label}:</strong> 
+                                        <a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">
+                                            📂 Download / Lihat File
+                                        </a>
+                                    </div>
                                 </div>
                             `;
-                            } else if (value && !key.startsWith('f_')) {
+                            } else if (value && typeof value === 'string' && !key.startsWith('f_') && !key.startsWith('file_')) {
                                 html += `
-                                <div>
-                                    <strong style="color: #555;">${key.replace(/_/g, ' ').toUpperCase()}:</strong><br>
-                                    ${value}
+                                <div style="margin-bottom: 8px;">
+                                    <strong style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 2px;">${key.replace(/_/g, ' ').toUpperCase()}</strong>
+                                    <div style="color: #111827;">${value}</div>
                                 </div>
                             `;
                             }
