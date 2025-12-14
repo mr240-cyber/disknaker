@@ -16,72 +16,49 @@ Route::get('/', function () {
 // Setup Database Route (Hanya untuk inisialisasi awal)
 // Setup Database Route (Hanya untuk inisialisasi awal)
 Route::get('/migrate', function () {
-    // 1. Bersihkan Cache (Opsional, tapi bagus)
     \Illuminate\Support\Facades\Artisan::call('optimize:clear');
 
-    // Debug Output
-    $conn = config('database.default');
-    $host = config('database.connections.' . $conn . '.host');
-    $db = config('database.connections.' . $conn . '.database');
-    echo "<h1>Debug Info</h1>";
-    echo "Connection: <b>$conn</b> | Host: <b>$host</b> | DB: <b>$db</b><br><hr>";
+    echo "<h1>Manual Database Test</h1>";
+    echo "This test bypasses the migration command to check raw capabilities.<br><hr>";
 
     try {
-        echo "<h3>1. Initial Table Check:</h3>";
-        $tables = \Illuminate\Support\Facades\DB::select("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'");
-        if (empty($tables)) {
-            echo "Database is empty.<br>";
+        // 1. Check Connection
+        echo "<b>1. Checking Connection...</b> ";
+        \Illuminate\Support\Facades\DB::connection()->getPdo();
+        echo "OK.<br>";
+
+        // 2. Drop Test Table if exists
+        echo "<b>2. Dropping 'test_users' if exists...</b> ";
+        \Illuminate\Support\Facades\Schema::dropIfExists('test_users');
+        echo "OK.<br>";
+
+        // 3. Create Test Table ( mimicking users table )
+        echo "<b>3. Creating 'test_users' table...</b> ";
+        \Illuminate\Support\Facades\Schema::create('test_users', function (\Illuminate\Database\Schema\Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->timestamps();
+        });
+        echo "SUCCESS! Table created.<br>";
+
+        // 4. Verify Existence
+        echo "<b>4. Verifying existence...</b> ";
+        if (\Illuminate\Support\Facades\Schema::hasTable('test_users')) {
+            echo "YES, table exists.<br>";
         } else {
-            echo "<ul>";
-            foreach ($tables as $t) {
-                echo "<li>" . $t->tablename . "</li>";
-            }
-            echo "</ul>";
+            echo "NO, table missing (weird).<br>";
         }
 
-        // 2. Hapus semua tabel dulu (Reset total)
-        echo "<h3>2. Trying db:wipe...</h3>";
-        $exitCode = \Illuminate\Support\Facades\Artisan::call('db:wipe --force');
-        echo "Exit Code: $exitCode <br>";
-        echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
-
-        // SAFETY: Force disconnect and reconnect to clear any stuck transaction states (common with Pgbouncer/Neon)
-        echo "<b>Disconnecting and Reconnecting...</b><br>";
-        try {
-            \Illuminate\Support\Facades\DB::rollBack();
-        } catch (\Exception $e) {
-        } // Just in case
-        \Illuminate\Support\Facades\DB::purge(config('database.default'));
-        \Illuminate\Support\Facades\DB::reconnect(config('database.default'));
-
-        echo "<h3>3. Post-Wipe Table Check:</h3>";
-        $tablesAfter = \Illuminate\Support\Facades\DB::select("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'");
-        if (empty($tablesAfter)) {
-            echo "<b>SUCCESS: Database is clean.</b><br>";
-        } else {
-            echo "<b>WARNING: Tables still exist!</b><ul>";
-            foreach ($tablesAfter as $t) {
-                echo "<li>" . $t->tablename . "</li>";
-            }
-            echo "</ul>";
-        }
-
-        // 3. Jalankan Migrasi
-        echo "<h3>4. Trying migrate...</h3>";
-        \Illuminate\Support\Facades\Artisan::call('migrate --force');
-        echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
-        echo "DONE.<br>";
-
-        // 4. Jalankan Seeder
-        echo "<h3>5. Trying seed...</h3>";
-        \Illuminate\Support\Facades\Artisan::call('db:seed --force');
-        echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
-        echo "DONE.<br>";
-
-        return '<hr><h1>SUCCESS! 🎉</h1> Database berhasil di-reset dan di-seed! <br>Admin: syauqi032@gmail.com / 12345678';
+        echo "<hr><h1>TEST COMPLETED SUCCESSFULLY</h1>";
+        echo "This means the database works fine. The issue is in the Migration system.";
 
     } catch (\Exception $e) {
-        return '<hr><h1>ERROR 😭</h1>' . $e->getMessage() . '<br><pre>' . $e->getTraceAsString() . '</pre>';
+        echo "<hr><h1>TEST FAILED</h1>";
+        echo "<b>Message:</b> " . $e->getMessage() . "<br>";
+        echo "<b>Code:</b> " . $e->getCode() . "<br>";
+        echo "<pre>" . $e->getTraceAsString() . "</pre>";
     }
 });
 
