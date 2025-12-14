@@ -13,6 +13,12 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+// Setup Database Route (Hanya untuk inisialisasi awal)
+Route::get('/migrate', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate:fresh --seed --force');
+    return 'Database berhasil di-reset dan di-seed! Admin: syauqi032@gmail.com / 12345678';
+});
+
 // Authentication routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
