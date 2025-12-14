@@ -221,14 +221,12 @@
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('password');
-            const toggleBtn = document.querySelector('.toggle-password');
-
-            if (passwordInput.type === 'password') {
+            const checkbox = document.getElementById('showPass');
+            
+            if (checkbox.checked) {
                 passwordInput.type = 'text';
-                toggleBtn.textContent = '🙈'; // Icon for 'Hide' or text 'Sembunyikan'
             } else {
                 passwordInput.type = 'password';
-                toggleBtn.textContent = '👁️'; // Icon for 'Show' or text 'Lihat'
             }
         }
     </script>
