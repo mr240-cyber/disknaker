@@ -713,42 +713,85 @@
                         <p><strong>Status Saat Ini:</strong> <span style="color: #198754; font-weight: bold;">${b.status}</span></p>
                         <hr>
                         <h4>Data Pengajuan:</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">
-                    `;
+                        // Define preferred order for text fields
+                        const fieldOrder = [
+                            'email', 'jenis_pengajuan', 
+                            'tanggal_pengusulan', 'nama_perusahaan', 
+                            'alamat_perusahaan', 'sektor', 'sektor_usaha',
+                            'nama_dokter', 'ttl_dokter', 
+                            'nomor_skp_dokter', 'masa_berlaku_skp', 
+                            'nomor_hiperkes', 'nomor_str', 
+                            'nomor_sip', 'kontak', 'kontak_dokter',
+                            'nama_paramedis', 'hiperkes_paramedis',
+                            'nama_korban', 'jabatan_korban', 'jenis_kecelakaan',
+                            'tanggal_kejadian', 'kronologi'
+                        ];
 
-                        // Loop fields
-                        // Loop fields
+                        // Separate data into ordered text, other text, and files
+                        let orderedFields = {};
+                        let otherFields = {};
+                        let fileFields = {};
+
+                        // Sort keys based on priority list
+                        fieldOrder.forEach(k => {
+                            if(data[k]) orderedFields[k] = data[k];
+                        });
+
                         for (const [key, value] of Object.entries(data)) {
+                            // Skip system fields
                             if (['id', 'user_id', 'created_at', 'updated_at', 'file_balasan', 'status_pengajuan', 'catatan'].includes(key)) continue;
+                            
+                            // Skip if already in ordered list
+                            if (orderedFields[key]) continue;
 
-                            // Check for file columns (prefixes f_ or file_)
+                            // Check for file columns
                             if ((key.startsWith('f_') || key.startsWith('file_')) && value) {
-                                let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
-                                html += `
-                                <div style="grid-column: span 2; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #eef2ff;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between;">
-                                        <strong style="color: #4b5563;">${label}:</strong> 
-                                        <a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">
-                                            📂 Download / Lihat File
-                                        </a>
-                                    </div>
-                                </div>
-                            `;
-                            } else if (value && typeof value === 'string' && !key.startsWith('f_') && !key.startsWith('file_')) {
-                                html += `
-                                <div style="margin-bottom: 8px;">
-                                    <strong style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 2px;">${key.replace(/_/g, ' ').toUpperCase()}</strong>
-                                    <div style="color: #111827;">${value}</div>
-                                </div>
-                            `;
+                                fileFields[key] = value;
+                            } else if (value && typeof value === 'string') {
+                                otherFields[key] = value;
                             }
                         }
 
-                        html += `</div>`;
+                        // Render Ordered Text Fields
+                        for (const [key, value] of Object.entries(orderedFields)) {
+                            html += `
+                            < div style = "margin-bottom: 8px;" >
+                                    <strong style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 2px;">${key.replace(/_/g, ' ').toUpperCase()}</strong>
+                                    <div style="color: #111827;">${value}</div>
+                                </div >
+                            `;
+                        }
+
+                        // Render Other Text Fields
+                        for (const [key, value] of Object.entries(otherFields)) {
+                            html += `
+                            < div style = "margin-bottom: 8px;" >
+                                    <strong style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 2px;">${key.replace(/_/g, ' ').toUpperCase()}</strong>
+                                    <div style="color: #111827;">${value}</div>
+                                </div >
+                            `;
+                        }
+                        
+                         // Render File Fields
+                        for (const [key, value] of Object.entries(fileFields)) {
+                            let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
+                            html += `
+                            < div style = "grid-column: span 2; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #eef2ff;" >
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <strong style="color: #4b5563;">${label}:</strong>
+                                    <a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">
+                                        📂 Download / Lihat File
+                                    </a>
+                                </div>
+                                </div >
+                            `;
+                        }
+
+                        html += `</div > `;
 
                         // Show existing note if any
                         if (data.catatan) {
-                            html += `<div style="margin-top: 15px; padding: 10px; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px;">
+                            html += `< div style = "margin-top: 15px; padding: 10px; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px;" >
                             <strong>Catatan Sebelumnya:</strong><br>${data.catatan}
                         </div>`;
                             document.getElementById("catatanInput").value = data.catatan;
@@ -758,7 +801,7 @@
                     })
                     .catch(err => {
                         console.error(err);
-                        document.getElementById("detailContent").innerHTML += `<p style="color:red">Gagal mengambil data detail.</p>`;
+                        document.getElementById("detailContent").innerHTML += `< p style = "color:red" > Gagal mengambil data detail.</p > `;
                     });
             }
 
@@ -767,7 +810,7 @@
             }
 
             async function setStatus(status) {
-                if (!confirm(`Apakah Anda yakin mengubah status menjadi ${status}?`)) return;
+                if (!confirm(`Apakah Anda yakin mengubah status menjadi ${ status }?`)) return;
 
                 let b = berkas[selectedIndex];
                 let catatan = document.getElementById("catatanInput").value;
@@ -827,14 +870,14 @@
                     // Find original index in 'berkas' to pass to functions
                     let originalIndex = berkas.indexOf(b);
 
-                    let btnUpload = `<button class="btn btn-approve" onclick="openUpload(${originalIndex})">📤 Upload</button>`;
+                    let btnUpload = `< button class="btn btn-approve" onclick = "openUpload(${originalIndex})" >📤 Upload</button > `;
                     if (b.status === 'DOKUMEN TERSEDIA') {
-                        btnUpload = `<button class="btn btn-success" disabled>✅ Tersedia</button> 
-                                  <button class="btn btn-doc" onclick="openUpload(${originalIndex})" title="Re-upload">🔄</button>`;
+                        btnUpload = `< button class="btn btn-success" disabled >✅ Tersedia</button >
+                            <button class="btn btn-doc" onclick="openUpload(${originalIndex})" title="Re-upload">🔄</button>`;
                     }
 
                     html += `
-                    <tr>
+                                < tr >
                         <td>${b.id}</td>
                         <td>${b.subtitle || '-'}</td>
                         <td>${b.title || '-'}</td>
@@ -843,12 +886,12 @@
                             <button class="btn btn-warning" onclick="openDraft(${originalIndex})">📝 Draft</button>
                             ${btnUpload}
                         </td>
-                    </tr>
-                `;
+                    </tr >
+                            `;
                 });
 
                 if (dataSurat.length === 0) {
-                    html = `<tr><td colspan="5" style="text-align:center;">Belum ada berkas yang diverifikasi. Silakan validasi berkas terlebih dahulu.</td></tr>`;
+                    html = `< tr > <td colspan="5" style="text-align:center;">Belum ada berkas yang diverifikasi. Silakan validasi berkas terlebih dahulu.</td></tr > `;
                 }
 
                 document.getElementById("tableSurat").innerHTML = html;
@@ -872,11 +915,11 @@
                 let text = "";
 
                 if (jenis === "sk_pengesahan") {
-                    text = `SURAT PENGESAHAN\nNomor: 001/SK-K3/${new Date().getFullYear()}\n\nMemberikan pengesahan kepada:\nPerusahaan: ${b.subtitle}\nLayanan: ${b.title}\n\n...`;
+                    text = `SURAT PENGESAHAN\nNomor: 001 / SK - K3 / ${ new Date().getFullYear() }\n\nMemberikan pengesahan kepada: \nPerusahaan: ${ b.subtitle }\nLayanan: ${ b.title }\n\n...`;
                 } else if (jenis === "sk_peringatan") {
-                    text = `SURAT PERINGATAN\nKepada:\n${b.subtitle}\n\nHarap lengkapi kekurangan...`;
+                    text = `SURAT PERINGATAN\nKepada: \n${ b.subtitle }\n\nHarap lengkapi kekurangan...`;
                 } else {
-                    text = `SURAT BALASAN\nKepada: ${b.subtitle}\nPerihal: ${b.title}\n\nKami sampaikan bahwa...`;
+                    text = `SURAT BALASAN\nKepada: ${ b.subtitle }\nPerihal: ${ b.title }\n\nKami sampaikan bahwa...`;
                 }
                 document.getElementById("draftContent").value = text;
             }
