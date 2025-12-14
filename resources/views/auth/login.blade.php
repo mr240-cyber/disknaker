@@ -70,7 +70,8 @@
         }
 
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="text"] {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
@@ -80,7 +81,8 @@
         }
 
         input[type="email"]:focus,
-        input[type="password"]:focus {
+        input[type="password"]:focus,
+        input[type="text"]:focus {
             outline: none;
             border-color: #198754;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -222,7 +224,7 @@
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const checkbox = document.getElementById('showPass');
-            
+
             if (checkbox.checked) {
                 passwordInput.type = 'text';
             } else {
