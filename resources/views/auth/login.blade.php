@@ -211,13 +211,15 @@
             input[type="password"],
             input[type="text"] {
                 padding: 14px 15px;
-                font-size: 16px; /* Prevent zoom on iOS */
+                font-size: 16px;
+                /* Prevent zoom on iOS */
             }
 
             .btn-login {
                 padding: 16px;
                 font-size: 16px;
-                min-height: 48px; /* Touch-friendly */
+                min-height: 48px;
+                /* Touch-friendly */
             }
 
             label {
@@ -304,67 +306,11 @@
             const loginForm = document.querySelector('form[action*="login"]');
             if (loginForm) {
                 loginForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
                     const submitButton = this.querySelector('button[type="submit"]');
-                    const originalText = submitButton.textContent;
-
                     submitButton.disabled = true;
                     submitButton.textContent = 'Memproses...';
-
-                    // Get fresh CSRF token first
-                    fetch('/login', {
-                        method: 'GET',
-                        credentials: 'same-origin'
-                    })
-                        .then(response => response.text())
-                        .then(html => {
-                            // Extract CSRF token from response
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
-                            const newToken = doc.querySelector('input[name="_token"]')?.value;
-
-                            if (newToken) {
-                                // Update token in current form
-                                const tokenInput = loginForm.querySelector('input[name="_token"]');
-                                if (tokenInput) {
-                                    tokenInput.value = newToken;
-                                }
-                            }
-
-                            // Now submit with fresh token
-                            const formData = new FormData(loginForm);
-
-                            return fetch(loginForm.action, {
-                                method: 'POST',
-                                body: formData,
-                                credentials: 'same-origin',
-                                redirect: 'follow'
-                            });
-                        })
-                        .then(response => {
-                            if (response.redirected) {
-                                window.location.href = response.url;
-                            } else if (response.ok) {
-                                return response.text();
-                            } else {
-                                throw new Error('Login failed');
-                            }
-                        })
-                        .then(html => {
-                            if (html) {
-                                // Show error page
-                                document.open();
-                                document.write(html);
-                                document.close();
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            submitButton.disabled = false;
-                            submitButton.textContent = originalText;
-                            alert('Terjadi kesalahan. Silakan refresh halaman dan coba lagi.');
-                        });
+                    // Let the form submit normally
+                    return true;
                 });
             }
         });
