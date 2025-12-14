@@ -86,6 +86,30 @@ Route::get('/migrate', function () {
     }
 });
 
+// Debug Route: Check Users
+Route::get('/check-users', function () {
+    $users = \App\Models\User::all(['id', 'nama_lengkap', 'email', 'role']);
+
+    echo "<h1>Users in Database</h1>";
+    echo "<table border='1' cellpadding='10'>";
+    echo "<tr><th>ID</th><th>Nama</th><th>Email</th><th>Role</th></tr>";
+
+    foreach ($users as $user) {
+        echo "<tr>";
+        echo "<td>{$user->id}</td>";
+        echo "<td>{$user->nama_lengkap}</td>";
+        echo "<td>{$user->email}</td>";
+        echo "<td>{$user->role}</td>";
+        echo "</tr>";
+    }
+
+    echo "</table>";
+
+    if ($users->isEmpty()) {
+        echo "<p style='color: red;'><b>WARNING: No users found! Please run /migrate first.</b></p>";
+    }
+});
+
 // Authentication routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
