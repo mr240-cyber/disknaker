@@ -7,58 +7,69 @@ use App\Http\Controllers\PengesahanK3Controller;
 use App\Http\Controllers\P2K3Controller;
 use App\Http\Controllers\KKPAKController;
 use App\Http\Controllers\PelaporanP2K3Controller;
+use App\Http\Controllers\DashboardController;
 
 // Public routes
 Route::get('/', function () {
     return redirect('/login');
 });
 
-// Setup Database Route (Hanya untuk inisialisasi awal)
-// Setup Database Route (Hanya untuk inisialisasi awal)
+// Manual Migration Runner (Bypass Artisan Migrate)
 Route::get('/migrate', function () {
     \Illuminate\Support\Facades\Artisan::call('optimize:clear');
 
-    echo "<h1>Manual Database Test</h1>";
-    echo "This test bypasses the migration command to check raw capabilities.<br><hr>";
+    echo "<h1>Manual MIGRATION Runner</h1>";
+    echo "Bypassing artisan migrate to run migrations directly via PHP.<br><hr>";
 
     try {
-        // 1. Check Connection
-        echo "<b>1. Checking Connection...</b> ";
-        \Illuminate\Support\Facades\DB::connection()->getPdo();
-        echo "OK.<br>";
+        // 1. Wipe Database
+        echo "<b>1. Wiping Database...</b> ";
+        \Illuminate\Support\Facades\Artisan::call('db:wipe --force');
+        echo "DONE.<br>";
 
-        // 2. Drop Test Table if exists
-        echo "<b>2. Dropping 'test_users' if exists...</b> ";
-        \Illuminate\Support\Facades\Schema::dropIfExists('test_users');
-        echo "OK.<br>";
+        // Force Reconnect
+        \Illuminate\Support\Facades\DB::purge(config('database.default'));
+        \Illuminate\Support\Facades\DB::reconnect(config('database.default'));
 
-        // 3. Create Test Table ( mimicking users table )
-        echo "<b>3. Creating 'test_users' table...</b> ";
-        \Illuminate\Support\Facades\Schema::create('test_users', function (\Illuminate\Database\Schema\Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->timestamps();
-        });
-        echo "SUCCESS! Table created.<br>";
+        // 2. Define Migrations List (Order matters!)
+        $migrations = [
+            '2014_10_12_000000_create_users_table.php',
+            '2014_10_12_100000_create_password_reset_tokens_table.php',
+            '2019_08_19_000000_create_failed_jobs_table.php',
+            '2019_12_14_000001_create_personal_access_tokens_table.php',
+            '2025_01_01_000000_create_pelayanan_tables.php',
+            '2025_12_14_081247_add_file_balasan_to_submission_tables.php',
+        ];
 
-        // 4. Verify Existence
-        echo "<b>4. Verifying existence...</b> ";
-        if (\Illuminate\Support\Facades\Schema::hasTable('test_users')) {
-            echo "YES, table exists.<br>";
-        } else {
-            echo "NO, table missing (weird).<br>";
+        // 3. Run Each Migration
+        echo "<h3>2. Running Migrations...</h3>";
+        $basePath = base_path('database/migrations/');
+
+        foreach ($migrations as $file) {
+            echo "Migrating: <b>$file</b> ... ";
+
+            // Require the file. It returns the anonymous class instance!
+            $migration = require_once $basePath . $file;
+
+            // Run up()
+            $migration->up();
+
+            echo "DONE.<br>";
         }
 
-        echo "<hr><h1>TEST COMPLETED SUCCESSFULLY</h1>";
-        echo "This means the database works fine. The issue is in the Migration system.";
+        // 4. Run Seeder
+        echo "<h3>3. Running Seeder...</h3>";
+        $seeder = new \Database\Seeders\DatabaseSeeder();
+        $seeder->run();
+        echo "Seed DONE.<br>";
+
+        echo "<hr><h1>FULL SUCCESS! 🎉</h1> Database siap digunakan.<br>Admin: syauqi032@gmail.com / 12345678";
 
     } catch (\Exception $e) {
-        echo "<hr><h1>TEST FAILED</h1>";
+        echo "<hr><h1>ERROR 😭</h1>";
         echo "<b>Message:</b> " . $e->getMessage() . "<br>";
-        echo "<b>Code:</b> " . $e->getCode() . "<br>";
-        echo "<pre>" . $e->getTraceAsString() . "</pre>";
+        echo "<b>File:</b> " . $e->getFile() . ":" . $e->getLine() . "<br>";
+        // echo "<pre>" . $e->getTraceAsString() . "</pre>";
     }
 });
 
@@ -79,7 +90,6 @@ Route::middleware(['auth'])->group(function () {
         return back()->with('message', 'Verification link sent!');
     })->middleware(['throttle:6,1'])->name('verification.resend');
 });
-use App\Http\Controllers\DashboardController;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'userIndex'])->name('dashboard');
