@@ -608,7 +608,9 @@
             <br><br>
             <button class="btn" onclick="closeModal()">Tutup</button>
         </div>
-        <!-- MODAL DRAFT SURAT -->
+    </div>
+
+    <!-- MODAL DRAFT SURAT -->
         <div class="modal" id="modalDraft">
             <div class="modal-content">
                 <h3>📝 Edit Draft Surat</h3>
@@ -755,20 +757,20 @@
                         // Render Ordered Text Fields
                         for (const [key, value] of Object.entries(orderedFields)) {
                             html += `
-                            < div style = "margin-bottom: 8px;" >
+                                <div style="margin-bottom: 8px;">
                                     <strong style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 2px;">${key.replace(/_/g, ' ').toUpperCase()}</strong>
                                     <div style="color: #111827;">${value}</div>
-                                </div >
+                                </div>
                             `;
                         }
 
                         // Render Other Text Fields
                         for (const [key, value] of Object.entries(otherFields)) {
                             html += `
-                            < div style = "margin-bottom: 8px;" >
+                                <div style="margin-bottom: 8px;">
                                     <strong style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 2px;">${key.replace(/_/g, ' ').toUpperCase()}</strong>
                                     <div style="color: #111827;">${value}</div>
-                                </div >
+                                </div>
                             `;
                         }
                         
@@ -776,22 +778,22 @@
                         for (const [key, value] of Object.entries(fileFields)) {
                             let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
                             html += `
-                            < div style = "grid-column: span 2; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #eef2ff;" >
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <strong style="color: #4b5563;">${label}:</strong>
-                                    <a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">
-                                        📂 Download / Lihat File
-                                    </a>
+                                <div style="grid-column: span 2; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #eef2ff;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <strong style="color: #4b5563;">${label}:</strong> 
+                                        <a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">
+                                            📂 Download / Lihat File
+                                        </a>
+                                    </div>
                                 </div>
-                                </div >
                             `;
                         }
 
-                        html += `</div > `;
+                        html += `</div>`;
 
                         // Show existing note if any
                         if (data.catatan) {
-                            html += `< div style = "margin-top: 15px; padding: 10px; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px;" >
+                            html += `<div style="margin-top: 15px; padding: 10px; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px;">
                             <strong>Catatan Sebelumnya:</strong><br>${data.catatan}
                         </div>`;
                             document.getElementById("catatanInput").value = data.catatan;
@@ -801,7 +803,7 @@
                     })
                     .catch(err => {
                         console.error(err);
-                        document.getElementById("detailContent").innerHTML += `< p style = "color:red" > Gagal mengambil data detail.</p > `;
+                        document.getElementById("detailContent").innerHTML += `<p style="color:red">Gagal mengambil data detail.</p>`;
                     });
             }
 
