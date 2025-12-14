@@ -211,10 +211,179 @@
             cursor: pointer;
             float: right;
         }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            gap: 4px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s;
+                overflow-y: auto;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+                position: fixed;
+                top: 15px;
+                left: 15px;
+                z-index: 1001;
+            }
+
+            .content {
+                width: 100%;
+                padding: 80px 15px 20px 15px;
+            }
+
+            header {
+                padding: 15px 15px 15px 60px !important;
+                font-size: 14px !important;
+            }
+
+            header img {
+                height: 30px !important;
+            }
+
+            header span {
+                font-size: 0.9rem !important;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            table th,
+            table td {
+                padding: 10px 8px;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-width: 95%;
+                padding: 20px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            input,
+            select,
+            textarea {
+                font-size: 16px;
+                /* Prevent zoom on iOS */
+            }
+
+            button {
+                min-height: 44px;
+                /* Touch-friendly */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 70px 10px 15px 10px;
+            }
+
+            header {
+                padding: 12px 12px 12px 55px !important;
+            }
+
+            header span {
+                font-size: 0.8rem !important;
+                line-height: 1.2;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th,
+            table td {
+                padding: 8px 5px;
+            }
+
+            /* Make tables scrollable horizontally on very small screens */
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* Overlay for mobile menu */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- Hamburger Menu Button -->
+    <div class="hamburger" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" onclick="toggleSidebar()"></div>
 
     <header style="display: flex; align-items: center; gap: 15px;">
         <img src="{{ asset('logo_k3.png') }}" alt="Logo K3" style="height: 40px;">
@@ -764,11 +933,11 @@
             // Handle logout without browser warning
             const logoutForm = document.getElementById('logoutForm');
             if (logoutForm) {
-                logoutForm.addEventListener('submit', function(e) {
+                logoutForm.addEventListener('submit', function (e) {
                     e.preventDefault();
-                    
+
                     const formData = new FormData(this);
-                    
+
                     fetch(this.action, {
                         method: 'POST',
                         body: formData,
@@ -777,13 +946,21 @@
                         },
                         credentials: 'same-origin'
                     })
-                    .then(() => {
-                        window.location.href = '/login';
-                    })
-                    .catch(() => {
-                        window.location.href = '/login';
-                    });
+                        .then(() => {
+                            window.location.href = '/login';
+                        })
+                        .catch(() => {
+                            window.location.href = '/login';
+                        });
                 });
+            }
+
+            // Toggle sidebar for mobile
+            function toggleSidebar() {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.overlay');
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
             }
         </script>
 </body>

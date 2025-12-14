@@ -125,6 +125,75 @@
             margin-bottom: 20px;
             font-size: 14px;
         }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .register-container {
+                max-width: 100%;
+                border-radius: 15px;
+            }
+
+            .register-header {
+                padding: 30px 20px;
+            }
+
+            .register-header img {
+                height: 50px;
+            }
+
+            .register-header h1 {
+                font-size: 24px;
+            }
+
+            .register-header p {
+                font-size: 13px;
+            }
+
+            .register-body {
+                padding: 30px 20px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                padding: 14px 15px;
+                font-size: 16px;
+                /* Prevent zoom on iOS */
+            }
+
+            .btn-register {
+                padding: 16px;
+                font-size: 16px;
+                min-height: 48px;
+                /* Touch-friendly */
+            }
+
+            label {
+                font-size: 13px;
+            }
+
+            .login-link {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .register-header {
+                padding: 25px 15px;
+            }
+
+            .register-body {
+                padding: 25px 15px;
+            }
+        }
     </style>
 </head>
 

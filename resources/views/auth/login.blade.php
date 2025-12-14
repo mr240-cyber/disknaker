@@ -171,6 +171,73 @@
             padding: 0;
             line-height: 1;
         }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .login-container {
+                max-width: 100%;
+                border-radius: 15px;
+            }
+
+            .login-header {
+                padding: 30px 20px;
+            }
+
+            .login-header img {
+                height: 50px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+
+            .login-header p {
+                font-size: 13px;
+            }
+
+            .login-body {
+                padding: 30px 20px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            input[type="email"],
+            input[type="password"],
+            input[type="text"] {
+                padding: 14px 15px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+
+            .btn-login {
+                padding: 16px;
+                font-size: 16px;
+                min-height: 48px; /* Touch-friendly */
+            }
+
+            label {
+                font-size: 13px;
+            }
+
+            .register-link {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-header {
+                padding: 25px 15px;
+            }
+
+            .login-body {
+                padding: 25px 15px;
+            }
+        }
     </style>
 </head>
 
