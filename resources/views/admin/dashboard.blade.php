@@ -611,57 +611,56 @@
     </div>
 
     <!-- MODAL DRAFT SURAT -->
-        <div class="modal" id="modalDraft">
-            <div class="modal-content">
-                <h3>📝 Edit Draft Surat</h3>
-                <label><strong>Pilih Template:</strong></label>
-                <select id="draftTemplate" onchange="applyTemplate()">
-                    <option value="sk_pengesahan">Surat Pengesahan</option>
-                    <option value="sk_peringatan">Surat Peringatan</option>
-                    <option value="surat_balasan">Surat Balasan</option>
-                </select>
-                <label><strong>Isi Surat:</strong></label>
-                <textarea id="draftContent" style="height: 300px;"></textarea>
-                <br>
-                <div style="display: flex; justify-content: space-between;">
-                    <button class="btn btn-doc" onclick="downloadDraft()">💾 Download .txt</button>
-                    <button class="btn"
-                        onclick="document.getElementById('modalDraft').style.display='none'">Tutup</button>
-                </div>
+    <div class="modal" id="modalDraft">
+        <div class="modal-content">
+            <h3>📝 Edit Draft Surat</h3>
+            <label><strong>Pilih Template:</strong></label>
+            <select id="draftTemplate" onchange="applyTemplate()">
+                <option value="sk_pengesahan">Surat Pengesahan</option>
+                <option value="sk_peringatan">Surat Peringatan</option>
+                <option value="surat_balasan">Surat Balasan</option>
+            </select>
+            <label><strong>Isi Surat:</strong></label>
+            <textarea id="draftContent" style="height: 300px;"></textarea>
+            <br>
+            <div style="display: flex; justify-content: space-between;">
+                <button class="btn btn-doc" onclick="downloadDraft()">💾 Download .txt</button>
+                <button class="btn" onclick="document.getElementById('modalDraft').style.display='none'">Tutup</button>
             </div>
         </div>
+    </div>
 
-        <!-- MODAL UPLOAD SURAT -->
-        <div class="modal" id="modalUpload">
-            <div class="modal-content" style="max-width: 500px;">
-                <h3>📤 Upload Surat Bertanda Tangan</h3>
-                <p>Upload file PDF hasil scan surat yang sudah ditanda tangani.</p>
-                <input type="file" id="fileSuratInput" accept="application/pdf">
-                <br><br>
-                <button class="btn btn-approve" onclick="submitUpload()">Upload & Selesai</button>
-                <button class="btn" onclick="document.getElementById('modalUpload').style.display='none'">Batal</button>
-            </div>
+    <!-- MODAL UPLOAD SURAT -->
+    <div class="modal" id="modalUpload">
+        <div class="modal-content" style="max-width: 500px;">
+            <h3>📤 Upload Surat Bertanda Tangan</h3>
+            <p>Upload file PDF hasil scan surat yang sudah ditanda tangani.</p>
+            <input type="file" id="fileSuratInput" accept="application/pdf">
+            <br><br>
+            <button class="btn btn-approve" onclick="submitUpload()">Upload & Selesai</button>
+            <button class="btn" onclick="document.getElementById('modalUpload').style.display='none'">Batal</button>
         </div>
+    </div>
 
-        <script>
-            /* PAGE SWITCHER */
-            function showPage(id) {
-                document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-                document.getElementById(id).classList.add("active");
-            }
+    <script>
+        /* PAGE SWITCHER */
+        function showPage(id) {
+            document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+        }
 
-            /* DATA DEMO */
-            let berkas = @json($submissions);
+        /* DATA DEMO */
+        let berkas = @json($submissions);
 
-            let selectedIndex = null;
+        let selectedIndex = null;
 
-            /* RENDER TABEL */
-            function renderValidasi() {
-                let html = "";
-                berkas.forEach((b, i) => {
-                    // Map properties if needed or use direct
-                    // Controller gives: title, subtitle (perusahaan), status, date, type
-                    html += `
+        /* RENDER TABEL */
+        function renderValidasi() {
+            let html = "";
+            berkas.forEach((b, i) => {
+                // Map properties if needed or use direct
+                // Controller gives: title, subtitle (perusahaan), status, date, type
+                html += `
             <tr>
                 <td>${b.id}</td>
                 <td>${b.subtitle || b.perusahaan || '-'}</td>
@@ -670,18 +669,18 @@
                 <td><button class="btn btn-view" onclick="viewDetail(${i})">👁️ Lihat</button></td>
             </tr>
         `;
-                });
-                document.getElementById("tableValidasi").innerHTML = html;
-            }
+            });
+            document.getElementById("tableValidasi").innerHTML = html;
+        }
 
-            /* DETAIL MODAL */
-            /* DETAIL MODAL */
-            function viewDetail(i) {
-                selectedIndex = i;
-                let b = berkas[i];
+        /* DETAIL MODAL */
+        /* DETAIL MODAL */
+        function viewDetail(i) {
+            selectedIndex = i;
+            let b = berkas[i];
 
-                // Set basic info to modal first
-                document.getElementById("detailContent").innerHTML = `
+            // Set basic info to modal first
+            document.getElementById("detailContent").innerHTML = `
                 <p><strong>ID:</strong> ${b.id}</p>
                 <p><strong>Perusahaan:</strong> ${b.subtitle || '-'}</p>
                 <p><strong>Layanan:</strong> ${b.title || '-'}</p>
@@ -692,22 +691,22 @@
                 <div style="text-align: center; color: #666;">⏳ Mengambil data lengkap...</div>
             `;
 
-                // Reset note
-                document.getElementById("catatanInput").value = "";
-                document.getElementById("modalDetail").style.display = "flex";
+            // Reset note
+            document.getElementById("catatanInput").value = "";
+            document.getElementById("modalDetail").style.display = "flex";
 
-                // Fetch detail from server
-                // Use 'type' which is the fixed table identifier, not 'title' which is the display name
-                fetch(`/admin/submission/${b.type}/${b.id}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.error) {
-                            document.getElementById("detailContent").innerHTML += `<p style="color:red">Error: ${data.error}</p>`;
-                            return;
-                        }
+            // Fetch detail from server
+            // Use 'type' which is the fixed table identifier, not 'title' which is the display name
+            fetch(`/admin/submission/${b.type}/${b.id}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById("detailContent").innerHTML += `<p style="color:red">Error: ${data.error}</p>`;
+                        return;
+                    }
 
-                        // 1. Render Basic Info
-                        let html = `
+                    // 1. Render Basic Info
+                    let html = `
                         <p><strong>ID:</strong> ${b.id}</p>
                         <p><strong>Perusahaan:</strong> ${b.subtitle || '-'}</p>
                         <p><strong>Layanan:</strong> ${b.title || '-'}</p>
@@ -717,71 +716,71 @@
                         <hr>
                         <h4>Data Pengajuan:</h4>`;
 
-                        // 2. Prepare Data Fields
-                        const fieldOrder = [
-                             'email', 'jenis_pengajuan', 
-                             'tanggal_pengusulan', 'nama_perusahaan', 
-                             'alamat_perusahaan', 'sektor', 'sektor_usaha',
-                             'nama_dokter', 'ttl_dokter', 
-                             'nomor_skp_dokter', 'masa_berlaku_skp', 
-                             'nomor_hiperkes', 'nomor_str', 
-                             'nomor_sip', 'kontak', 'kontak_dokter',
-                             'nama_paramedis', 'hiperkes_paramedis',
-                             'nama_korban', 'jabatan_korban', 'jenis_kecelakaan',
-                             'tanggal_kejadian', 'kronologi'
-                        ];
+                    // 2. Prepare Data Fields
+                    const fieldOrder = [
+                        'email', 'jenis_pengajuan',
+                        'tanggal_pengusulan', 'nama_perusahaan',
+                        'alamat_perusahaan', 'sektor', 'sektor_usaha',
+                        'nama_dokter', 'ttl_dokter',
+                        'nomor_skp_dokter', 'masa_berlaku_skp',
+                        'nomor_hiperkes', 'nomor_str',
+                        'nomor_sip', 'kontak', 'kontak_dokter',
+                        'nama_paramedis', 'hiperkes_paramedis',
+                        'nama_korban', 'jabatan_korban', 'jenis_kecelakaan',
+                        'tanggal_kejadian', 'kronologi'
+                    ];
 
-                        let orderedFields = {};
-                        let otherFields = {};
-                        let fileFields = {};
+                    let orderedFields = {};
+                    let otherFields = {};
+                    let fileFields = {};
 
-                        // Sort keys based on priority list
-                        fieldOrder.forEach(k => {
-                            if(data[k]) orderedFields[k] = data[k];
-                        });
+                    // Sort keys based on priority list
+                    fieldOrder.forEach(k => {
+                        if (data[k]) orderedFields[k] = data[k];
+                    });
 
-                        for (const [key, value] of Object.entries(data)) {
-                             // Skip system fields
-                             if (['id', 'user_id', 'created_at', 'updated_at', 'file_balasan', 'status_pengajuan', 'catatan'].includes(key)) continue;
-                             
-                             // Skip if already in ordered list
-                             if (orderedFields[key]) continue;
+                    for (const [key, value] of Object.entries(data)) {
+                        // Skip system fields
+                        if (['id', 'user_id', 'created_at', 'updated_at', 'file_balasan', 'status_pengajuan', 'catatan'].includes(key)) continue;
 
-                             // Check for file columns
-                             if ((key.startsWith('f_') || key.startsWith('file_')) && value) {
-                                 fileFields[key] = value;
-                             } else if (value && typeof value === 'string') {
-                                 otherFields[key] = value;
-                             }
+                        // Skip if already in ordered list
+                        if (orderedFields[key]) continue;
+
+                        // Check for file columns
+                        if ((key.startsWith('f_') || key.startsWith('file_')) && value) {
+                            fileFields[key] = value;
+                        } else if (value !== null && value !== '' && (typeof value === 'string' || typeof value === 'number')) {
+                            otherFields[key] = value;
                         }
+                    }
 
-                        // 3. Render Fields to HTML
-                        html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">`;
+                    // 3. Render Fields to HTML
+                    html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">`;
 
-                        // Render Ordered Text Fields
-                        for (const [key, value] of Object.entries(orderedFields)) {
-                            html += `
+                    // Render Ordered Text Fields
+                    for (const [key, value] of Object.entries(orderedFields)) {
+                        html += `
                                 <div style="margin-bottom: 8px;">
                                     <strong style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 2px;">${key.replace(/_/g, ' ').toUpperCase()}</strong>
                                     <div style="color: #111827;">${value}</div>
                                 </div>
                             `;
-                        }
+                    }
 
-                        // Render Other Text Fields
-                        for (const [key, value] of Object.entries(otherFields)) {
-                            html += `
+                    // Render Other Text Fields
+                    for (const [key, value] of Object.entries(otherFields)) {
+                        html += `
                                 <div style="margin-bottom: 8px;">
                                     <strong style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 2px;">${key.replace(/_/g, ' ').toUpperCase()}</strong>
                                     <div style="color: #111827;">${value}</div>
                                 </div>
                             `;
-                        }
-                        
-                         // Render File Fields
-                        for (const [key, value] of Object.entries(fileFields)) {
-                            let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
-                            html += `
+                    }
+
+                    // Render File Fields
+                    for (const [key, value] of Object.entries(fileFields)) {
+                        let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
+                        html += `
                                 <div style="grid-column: span 2; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #eef2ff;">
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
                                         <strong style="color: #4b5563;">${label}:</strong> 
@@ -791,98 +790,98 @@
                                     </div>
                                 </div>
                             `;
-                        }
+                    }
 
-                        html += `</div>`;
+                    html += `</div>`;
 
-                        // 4. Show Note
-                        if (data.catatan) {
-                            html += `<div style="margin-top: 15px; padding: 10px; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px;">
+                    // 4. Show Note
+                    if (data.catatan) {
+                        html += `<div style="margin-top: 15px; padding: 10px; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px;">
                             <strong>Catatan Sebelumnya:</strong><br>${data.catatan}
                         </div>`;
-                            document.getElementById("catatanInput").value = data.catatan;
-                        }
+                        document.getElementById("catatanInput").value = data.catatan;
+                    }
 
-                        document.getElementById("detailContent").innerHTML = html;
+                    document.getElementById("detailContent").innerHTML = html;
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById("detailContent").innerHTML += `<p style="color:red">Gagal mengambil data detail.</p>`;
+                });
+        }
+
+        function closeModal() {
+            document.getElementById("modalDetail").style.display = "none";
+        }
+
+        async function setStatus(status) {
+            if (!confirm(`Apakah Anda yakin mengubah status menjadi ${status}?`)) return;
+
+            let b = berkas[selectedIndex];
+            let catatan = document.getElementById("catatanInput").value;
+
+            try {
+                let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                let res = await fetch('/admin/submission/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        id: b.id,
+                        type: b.type, // Use b.type here too
+                        status: status,
+                        catatan: catatan
                     })
-                    .catch(err => {
-                        console.error(err);
-                        document.getElementById("detailContent").innerHTML += `<p style="color:red">Gagal mengambil data detail.</p>`;
-                    });
-            }
+                });
 
-            function closeModal() {
-                document.getElementById("modalDetail").style.display = "none";
-            }
-
-            async function setStatus(status) {
-                if (!confirm(`Apakah Anda yakin mengubah status menjadi ${ status }?`)) return;
-
-                let b = berkas[selectedIndex];
-                let catatan = document.getElementById("catatanInput").value;
-
-                try {
-                    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                    let res = await fetch('/admin/submission/update', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({
-                            id: b.id,
-                            type: b.type, // Use b.type here too
-                            status: status,
-                            catatan: catatan
-                        })
-                    });
-
-                    if (res.status === 419) {
-                        alert('⏳ Sesi Anda telah berakhir. Silakan refresh halaman dan login kembali.');
-                        window.location.reload();
-                        return;
-                    }
-
-                    let result = await res.json();
-                    if (result.status === 'success') {
-                        alert("✅ Status berhasil diperbarui!");
-                        // Update local data just for UI
-                        berkas[selectedIndex].status = status;
-                        renderValidasi();
-                        closeModal();
-                        // Optional: reload page to refresh data strictly
-                        // window.location.reload(); 
-                    } else {
-                        alert("❌ Gagal memperbarui: " + result.message);
-                    }
-                } catch (e) {
-                    console.error(e);
-                    alert("❌ Terjadi kesalahan sistem.");
+                if (res.status === 419) {
+                    alert('⏳ Sesi Anda telah berakhir. Silakan refresh halaman dan login kembali.');
+                    window.location.reload();
+                    return;
                 }
+
+                let result = await res.json();
+                if (result.status === 'success') {
+                    alert("✅ Status berhasil diperbarui!");
+                    // Update local data just for UI
+                    berkas[selectedIndex].status = status;
+                    renderValidasi();
+                    closeModal();
+                    // Optional: reload page to refresh data strictly
+                    // window.location.reload(); 
+                } else {
+                    alert("❌ Gagal memperbarui: " + result.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("❌ Terjadi kesalahan sistem.");
             }
+        }
 
-            /* LEGACY FUNCTIONS REMOVED */
+        /* LEGACY FUNCTIONS REMOVED */
 
-            // Initialize
-            renderValidasi();
-            renderSurat();
+        // Initialize
+        renderValidasi();
+        renderSurat();
 
-            /* LOGIC SURAT */
-            function renderSurat() {
-                let html = "";
-                let dataSurat = berkas.filter(b => b.status === 'VERIFIKASI BERKAS' || b.status === 'DOKUMEN TERSEDIA');
+        /* LOGIC SURAT */
+        function renderSurat() {
+            let html = "";
+            let dataSurat = berkas.filter(b => b.status === 'VERIFIKASI BERKAS' || b.status === 'DOKUMEN TERSEDIA');
 
-                dataSurat.forEach((b, i) => {
-                    // Find original index in 'berkas' to pass to functions
-                    let originalIndex = berkas.indexOf(b);
+            dataSurat.forEach((b, i) => {
+                // Find original index in 'berkas' to pass to functions
+                let originalIndex = berkas.indexOf(b);
 
-                    let btnUpload = `< button class="btn btn-approve" onclick = "openUpload(${originalIndex})" >📤 Upload</button > `;
-                    if (b.status === 'DOKUMEN TERSEDIA') {
-                        btnUpload = `< button class="btn btn-success" disabled >✅ Tersedia</button >
+                let btnUpload = `< button class="btn btn-approve" onclick = "openUpload(${originalIndex})" >📤 Upload</button > `;
+                if (b.status === 'DOKUMEN TERSEDIA') {
+                    btnUpload = `< button class="btn btn-success" disabled >✅ Tersedia</button >
                             <button class="btn btn-doc" onclick="openUpload(${originalIndex})" title="Re-upload">🔄</button>`;
-                    }
+                }
 
-                    html += `
+                html += `
                                 < tr >
                         <td>${b.id}</td>
                         <td>${b.subtitle || '-'}</td>
@@ -894,114 +893,114 @@
                         </td>
                     </tr >
                             `;
+            });
+
+            if (dataSurat.length === 0) {
+                html = `< tr > <td colspan="5" style="text-align:center;">Belum ada berkas yang diverifikasi. Silakan validasi berkas terlebih dahulu.</td></tr > `;
+            }
+
+            document.getElementById("tableSurat").innerHTML = html;
+        }
+
+        let currentDraftIndex = null;
+
+        function openDraft(i) {
+            currentDraftIndex = i;
+            let b = berkas[i];
+
+            // Auto select template based on service type? For now default.
+            document.getElementById("draftContent").value = `[Memuat template...]`;
+            document.getElementById("modalDraft").style.display = "flex";
+            applyTemplate(); // Apply default
+        }
+
+        function applyTemplate() {
+            let b = berkas[currentDraftIndex];
+            let jenis = document.getElementById("draftTemplate").value;
+            let text = "";
+
+            if (jenis === "sk_pengesahan") {
+                text = `SURAT PENGESAHAN\nNomor: 001 / SK - K3 / ${new Date().getFullYear()}\n\nMemberikan pengesahan kepada: \nPerusahaan: ${b.subtitle}\nLayanan: ${b.title}\n\n...`;
+            } else if (jenis === "sk_peringatan") {
+                text = `SURAT PERINGATAN\nKepada: \n${b.subtitle}\n\nHarap lengkapi kekurangan...`;
+            } else {
+                text = `SURAT BALASAN\nKepada: ${b.subtitle}\nPerihal: ${b.title}\n\nKami sampaikan bahwa...`;
+            }
+            document.getElementById("draftContent").value = text;
+        }
+
+        function downloadDraft() {
+            let isi = document.getElementById("draftContent").value;
+            let blob = new Blob([isi], { type: "text/plain" });
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "draft_surat.txt";
+            a.click();
+        }
+
+        let currentUploadIndex = null;
+
+        function openUpload(i) {
+            currentUploadIndex = i;
+            document.getElementById("modalUpload").style.display = "flex";
+        }
+
+        async function submitUpload() {
+            let fileInput = document.getElementById("fileSuratInput");
+            if (fileInput.files.length === 0) return alert("Pilih file PDF dulu!");
+
+            let b = berkas[currentUploadIndex];
+            let formData = new FormData();
+            formData.append('id', b.id);
+            formData.append('type', b.type);
+            formData.append('file_surat', fileInput.files[0]);
+
+            let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            try {
+                let res = await fetch('/admin/submission/upload', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrfToken }, // Don't set Content-Type for FormData
+                    body: formData
                 });
 
-                if (dataSurat.length === 0) {
-                    html = `< tr > <td colspan="5" style="text-align:center;">Belum ada berkas yang diverifikasi. Silakan validasi berkas terlebih dahulu.</td></tr > `;
+                if (res.status === 419) {
+                    alert("Session expired"); window.location.reload(); return;
                 }
 
-                document.getElementById("tableSurat").innerHTML = html;
-            }
-
-            let currentDraftIndex = null;
-
-            function openDraft(i) {
-                currentDraftIndex = i;
-                let b = berkas[i];
-
-                // Auto select template based on service type? For now default.
-                document.getElementById("draftContent").value = `[Memuat template...]`;
-                document.getElementById("modalDraft").style.display = "flex";
-                applyTemplate(); // Apply default
-            }
-
-            function applyTemplate() {
-                let b = berkas[currentDraftIndex];
-                let jenis = document.getElementById("draftTemplate").value;
-                let text = "";
-
-                if (jenis === "sk_pengesahan") {
-                    text = `SURAT PENGESAHAN\nNomor: 001 / SK - K3 / ${ new Date().getFullYear() }\n\nMemberikan pengesahan kepada: \nPerusahaan: ${ b.subtitle }\nLayanan: ${ b.title }\n\n...`;
-                } else if (jenis === "sk_peringatan") {
-                    text = `SURAT PERINGATAN\nKepada: \n${ b.subtitle }\n\nHarap lengkapi kekurangan...`;
+                let data = await res.json();
+                if (data.status === 'success') {
+                    alert("✅ Berhasil upload!");
+                    berkas[currentUploadIndex].status = "DOKUMEN TERSEDIA";
+                    renderSurat();
+                    renderValidasi(); // Update main table too
+                    document.getElementById("modalUpload").style.display = "none";
                 } else {
-                    text = `SURAT BALASAN\nKepada: ${ b.subtitle }\nPerihal: ${ b.title }\n\nKami sampaikan bahwa...`;
+                    alert("❌ Gagal: " + data.message);
                 }
-                document.getElementById("draftContent").value = text;
+            } catch (e) {
+                console.error(e);
+                alert("❌ Error sistem.");
             }
+        }
 
-            function downloadDraft() {
-                let isi = document.getElementById("draftContent").value;
-                let blob = new Blob([isi], { type: "text/plain" });
-                let a = document.createElement("a");
-                a.href = URL.createObjectURL(blob);
-                a.download = "draft_surat.txt";
-                a.click();
-            }
+        // Handle logout - simplified
+        const logoutForm = document.getElementById('logoutForm');
+        if (logoutForm) {
+            logoutForm.addEventListener('submit', function (e) {
+                // Let form submit normally
+                return true;
+            });
+        }
 
-            let currentUploadIndex = null;
-
-            function openUpload(i) {
-                currentUploadIndex = i;
-                document.getElementById("modalUpload").style.display = "flex";
-            }
-
-            async function submitUpload() {
-                let fileInput = document.getElementById("fileSuratInput");
-                if (fileInput.files.length === 0) return alert("Pilih file PDF dulu!");
-
-                let b = berkas[currentUploadIndex];
-                let formData = new FormData();
-                formData.append('id', b.id);
-                formData.append('type', b.type);
-                formData.append('file_surat', fileInput.files[0]);
-
-                let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                try {
-                    let res = await fetch('/admin/submission/upload', {
-                        method: 'POST',
-                        headers: { 'X-CSRF-TOKEN': csrfToken }, // Don't set Content-Type for FormData
-                        body: formData
-                    });
-
-                    if (res.status === 419) {
-                        alert("Session expired"); window.location.reload(); return;
-                    }
-
-                    let data = await res.json();
-                    if (data.status === 'success') {
-                        alert("✅ Berhasil upload!");
-                        berkas[currentUploadIndex].status = "DOKUMEN TERSEDIA";
-                        renderSurat();
-                        renderValidasi(); // Update main table too
-                        document.getElementById("modalUpload").style.display = "none";
-                    } else {
-                        alert("❌ Gagal: " + data.message);
-                    }
-                } catch (e) {
-                    console.error(e);
-                    alert("❌ Error sistem.");
-                }
-            }
-
-            // Handle logout - simplified
-            const logoutForm = document.getElementById('logoutForm');
-            if (logoutForm) {
-                logoutForm.addEventListener('submit', function (e) {
-                    // Let form submit normally
-                    return true;
-                });
-            }
-
-            // Toggle sidebar for mobile
-            function toggleSidebar() {
-                const sidebar = document.querySelector('.sidebar');
-                const overlay = document.querySelector('.overlay');
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-            }
-        </script>
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+    </script>
 </body>
 
 </html>
