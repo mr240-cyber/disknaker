@@ -62,6 +62,14 @@ Route::get('/migrate', function () {
         \Illuminate\Support\Facades\DB::purge(config('database.default'));
         \Illuminate\Support\Facades\DB::reconnect(config('database.default'));
 
+        // EXTRA SAFETY for Postgres: Clear prepared statements
+        try {
+            \Illuminate\Support\Facades\DB::connection()->getPdo()->exec("DEALLOCATE ALL");
+            echo "Prepared statements deallocated.<br>";
+        } catch (\Exception $e) {
+            echo "Warning: Could not deallocate: " . $e->getMessage() . "<br>";
+        }
+
         // 4. Run Seeder
         echo "<h3>3. Running Seeder...</h3>";
         $seeder = new \Database\Seeders\DatabaseSeeder();
