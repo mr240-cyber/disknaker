@@ -612,19 +612,32 @@
 
     <!-- MODAL DRAFT SURAT -->
     <div class="modal" id="modalDraft">
-        <div class="modal-content">
-            <h3>📝 Edit Draft Surat</h3>
-            <label><strong>Pilih Template:</strong></label>
-            <select id="draftTemplate" onchange="applyTemplate()">
-                <option value="sk_pengesahan">Surat Pengesahan</option>
-                <option value="sk_peringatan">Surat Peringatan</option>
-                <option value="surat_balasan">Surat Balasan</option>
-            </select>
-            <label><strong>Isi Surat:</strong></label>
-            <textarea id="draftContent" style="height: 300px;"></textarea>
+        <div class="modal-content" style="max-width: 800px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3>📝 Draft SK Pengesahan</h3>
+                <button class="btn btn-warning" onclick="printDraft()">🖨️ Cetak PDF</button>
+            </div>
+
+            <div
+                style="background: #f0f0f0; padding: 10px; border-bottom: 1px solid #ccc; display: flex; gap: 10px; align-items: center;">
+                <label><strong>Template:</strong></label>
+                <select id="draftTemplate" onchange="applyTemplate()" style="padding: 5px;">
+                    <option value="sk_pengesahan">SK Pengesahan Pelayanan Kesehatan Kerja</option>
+                </select>
+                <span style="font-size: 12px; color: #666;">*Data otomatis diisi dari sistem</span>
+            </div>
+
+            <!-- PREVIEW AREA (A4 Paper Style) -->
+            <div
+                style="background: #555; padding: 20px; height: 500px; overflow-y: auto; display: flex; justify-content: center;">
+                <div id="draftPreview" contenteditable="true"
+                    style="background: white; width: 210mm; min-height: 297mm; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.5; color: black; text-align: left;">
+                    <!-- Content will be injected here -->
+                </div>
+            </div>
+
             <br>
-            <div style="display: flex; justify-content: space-between;">
-                <button class="btn btn-doc" onclick="downloadDraft()">💾 Download .txt</button>
+            <div style="display: flex; justify-content: flex-end;">
                 <button class="btn" onclick="document.getElementById('modalDraft').style.display='none'">Tutup</button>
             </div>
         </div>
@@ -780,8 +793,8 @@
                     // Render File Fields
                     for (const [key, value] of Object.entries(fileFields)) {
                         let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
-                        let fileLink = value 
-                            ? `<a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">📂 Download / Lihat File</a>` 
+                        let fileLink = value
+                            ? `<a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">📂 Download / Lihat File</a>`
                             : `<span style="color: #9ca3af; font-style: italic;">Tidak ada file</span>`;
 
                         html += `
@@ -906,38 +919,176 @@
 
         let currentDraftIndex = null;
 
+        let currentDraftData = null;
+
         function openDraft(i) {
             currentDraftIndex = i;
             let b = berkas[i];
-
-            // Auto select template based on service type? For now default.
-            document.getElementById("draftContent").value = `[Memuat template...]`;
+            
             document.getElementById("modalDraft").style.display = "flex";
-            applyTemplate(); // Apply default
+            document.getElementById("draftPreview").innerHTML = "<p style='text-align:center;'>⏳ Mengambil data lengkap...</p>";
+
+            // Fetch detail first to get all fields
+            fetch(`/admin/submission/${b.type}/${b.id}`)
+                .then(res => res.json())
+                .then(data => {
+                    currentDraftData = data;
+                    applyTemplate();
+                })
+                .catch(err => {
+                    console.error(err);
+                    currentDraftData = b; // Fallback to list data
+                    applyTemplate();
+                });
         }
 
         function applyTemplate() {
-            let b = berkas[currentDraftIndex];
-            let jenis = document.getElementById("draftTemplate").value;
-            let text = "";
+            let data = currentDraftData || {};
+            let today = new Date();
+            let year = today.getFullYear();
+            
+            // Format Dates
+            let dateString = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-            if (jenis === "sk_pengesahan") {
-                text = `SURAT PENGESAHAN\nNomor: 001 / SK - K3 / ${new Date().getFullYear()}\n\nMemberikan pengesahan kepada: \nPerusahaan: ${b.subtitle}\nLayanan: ${b.title}\n\n...`;
-            } else if (jenis === "sk_peringatan") {
-                text = `SURAT PERINGATAN\nKepada: \n${b.subtitle}\n\nHarap lengkapi kekurangan...`;
-            } else {
-                text = `SURAT BALASAN\nKepada: ${b.subtitle}\nPerihal: ${b.title}\n\nKami sampaikan bahwa...`;
-            }
-            document.getElementById("draftContent").value = text;
+            // Data Mapping (Handle nulls)
+            let namaPerusahaan = data.subtitle || data.perusahaan || "....................";
+            let alamatPerusahaan = data.alamat_perusahaan || "....................";
+            let namaDokter = data.dokter_nama || data.personil_nama || data.nama || "....................";
+            
+            // Header HTML
+            let kop = `
+                <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 10px; margin-bottom: 20px;">
+                    <img src="{{ asset('logo_kalsel.png') }}" style="height: 80px; position: absolute; left: 40px; top: 40px;"> 
+                    <h3 style="margin:0; font-weight: normal; font-size: 14pt;">PEMERINTAH PROVINSI KALIMANTAN SELATAN</h3>
+                    <h2 style="margin:0; font-size: 16pt;">DINAS TENAGA KERJA DAN TRANSMIGRASI</h2>
+                    <p style="margin:0; font-size: 10pt;">Alamat : Jalan. Jend. A. Yani Km.6 No.23 Banjarmasin Kode Pos 70249</p>
+                    <p style="margin:0; font-size: 10pt;">Email: nakertranskalsel@yahoo.co.id Website: disnakertrans.kalselprov.go.id</p>
+                </div>
+            `;
+
+            let content = `
+                ${kop}
+                <div style="text-align: center;">
+                    <strong style="font-size: 14pt;">KEPUTUSAN</strong><br>
+                    <strong style="font-size: 14pt;">KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
+                    <strong style="font-size: 14pt;">PROVINSI KALIMANTAN SELATAN</strong><br>
+                    <span>Nomor : 500.15.18/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/Disnakertrans/${year}</span>
+                    <br><br>
+                    <strong>TENTANG</strong><br>
+                    <strong>PENGESAHAN PENYELENGGARAAN PELAYANAN</strong><br>
+                    <strong>KESEHATAN KERJA DI PERUSAHAAN</strong><br>
+                    <strong style="text-transform: uppercase;">${namaPerusahaan}</strong>
+                    <br><br>
+                    <strong>KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
+                    <strong>PROVINSI KALIMANTAN SELATAN</strong>
+                </div>
+                <br>
+
+                <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
+                    <tr>
+                        <td style="width: 120px; vertical-align: top;">Menimbang</td>
+                        <td style="width: 20px; vertical-align: top;">:</td>
+                        <td style="text-align: justify;">
+                            <ol type="a" style="margin: 0; padding-left: 20px;">
+                                <li>bahwa keselamatan tenaga kerja yang setinggi-tingginya dapat dicapai bila kesehatan tenaga kerja berada dalam taraf yang sebaik-baiknya;</li>
+                                <li>bahwa untuk mencapai taraf kesehatan tenaga kerja tersebut perlu dibentuk suatu sistem pelayanan kesehatan kerja di perusahaan;</li>
+                                <li>bahwa untuk maksud huruf a dan b konsideran diatas perlu dituangkan dalam Keputusan Kepala Dinas Tenaga Kerja dan Transmigrasi Provinsi Kalimantan Selatan.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top;">Mengingat</td>
+                        <td style="vertical-align: top;">:</td>
+                        <td style="text-align: justify;">
+                             <ol style="margin: 0; padding-left: 20px;">
+                                <li>Undang-Undang Nomor 14 Tahun 1969 tentang Ketentuan-Ketentuan Pokok Mengenai Tenaga Kerja;</li>
+                                <li>Undang-Undang Nomor 1 Tahun 1970 tentang Keselamatan Kerja pasal 9 dan 10;</li>
+                                <li>Peraturan Menteri Tenaga Kerja dan Transmigrasi Nomor: PER.01/MEN/1976 tentang Kewajiban Latihan Hyperkes bagi Dokter Perusahaan;</li>
+                                <li>Peraturan Menteri Tenaga Kerja dan Transmigrasi Nomor: PER.01/MEN/1979 tentang Kewajiban Latihan Hygiene Perusahaan;</li>
+                             </ol>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td style="vertical-align: top;">Memperhatikan</td>
+                        <td style="vertical-align: top;">:</td>
+                        <td style="text-align: justify;">
+                             Surat Permohonan dari <strong>${namaPerusahaan}</strong> Perihal Pengesahan Pelayanan Kesehatan Kerja di Perusahaan.
+                        </td>
+                    </tr>
+                </table>
+
+                <br>
+                <div style="text-align: center;"><strong>MEMUTUSKAN</strong></div>
+                <br>
+
+                 <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
+                    <tr>
+                        <td style="width: 120px; vertical-align: top;">Menetapkan</td>
+                        <td style="width: 20px; vertical-align: top;">:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top;">PERTAMA</td>
+                        <td style="vertical-align: top;">:</td>
+                        <td style="text-align: justify;">
+                            Mengesahkan Penyelenggaraan Pelayanan Kesehatan Kerja di Perusahaan <strong>${namaPerusahaan}</strong>, Alamat: ${alamatPerusahaan}.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top;">KEDUA</td>
+                        <td style="vertical-align: top;">:</td>
+                        <td style="text-align: justify;">
+                            Dokter Perusahaan yang bertanggungjawab dalam pelayanan kesehatan kerja:<br>
+                            <table>
+                                <tr><td>Nama</td><td>: <strong>${namaDokter}</strong></td></tr>
+                                <tr><td>Tempat, Tgl. Lahir</td><td>: -</td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td style="vertical-align: top;">KETIGA</td>
+                        <td style="vertical-align: top;">:</td>
+                        <td style="text-align: justify;">
+                            Pelayanan Kesehatan Kerja dapat segera melaksanakan kegiatan sesuai dengan tugas dan fungsi yang telah ditetapkan serta melaporkan secara berkala hasil kegiatannya.
+                        </td>
+                    </tr>
+                     <tr>
+                        <td style="vertical-align: top;">KEEMPAT</td>
+                        <td style="vertical-align: top;">:</td>
+                        <td style="text-align: justify;">
+                            Keputusan ini berlaku selama 3 (tiga) tahun terhitung sejak tanggal ditetapkannya dan apabila ternyata dikemudian hari terdapat kekeliruan dalam penetapan surat keputusan ini, akan diadakan perbaikan sebagaimana mestinya.
+                        </td>
+                    </tr>
+                </table>
+
+                <br><br>
+                <div style="float: right; width: 40%; text-align: center;">
+                    Ditetapkan di : Banjarmasin<br>
+                    Pada tanggal : ${dateString}
+                    <br><br>
+                    <strong>KEPALA DINAS</strong>
+                    <br><br><br><br><br>
+                    <strong><u>IRFAN SAYUTI, S.Sos. M.Si</u></strong><br>
+                    Pembina Utama Muda<br>
+                    NIP. 19720305 199811 1 001
+                </div>
+                <div style="clear: both;"></div>
+
+            `;
+
+            document.getElementById("draftPreview").innerHTML = content;
         }
 
-        function downloadDraft() {
-            let isi = document.getElementById("draftContent").value;
-            let blob = new Blob([isi], { type: "text/plain" });
-            let a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = "draft_surat.txt";
-            a.click();
+        function printDraft() {
+            let content = document.getElementById("draftPreview").innerHTML;
+            let win = window.open('', '', 'height=700,width=800');
+            win.document.write('<html><head><title>Cetak SK</title>');
+            win.document.write('<style>body { font-family: "Times New Roman"; }</style>');
+            win.document.write('</head><body>');
+            win.document.write(content);
+            win.document.write('</body></html>');
+            win.document.close();
+            win.print();
         }
 
         let currentUploadIndex = null;
