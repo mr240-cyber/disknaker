@@ -439,6 +439,35 @@
             }
         }
     </style>
+    <script>
+        // --- CORE NAVIGATION (Moved to Head for Safety) ---
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+
+            // Show target
+            const el = document.getElementById(pageId);
+            if (el) el.classList.remove('hidden');
+
+            // Close sidebar on mobile
+            const sidebar = document.querySelector('aside');
+            const overlay = document.querySelector('.overlay');
+            if (sidebar && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+            if (overlay && overlay.classList.contains('active')) {
+                overlay.classList.remove('active');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('aside');
+            const overlay = document.querySelector('.overlay');
+            if (sidebar) sidebar.classList.toggle('active');
+            if (overlay) overlay.classList.toggle('active');
+        }
+    </script>
 </head>
 
 <body>
@@ -2162,8 +2191,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                               color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                               padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2573,23 +2602,8 @@
     </div>
 
     <script>
-        // initial show
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            const el = document.getElementById(pageId);
-            if (el) el.classList.remove('hidden');
-            // Close sidebar on mobile if open
-            const sidebar = document.querySelector('aside');
-            const overlay = document.querySelector('.overlay');
-            if (sidebar && sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-            }
-            if (overlay && overlay.classList.contains('active')) {
-                overlay.classList.remove('active');
-            }
-            window.scrollTo(0, 0);
-        }
-        showPage('dashboard');
+        // initial show call is now in DOMContentLoaded below
+
 
         // tampil form sesuai pilihan
         function tampilForm() {
@@ -2889,13 +2903,10 @@
                 return true;
             });
         }
-        // Toggle sidebar for mobile
-        function toggleSidebar() {
-            const sidebar = document.querySelector('aside');
-            const overlay = document.querySelector('.overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('dashboard');
+        });
 
         // Also handle the existing toggle button
         const toggleBtn = document.getElementById('toggleSidebar');
