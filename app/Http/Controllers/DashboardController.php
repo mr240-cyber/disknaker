@@ -9,116 +9,91 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
 
+    // Helper: Map Types to Table Names (Clean Keys)
     private function getTableMap()
     {
         return [
+            'pelayanan_kesekerja' => 'pelayanan_kesekerja',
+            'sk_p2k3' => 'sk_p2k3',
+            'pelaporan_kk_pak' => 'pelaporan_kk_pak',
+            'pelaporan_p2k3' => 'pelaporan_p2k3',
+            // Fallback for messy legacy calls if necessary (though we will fix sources)
             'Pelayanan Kesekerja' => 'pelayanan_kesekerja',
             'SK P2K3' => 'sk_p2k3',
             'Laporan KK/PAK' => 'pelaporan_kk_pak',
             'Laporan P2K3' => 'pelaporan_p2k3',
-            'Pengajuan SK P2K3' => 'sk_p2k3', // Alias
-            'Laporan Rutin P2K3' => 'pelaporan_p2k3', // Alias
+            'Pengajuan SK P2K3' => 'sk_p2k3',
+            'Laporan Rutin P2K3' => 'pelaporan_p2k3',
         ];
     }
 
     private function resolveTable($type)
     {
         $map = $this->getTableMap();
+
+        // Direct match
         if (isset($map[$type])) {
             return $map[$type];
         }
 
+        // Fuzzy match (legacy)
         foreach ($map as $key => $val) {
-            if (str_contains($type, $key)) {
+            if (stripos($type, $key) !== false) {
                 return $val;
             }
         }
-        return null;
+        return null; // Return null if invalid
     }
 
     public function userIndex()
     {
-        $userId = Auth::id();
+        $user = Auth::user();
 
         // 1. Pelayanan Kesekerja
         $pelkes = DB::table('pelayanan_kesekerja')
-            ->where('user_id', $userId)
-            ->select(
-                'id',
-                'jenis_pengajuan as title',
-                'nama_perusahaan as subtitle',
-                'created_at as date',
-                'status_pengajuan as status',
-                'catatan',
-                'file_balasan',
-                DB::raw("'Pelayanan Kesekerja' as type")
-            )
+            ->where('user_id', $user->id)
+            ->select('id', 'nama_perusahaan as subtitle', 'jenis_pengajuan as title', 'status_pengajuan as status', 'created_at as date', 'file_balasan', DB::raw("'pelayanan_kesekerja' as type"))
             ->get();
 
         // 2. SK P2K3
         $p2k3 = DB::table('sk_p2k3')
-            ->where('user_id', $userId)
-            ->select(
-                'id',
-                DB::raw("'Pengajuan SK P2K3' as title"),
-                'nama_perusahaan as subtitle',
-                'created_at as date',
-                'status_pengajuan as status',
-                'catatan',
-                'file_balasan',
-                DB::raw("'SK P2K3' as type")
-            )
+            ->where('user_id', $user->id)
+            ->select('id', 'nama_perusahaan as subtitle', 'jenis_pengajuan as title', 'status_pengajuan as status', 'created_at as date', 'file_balasan', DB::raw("'sk_p2k3' as type"))
             ->get();
 
-        // 3. Pelaporan KK/PAK
+        // 3. KK/PAK
         $kkpak = DB::table('pelaporan_kk_pak')
-            ->where('user_id', $userId)
-            ->select(
-                'id',
-                DB::raw("CONCAT('Laporan ', jenis_kecelakaan) as title"),
-                'nama_perusahaan as subtitle',
-                'created_at as date',
-                'status_pengajuan as status',
-                'catatan',
-                'file_balasan',
-                DB::raw("'Laporan KK/PAK' as type")
-            )
+            ->where('user_id', $user->id)
+            ->select('id', 'nama_perusahaan as subtitle', DB::raw("CONCAT('Laporan ', jenis_kecelakaan) as title"), 'status_pengajuan as status', 'created_at as date', 'file_balasan', DB::raw("'pelaporan_kk_pak' as type"))
             ->get();
 
-        // 4. Pelaporan P2K3
+        // 4. Laporan P2K3
         $laporP2k3 = DB::table('pelaporan_p2k3')
-            ->where('user_id', $userId)
-            ->select(
-                'id',
-                DB::raw("'Laporan Rutin P2K3' as title"),
-                'nama_perusahaan as subtitle',
-                'created_at as date',
-                'status_pengajuan as status',
-                'catatan',
-                'file_balasan',
-                DB::raw("'Laporan P2K3' as type")
-            )
+            ->where('user_id', $user->id)
+            ->select('id', 'nama_perusahaan as subtitle', DB::raw("'Laporan Rutin P2K3' as title"), 'status_pengajuan as status', 'created_at as date', 'file_balasan', DB::raw("'pelaporan_p2k3' as type"))
             ->get();
 
-        // Merge all
-        $history = $pelkes->concat($p2k3)->concat($kkpak)->concat($laporP2k3);
+        // Merge
+        $submissions = $pelkes->concat($p2k3)->concat($kkpak)->concat($laporP2k3);
+        $submissions = $submissions->sortByDesc('date')->values();
 
-        // Sort by date descending
-        $history = $history->sortByDesc('date')->values();
-
-        // Calculate Stats
+        // Stats
         $stats = [
-            'total' => $history->count(),
-            'diproses' => $history->filter(fn($i) => in_array($i->status, ['BERKAS DITERIMA', 'VERIFIKASI BERKAS']))->count(),
-            'selesai' => $history->filter(fn($i) => in_array($i->status, ['DOKUMEN TERSEDIA', 'SELESAI']))->count(),
-            'revisi' => $history->filter(fn($i) => in_array($i->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)']))->count(),
+            'total' => $submissions->count(),
+            'diproses' => $submissions->filter(fn($i) => in_array($i->status, ['BERKAS DITERIMA', 'VERIFIKASI BERKAS']))->count(),
+            'selesai' => $submissions->filter(fn($i) => in_array($i->status, ['SELESAI', 'DOKUMEN TERSEDIA']))->count(),
+            'revisi' => $submissions->filter(fn($i) => in_array($i->status, ['DITOLAK', 'PERLU REVISI']))->count(),
         ];
 
-        return view('user.dashboard', compact('history', 'stats'));
+        return view('user.dashboard', compact('submissions', 'stats'));
     }
 
     public function adminIndex()
     {
+        if (Auth::user()->role !== 'admin') {
+            return redirect('/dashboard');
+        }
+
         // 1. Pelayanan Kesekerja (Admin sees ALL)
         $pelkes = DB::table('pelayanan_kesekerja')
             ->join('users', 'pelayanan_kesekerja.user_id', '=', 'users.id')
@@ -130,7 +105,7 @@ class DashboardController extends Controller
                 'pelayanan_kesekerja.status_pengajuan as status',
                 'users.nama_lengkap as applicant_name',
                 'pelayanan_kesekerja.file_balasan',
-                DB::raw("'Pelayanan Kesekerja' as type")
+                DB::raw("'pelayanan_kesekerja' as type")
             )
             ->get();
 
@@ -145,7 +120,7 @@ class DashboardController extends Controller
                 'sk_p2k3.status_pengajuan as status',
                 'users.nama_lengkap as applicant_name',
                 'sk_p2k3.file_balasan',
-                DB::raw("'SK P2K3' as type")
+                DB::raw("'sk_p2k3' as type")
             )
             ->get();
 
@@ -160,7 +135,7 @@ class DashboardController extends Controller
                 'pelaporan_kk_pak.status_pengajuan as status',
                 'users.nama_lengkap as applicant_name',
                 'pelaporan_kk_pak.file_balasan',
-                DB::raw("'Laporan KK/PAK' as type")
+                DB::raw("'pelaporan_kk_pak' as type")
             )
             ->get();
 
@@ -175,7 +150,7 @@ class DashboardController extends Controller
                 'pelaporan_p2k3.status_pengajuan as status',
                 'users.nama_lengkap as applicant_name',
                 'pelaporan_p2k3.file_balasan',
-                DB::raw("'Laporan P2K3' as type")
+                DB::raw("'pelaporan_p2k3' as type")
             )
             ->get();
 
