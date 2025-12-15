@@ -586,7 +586,7 @@
                         style="color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 10px; margin-bottom: 20px;">
                         Riwayat Pengajuan Saya</h3>
 
-                    @if(count($history) > 0)
+                    @if(count($submissions) > 0)
                         <table style="width: 100%; border-collapse: collapse;">
                             <thead>
                                 <tr style="background: #f3f4f6; text-align: left;">
@@ -598,7 +598,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($history as $s)
+                                @foreach($submissions as $s)
                                     @php
                                         $badges = [
                                             'BERKAS DITERIMA' => 'background: #e0f2fe; color: #0284c7;',
@@ -634,23 +634,23 @@
                                         </td>
                                         <td style="padding: 10px;">
                                             <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                                                        <button onclick="showDetailSubmission('{{ $s->type }}', {{ $s->id }})"
-                                                            style="padding: 6px 10px; background: var(--blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 4px;">
-                                                            <i class="fas fa-eye"></i> Lihat
-                                                        </button>
+                                                <button onclick="showDetailSubmission('{{ $s->type }}', {{ $s->id }})"
+                                                    style="padding: 6px 10px; background: var(--blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                                                    <i class="fas fa-eye"></i> Lihat
+                                                </button>
 
-                                                        @if($s->status == 'DOKUMEN TERSEDIA' && !empty($s->file_balasan))
-                                                            <a href="{{ asset('storage/' . $s->file_balasan) }}" target="_blank"
-                                                                style="display: inline-block; padding: 6px 10px; background: #0c2c66; color: white; border-radius: 4px; text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
-                                                                <i class="fas fa-download"></i> Surat
-                                                            </a>
-                                                        @endif
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                @if($s->status == 'DOKUMEN TERSEDIA' && !empty($s->file_balasan))
+                                                    <a href="{{ asset('storage/' . $s->file_balasan) }}" target="_blank"
+                                                        style="display: inline-block; padding: 6px 10px; background: #0c2c66; color: white; border-radius: 4px; text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                                                        <i class="fas fa-download"></i> Surat
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
-                                </tbody>
-                            </table>
+                            </tbody>
+                        </table>
                     @else
                         <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
                     @endif
@@ -2168,8 +2168,8 @@
                             </div>
                         @endforeach
                     @else
-                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
-                    @endif
+                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                        @endif
                     </div>
                 </div>
             </div>
