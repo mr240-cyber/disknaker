@@ -871,6 +871,119 @@
                 </div>
             </div>
 
+            <!-- RIWAYAT PROSES PENGAJUAN -->
+            <div id="story" class="page hidden">
+                <h2 style="color: var(--blue); margin-bottom: 20px;">Riwayat Proses Pengajuan</h2>
+
+                @if(count($submissions) > 0)
+                    <div style="position: relative; padding-left: 30px;">
+                        @foreach($submissions as $index => $s)
+                            @php
+                                $statusColor = '#70ad47'; // Default Green
+                                $statusText = $s->status;
+                                $iconColor = '#70ad47';
+
+                                // Logic mapping status to User-Friendly Badge
+                                if (in_array($s->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)', 'Revisi', 'REVISI'])) {
+                                    $statusColor = '#ed7d31'; // Orange
+                                    $statusText = 'Revisi';
+                                    $iconColor = '#ed7d31';
+                                } elseif ($s->status == 'VERIFIKASI BERKAS') {
+                                    $statusColor = '#ffc000'; // Yellow
+                                    $statusText = 'Proses';
+                                    $iconColor = '#ffc000';
+                                } elseif ($s->status == 'BERKAS DITERIMA') {
+                                    $statusColor = '#5b9bd5'; // Blue
+                                    $statusText = 'Diterima';
+                                    $iconColor = '#5b9bd5';
+                                } elseif ($s->status == 'DOKUMEN TERSEDIA') {
+                                    $statusColor = '#70ad47';
+                                    $statusText = 'Selesai';
+                                    $iconColor = '#70ad47';
+                                }
+                            @endphp
+
+                            <div style="position: relative; padding-bottom: 30px;">
+                                <!-- Timeline Line -->
+                                @if($index < count($submissions) - 1)
+                                    <div
+                                        style="position: absolute; left: -20px; top: 25px; bottom: -5px; width: 2px; background: #ddd;">
+                                    </div>
+                                @endif
+
+                                <!-- Timeline Dot -->
+                                <div
+                                    style="position: absolute; left: -26px; top: 8px; width: 14px; height: 14px; border-radius: 50%; background: {{ $iconColor }}; border: 3px solid white; box-shadow: 0 0 0 2px {{ $iconColor }};">
+                                </div>
+
+                                <!-- Card -->
+                                <div class="card" style="margin-bottom: 0; border-left: 4px solid {{ $statusColor }};">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 5px;">
+                                                {{ $s->type }}
+                                            </div>
+                                            <div style="color: #666; font-size: 14px; margin-bottom: 5px;">
+                                                <i class="fas fa-building"></i> {{ $s->subtitle ?? '-' }}
+                                            </div>
+                                            <div style="color: #999; font-size: 13px;">
+                                                <i class="fas fa-calendar"></i>
+                                                {{ \Carbon\Carbon::parse($s->date)->format('d F Y, H:i') }} WIB
+                                            </div>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <span
+                                                style="background-color: {{ $statusColor }}; color: white; padding: 6px 15px; border-radius: 4px; font-size: 13px; white-space: nowrap;">
+                                                {{ $statusText }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    @if(!empty($s->catatan))
+                                        <div
+                                            style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin-top: 10px; border-radius: 4px;">
+                                            <div style="font-weight: bold; color: #856404; font-size: 13px; margin-bottom: 5px;">
+                                                <i class="fas fa-comment-dots"></i> Catatan Admin:
+                                            </div>
+                                            <div style="color: #856404; font-size: 14px;">{{ $s->catatan }}</div>
+                                        </div>
+                                    @endif
+
+                                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                        @if(in_array($s->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)', 'Revisi', 'REVISI']))
+                                            <button onclick="editSubmission('{{ $s->type }}', {{ $s->id }})"
+                                                style="background: #ed7d31; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">
+                                                <i class="fas fa-edit"></i> Perbaiki
+                                            </button>
+                                        @endif
+
+                                        @if(($s->status == 'DOKUMEN TERSEDIA' || $s->status == 'Selesai') && !empty($s->file_balasan))
+                                            <a href="{{ asset('storage/' . $s->file_balasan) }}" target="_blank"
+                                                style="background: #5b9bd5; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 13px;">
+                                                <i class="fas fa-download"></i> Download Surat
+                                            </a>
+                                        @endif
+
+                                        <button onclick="showDetailSubmission('{{ $s->type }}', {{ $s->id }})"
+                                            style="background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">
+                                            <i class="fas fa-info-circle"></i> Lihat Detail
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <i class="fas fa-inbox" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
+                        <p style="color: #666; font-size: 16px;">Belum ada riwayat pengajuan.</p>
+                        <p style="color: #999; font-size: 14px;">Silakan ajukan layanan terlebih dahulu.</p>
+                    </div>
+                @endif
+            </div>
+
+
             <!-- PELAYANAN -->
             <div id="pelayanan" class="page hidden">
                 <div class="card">
@@ -2375,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                               color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                               padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2395,8 +2508,8 @@
                             </div>
                         @endforeach
                     @else
-                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
-                    @endif
+                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                        @endif
                     </div>
                 </div>
             </div>
