@@ -747,7 +747,7 @@
                         if (orderedFields[key]) continue;
 
                         // Check for file columns
-                        if ((key.startsWith('f_') || key.startsWith('file_')) && value) {
+                        if (key.startsWith('f_') || key.startsWith('file_')) {
                             fileFields[key] = value;
                         } else if (value !== null && value !== '' && (typeof value === 'string' || typeof value === 'number')) {
                             otherFields[key] = value;
@@ -780,13 +780,15 @@
                     // Render File Fields
                     for (const [key, value] of Object.entries(fileFields)) {
                         let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
+                        let fileLink = value 
+                            ? `<a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">📂 Download / Lihat File</a>` 
+                            : `<span style="color: #9ca3af; font-style: italic;">Tidak ada file</span>`;
+
                         html += `
                                 <div style="grid-column: span 2; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #eef2ff;">
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
                                         <strong style="color: #4b5563;">${label}:</strong> 
-                                        <a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">
-                                            📂 Download / Lihat File
-                                        </a>
+                                        ${fileLink}
                                     </div>
                                 </div>
                             `;
