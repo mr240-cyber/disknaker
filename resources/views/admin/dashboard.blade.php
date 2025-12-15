@@ -890,14 +890,14 @@
                 // Find original index in 'berkas' to pass to functions
                 let originalIndex = berkas.indexOf(b);
 
-                let btnUpload = `< button class="btn btn-approve" onclick = "openUpload(${originalIndex})" >📤 Upload</button > `;
+                let btnUpload = `<button class="btn btn-approve" onclick="openUpload(${originalIndex})">📤 Upload</button>`;
                 if (b.status === 'DOKUMEN TERSEDIA') {
-                    btnUpload = `< button class="btn btn-success" disabled >✅ Tersedia</button >
+                    btnUpload = `<button class="btn btn-success" disabled>✅ Tersedia</button>
                             <button class="btn btn-doc" onclick="openUpload(${originalIndex})" title="Re-upload">🔄</button>`;
                 }
 
                 html += `
-                                < tr >
+                    <tr>
                         <td>${b.id}</td>
                         <td>${b.subtitle || '-'}</td>
                         <td>${b.title || '-'}</td>
@@ -906,8 +906,8 @@
                             <button class="btn btn-warning" onclick="openDraft(${originalIndex})">📝 Draft</button>
                             ${btnUpload}
                         </td>
-                    </tr >
-                            `;
+                    </tr>
+                `;
             });
 
             if (dataSurat.length === 0) {
@@ -924,7 +924,7 @@
         function openDraft(i) {
             currentDraftIndex = i;
             let b = berkas[i];
-            
+
             document.getElementById("modalDraft").style.display = "flex";
             document.getElementById("draftPreview").innerHTML = "<p style='text-align:center;'>⏳ Mengambil data lengkap...</p>";
 
@@ -946,7 +946,7 @@
             let data = currentDraftData || {};
             let today = new Date();
             let year = today.getFullYear();
-            
+
             // Format Dates
             let dateString = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -954,7 +954,7 @@
             let namaPerusahaan = data.subtitle || data.perusahaan || "....................";
             let alamatPerusahaan = data.alamat_perusahaan || "....................";
             let namaDokter = data.dokter_nama || data.personil_nama || data.nama || "....................";
-            
+
             // Header HTML
             let kop = `
                 <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 10px; margin-bottom: 20px;">
