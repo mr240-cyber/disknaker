@@ -193,6 +193,8 @@ class DashboardController extends Controller
 
     public function updateSubmissionStatus(Request $request)
     {
+        \Illuminate\Support\Facades\Log::info('Update Status Request', $request->all());
+
         $request->validate([
             'id' => 'required',
             'type' => 'required',
@@ -208,19 +210,35 @@ class DashboardController extends Controller
         $table = $this->resolveTable($type);
 
         if (!$table) {
-            return response()->json(['status' => 'error', 'message' => 'Invalid type'], 400);
+            return response()->json(['status' => 'error', 'message' => 'Invalid type: ' . $type], 400);
         }
 
-        DB::table($table)->where('id', $id)->update([
-            'status_pengajuan' => $status,
-            'catatan' => $catatan,
-            'updated_at' => now(),
-        ]);
+        try {
+            $affected = DB::table($table)->where('id', $id)->update([
+                'status_pengajuan' => $status,
+                'catatan' => $catatan,
+                'updated_at' => now(),
+            ]);
 
-        return response()->json([
-            "status" => "success",
-            "message" => "Status berhasil diperbarui."
-        ]);
+            \Illuminate\Support\Facades\Log::info("Update Result for $table ID $id: $affected rows affected");
+
+            if ($affected === 0) {
+                // Check if it exists
+                if (!DB::table($table)->where('id', $id)->exists()) {
+                    return response()->json(["status" => "error", "message" => "Data ID $id tidak ditemukan"], 404);
+                }
+                // If exists, it means no changes (same status/note). We can consider this success or warning.
+                // Usually for status update, we expect a change. But let's return success to avoid confusing user if they re-click.
+            }
+
+            return response()->json([
+                "status" => "success",
+                "message" => "Status berhasil diperbarui."
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Update Status Error: " . $e->getMessage());
+            return response()->json(["status" => "error", "message" => "Server Error: " . $e->getMessage()], 500);
+        }
     }
 
     public function uploadSurat(Request $request)
