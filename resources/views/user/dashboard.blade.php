@@ -542,6 +542,26 @@
                 alert("❌ Error: " + e.message);
             }
         }
+        async function showDetailSubmission(type, id) {
+            try {
+                alert("⏳ Mengambil data...");
+                let res = await fetch(`/user/submission/${type}/${id}`);
+                if (!res.ok) throw new Error("Gagal mengambil data.");
+                let data = await res.json();
+
+                let info = `DETAIL PENGAJUAN #${data.id}\n`;
+                info += `---------------------------\n`;
+                info += `Perusahaan: ${data.nama_perusahaan}\n`;
+                info += `Jenis: ${data.jenis_pengajuan}\n`;
+                info += `Tanggal: ${data.tanggal_pengusulan}\n`;
+                info += `Status: ${data.status_pengajuan}\n`;
+                if (data.catatan) info += `Catatan Admin: ${data.catatan}\n`;
+
+                alert(info);
+            } catch (e) {
+                alert("Gagal melihat detail: " + e.message);
+            }
+        }
     </script>
 </head>
 
@@ -2355,8 +2375,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2375,8 +2395,8 @@
                             </div>
                         @endforeach
                     @else
-                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
-                        @endif
+                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                    @endif
                     </div>
                 </div>
             </div>
@@ -2959,10 +2979,10 @@
             }
 
             let url = '/submit-pengesahan';
-            let editId = document.getElementById('editIdPengesahan').value;
+            // Use the already declared editId variable
             if (editId) {
                 url = '/update-pengesahan';
-                formData.append('id', editId);
+                // formData.append('id', editId); // Already appended above
             }
 
             try {
