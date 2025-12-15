@@ -603,7 +603,7 @@
                 <button class="btn btn-warning" onclick="setStatus('VERIFIKASI BERKAS')">🔍 Mulai Verifikasi</button>
                 <button class="btn btn-success" onclick="setStatus('DOKUMEN TERSEDIA')">📄 Selesai / Dokumen
                     Tersedia</button>
-                <button class="btn btn-reject" onclick="setStatus('PERLU REVISI')">❌ Tolak / Revisi</button>
+                <button class="btn btn-reject" onclick="setStatus('DITOLAK')">❌ Tolak / Revisi</button>
             </div>
             <br><br>
             <button class="btn" onclick="closeModal()">Tutup</button>
@@ -836,7 +836,7 @@
             let catatan = document.getElementById("catatanInput").value;
 
             // Validation: Reject/Revise MUST have a note
-            if ((status === 'DITOLAK' || status === 'PERLU REVISI') && !catatan.trim()) {
+            if (status === 'DITOLAK' && !catatan.trim()) {
                 alert("⚠️ Harap isi catatan alasan penolakan/revisi terlebih dahulu!");
                 return;
             }
@@ -873,7 +873,7 @@
                 }
 
                 if (!res.ok) {
-                     throw new Error(result.message || "Gagal memperbarui status.");
+                    throw new Error(result.message || "Gagal memperbarui status.");
                 }
 
                 if (result.status === 'success') {
