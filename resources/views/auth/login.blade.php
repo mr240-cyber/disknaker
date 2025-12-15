@@ -291,15 +291,9 @@
     <!-- Main Section -->
     <div class="main-container">
 
-        <!-- 
-            TIP UNTUK PENGEMBANG:
-            Untuk memunculkan gambar karakter (PNS Pria/Wanita) seperti desain:
-            1. Simpan gambar karakter di folder: public/pns_pria.png dan public/pns_wanita.png
-            2. Hapus komentar (uncomment) baris <img> di bawah ini.
-        -->
-
-        <!-- <img src="{{ asset('pns_pria.png') }}" class="character-img" style="margin-right: 450px; transform: scaleX(-1);"> -->
-        <!-- <img src="{{ asset('pns_wanita.png') }}" class="character-img" style="margin-left: 450px;"> -->
+        <!-- Character Images -->
+        <img src="{{ asset('pns_pria.png') }}" class="character-img char-left" alt="PNS Pria">
+        <img src="{{ asset('pns_wanita.png') }}" class="character-img char-right" alt="PNS Wanita">
 
         <div class="login-card">
             <p class="welcome-text">welcome !!!</p>
