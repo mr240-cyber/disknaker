@@ -467,11 +467,11 @@
             if (sidebar) sidebar.classList.toggle('active');
             if (overlay) overlay.classList.toggle('active');
         }
-    async function editSubmission(type, id) {
+        async function editSubmission(type, id) {
             try {
                 // Ensure page is ready
                 const pelSection = document.getElementById('pelayanan');
-                if(!pelSection) {
+                if (!pelSection) {
                     alert('Halaman tidak siap. Silakan refresh.');
                     return;
                 }
@@ -485,9 +485,9 @@
                     // 1. Show Form
                     showPage('pelayanan'); // Use the helper
                     document.getElementById('pilihanLayanan').value = 'pelkes_full';
-                    
+
                     // Call user-defined 'tampilForm' if available, otherwise manual
-                    if(typeof tampilForm === 'function') {
+                    if (typeof tampilForm === 'function') {
                         tampilForm();
                     } else {
                         // Fallback manual show
@@ -500,16 +500,16 @@
                     // 2. Fill Data
                     const setVal = (id, val) => {
                         const el = document.getElementById(id);
-                        if(el && val !== null && val !== undefined) el.value = val;
+                        if (el && val !== null && val !== undefined) el.value = val;
                     };
 
                     setVal('editIdPengesahan', data.id); // Important: ID for Update
                     setVal('email', data.email);
                     setVal('jenis', data.jenis_pengajuan);
-                    
+
                     // Trigger change logic for jenis
                     const jenisEl = document.getElementById('jenis');
-                    if(jenisEl) jenisEl.dispatchEvent(new Event('change'));
+                    if (jenisEl) jenisEl.dispatchEvent(new Event('change'));
 
                     setVal('tanggal', data.tanggal_pengusulan);
                     setVal('nama-perusahaan', data.nama_perusahaan);
@@ -690,72 +690,161 @@
                         style="color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 10px; margin-bottom: 20px;">
                         Riwayat Pengajuan Saya</h3>
 
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div style="position: relative; width: 100%;">
+                            <input type="text" id="searchHistory" placeholder="Ketik ID Pemeriksaan / Nama Perusahaan"
+                                style="width: 100%; padding: 12px 40px 12px 15px; border: 1px solid #ccc; border-radius: 4px; background: #e0e6ed;">
+                            <button
+                                style="position: absolute; right: 5px; top: 5px; background: #507d64; color: white; border: none; padding: 7px 12px; border-radius: 4px;">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
                     @if(count($submissions) > 0)
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr style="background: #f3f4f6; text-align: left;">
-                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Layanan</th>
-                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Perusahaan</th>
-                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Tanggal</th>
-                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Status</th>
-                                    <th style="padding: 10px; border-bottom: 2px solid #ddd;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($submissions as $s)
-                                    @php
-                                        $badges = [
-                                            'BERKAS DITERIMA' => 'background: #e0f2fe; color: #0284c7;',
-                                            'VERIFIKASI BERKAS' => 'background: #fef9c3; color: #ca8a04;',
-                                            'DOKUMEN TERSEDIA' => 'background: #dcfce7; color: #16a34a;',
-                                            'DITOLAK' => 'background: #fee2e2; color: #dc2626;',
-                                            'PERLU REVISI' => 'background: #ffedd5; color: #ea580c;'
-                                        ];
-                                        $style = $badges[$s->status] ?? 'background: #f3f4f6; color: #374151;';
-                                    @endphp
-                                    <tr style="border-bottom: 1px solid #eee;">
-                                        <td style="padding: 10px;">{{ $s->type }}</td>
-                                        <td style="padding: 10px;">{{ $s->subtitle ?? '-' }}</td>
-                                        <td style="padding: 10px;">{{ \Carbon\Carbon::parse($s->date)->format('d M Y') }}</td>
-                                        <td style="padding: 10px;">
-                                            <span
-                                                style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; {{ $style }}">
-                                                {{ $s->status }}
-                                            </span>
-                                            @if(!empty($s->catatan))
-                                                <div style="font-size: 11px; color: #666; margin-top: 4px;">Admin:
-                                                    {{ $s->catatan ?? '' }}
-                                                </div>
-                                            @endif
+                        <style>
+                            .history-table {
+                                width: 100%;
+                                border-collapse: separate;
+                                border-spacing: 0;
+                                border: 1px solid #7dad91;
+                                border-radius: 8px;
+                                overflow: hidden;
+                            }
 
-                                            @if(in_array($s->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)', 'Revisi', 'REVISI']))
-                                                <div style="margin-top: 5px;">
-                                                    <button onclick="editSubmission('{{ $s->type }}', {{ $s->id }})"
-                                                        style="padding: 4px 8px; border: 1px solid #ea580c; background: #fff7ed; color: #ea580c; border-radius: 4px; cursor: pointer; font-size: 11px;">
-                                                        ✏️ Perbaiki
-                                                    </button>
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td style="padding: 10px;">
-                                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                                                <button onclick="showDetailSubmission('{{ $s->type }}', {{ $s->id }})"
-                                                    style="padding: 6px 10px; background: var(--blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 4px;">
-                                                    <i class="fas fa-eye"></i> Lihat
-                                                </button>
+                            .history-table th {
+                                background-color: #6a9c80;
+                                color: white;
+                                padding: 12px 15px;
+                                text-align: left;
+                                font-weight: normal;
+                                font-size: 14px;
+                            }
 
-                                                @if($s->status == 'DOKUMEN TERSEDIA' && !empty($s->file_balasan))
-                                                    <a href="{{ asset('storage/' . $s->file_balasan) }}" target="_blank"
-                                                        style="display: inline-block; padding: 6px 10px; background: #0c2c66; color: white; border-radius: 4px; text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
-                                                        <i class="fas fa-download"></i> Surat
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        </td>
+                            .history-table td {
+                                padding: 12px 15px;
+                                border-bottom: 1px solid #ddd;
+                                background: white;
+                                vertical-align: middle;
+                                color: #333;
+                                font-size: 14px;
+                            }
+
+                            .history-table tr:last-child td {
+                                border-bottom: none;
+                            }
+
+                            .badge-status {
+                                padding: 6px 15px;
+                                border-radius: 4px;
+                                color: white;
+                                display: inline-block;
+                                font-size: 13px;
+                                text-align: center;
+                                min-width: 80px;
+                            }
+
+                            .btn-blue {
+                                background-color: #5b9bd5;
+                                color: white;
+                                padding: 6px 15px;
+                                border-radius: 4px;
+                                text-decoration: none;
+                                font-size: 13px;
+                            }
+
+                            .btn-link {
+                                background: none;
+                                border: none;
+                                cursor: pointer;
+                                color: #333;
+                                text-decoration: none;
+                                font-size: 13px;
+                            }
+                        </style>
+
+                        <div style="overflow-x: auto;">
+                            <table class="history-table" id="tableHistory">
+                                <thead>
+                                    <tr>
+                                        <th>ID Pemeriksaan</th>
+                                        <th>Tanggal Pemeriksaan</th>
+                                        <th style="text-align: center;">Status</th>
+                                        <th style="text-align: center;">Dokumen/surat</th>
+                                        <th style="text-align: center;">Riwayat Layanan</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach($submissions as $s)
+                                        @php
+                                            $statusColor = '#70ad47'; // Default Green
+                                            $statusText = $s->status;
+
+                                            // Logic mapping status to User-Friendly Badge
+                                            if (in_array($s->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)', 'Revisi', 'REVISI'])) {
+                                                $statusColor = '#ed7d31'; // Orange
+                                                $statusText = 'Revisi';
+                                            } elseif ($s->status == 'VERIFIKASI BERKAS') {
+                                                $statusColor = '#ffc000'; // Yellow
+                                                $statusText = 'Proses';
+                                            } elseif ($s->status == 'DOKUMEN TERSEDIA') {
+                                                $statusColor = '#70ad47';
+                                                $statusText = 'Selesai';
+                                            }
+                                        @endphp
+                                        <tr class="history-row">
+                                            <td>
+                                                <div style="font-weight: bold;">{{ $s->type }}</div>
+                                                <div style="font-size: 12px; color: #666;">{{ $s->subtitle ?? '-' }}</div>
+                                            </td>
+                                            <td>{{ \Carbon\Carbon::parse($s->date)->format('d F Y') }}</td>
+                                            <td style="text-align: center;">
+                                                <span class="badge-status" style="background-color: {{ $statusColor }};">
+                                                    {{ $statusText }}
+                                                </span>
+                                                @if(in_array($s->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)', 'Revisi', 'REVISI']))
+                                                    <div style="margin-top: 5px;">
+                                                        <button onclick="editSubmission('{{ $s->type }}', {{ $s->id }})"
+                                                            style="background: none; border: none; color: #ed7d31; text-decoration: underline; cursor: pointer; font-size: 12px;">
+                                                            Perbaiki
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if(($s->status == 'DOKUMEN TERSEDIA' || $s->status == 'Selesai') && !empty($s->file_balasan))
+                                                    <a href="{{ asset('storage/' . $s->file_balasan) }}" target="_blank"
+                                                        class="btn-blue">
+                                                        Download
+                                                    </a>
+                                                @else
+                                                    <span style="color: #ccc;">-</span>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <button onclick="showDetailSubmission('{{ $s->type }}', {{ $s->id }})"
+                                                    class="btn-link">
+                                                    Lihat Riwayat
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <script>
+                            document.getElementById('searchHistory').addEventListener('keyup', function () {
+                                const val = this.value.toLowerCase();
+                                const rows = document.querySelectorAll('.history-row');
+                                rows.forEach(r => {
+                                    const text = r.textContent.toLowerCase();
+                                    r.style.display = text.includes(val) ? '' : 'none';
+                                });
+                            });
+                        </script>
+
                     @else
                         <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
                     @endif
@@ -2266,8 +2355,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2286,8 +2375,8 @@
                             </div>
                         @endforeach
                     @else
-                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
-                    @endif
+                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                        @endif
                     </div>
                 </div>
             </div>
