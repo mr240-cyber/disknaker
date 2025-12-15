@@ -52,25 +52,25 @@ class DashboardController extends Controller
         // 1. Pelayanan Kesekerja
         $pelkes = DB::table('pelayanan_kesekerja')
             ->where('user_id', $user->id)
-            ->select('id', 'nama_perusahaan as subtitle', 'jenis_pengajuan as title', 'status_pengajuan as status', 'created_at as date', 'file_balasan', DB::raw("'pelayanan_kesekerja' as type"))
+            ->select('id', 'nama_perusahaan as subtitle', 'jenis_pengajuan as title', 'status_pengajuan as status', 'created_at as date', 'file_balasan', 'catatan', DB::raw("'pelayanan_kesekerja' as type"))
             ->get();
 
         // 2. SK P2K3
         $p2k3 = DB::table('sk_p2k3')
             ->where('user_id', $user->id)
-            ->select('id', 'nama_perusahaan as subtitle', 'jenis_pengajuan as title', 'status_pengajuan as status', 'created_at as date', 'file_balasan', DB::raw("'sk_p2k3' as type"))
+            ->select('id', 'nama_perusahaan as subtitle', 'jenis_pengajuan as title', 'status_pengajuan as status', 'created_at as date', 'file_balasan', 'catatan', DB::raw("'sk_p2k3' as type"))
             ->get();
 
         // 3. KK/PAK
         $kkpak = DB::table('pelaporan_kk_pak')
             ->where('user_id', $user->id)
-            ->select('id', 'nama_perusahaan as subtitle', DB::raw("CONCAT('Laporan ', jenis_kecelakaan) as title"), 'status_pengajuan as status', 'created_at as date', 'file_balasan', DB::raw("'pelaporan_kk_pak' as type"))
+            ->select('id', 'nama_perusahaan as subtitle', DB::raw("CONCAT('Laporan ', jenis_kecelakaan) as title"), 'status_pengajuan as status', 'created_at as date', 'file_balasan', 'catatan', DB::raw("'pelaporan_kk_pak' as type"))
             ->get();
 
         // 4. Laporan P2K3
         $laporP2k3 = DB::table('pelaporan_p2k3')
             ->where('user_id', $user->id)
-            ->select('id', 'nama_perusahaan as subtitle', DB::raw("'Laporan Rutin P2K3' as title"), 'status_pengajuan as status', 'created_at as date', 'file_balasan', DB::raw("'pelaporan_p2k3' as type"))
+            ->select('id', 'nama_perusahaan as subtitle', DB::raw("'Laporan Rutin P2K3' as title"), 'status_pengajuan as status', 'created_at as date', 'file_balasan', 'catatan', DB::raw("'pelaporan_p2k3' as type"))
             ->get();
 
         // Merge
