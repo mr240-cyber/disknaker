@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Pelayanan K3</title>
+    <title>Login - SIPENAKER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,148 +15,160 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #198754 0%, #198754 100%);
+            font-family: 'Poppins', sans-serif;
+            background-color: #2e5c46;
+            /* Base Dark Green */
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            flex-direction: column;
+            overflow-x: hidden;
         }
 
-        .login-container {
+        /* NAVBAR */
+        .navbar {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            max-width: 400px;
-            width: 100%;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 90px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
-        .login-header {
-            background: linear-gradient(90deg, var(--blue), var(--blue-2));
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .login-header img {
-            height: 60px;
-            margin-bottom: 10px;
+        .navbar-brand img {
+            height: 50px;
+            width: auto;
         }
 
-        .login-header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+        .brand-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.2;
+            margin-bottom: 2px;
         }
 
-        .login-header p {
-            opacity: 0.9;
-            font-size: 14px;
+        .brand-text p {
+            font-size: 11px;
+            color: #555;
+            margin: 0;
         }
 
-        .login-body {
-            padding: 40px 30px;
+        .navbar-links {
+            display: flex;
+            gap: 25px;
         }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
+        .navbar-links a {
+            text-decoration: none;
             color: #333;
             font-weight: 500;
             font-size: 14px;
         }
 
-        input[type="email"],
-        input[type="password"],
-        input[type="text"] {
+        .navbar-links a.active {
+            color: #2e5c46;
+        }
+
+        /* MAIN CONTENT */
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* CHARACTERS (Illustrations) */
+        /* To simulate the "peeking" effect, we place them absolutely or flexibly relative to the card */
+        .character-img {
+            position: absolute;
+            height: 380px;
+            /* Adjust based on real image size */
+            z-index: 1;
+            bottom: auto;
+            /* Aligned relative to card center usually, but here hardcoded for demo */
+        }
+
+        .char-left {
+            margin-right: 480px;
+            /* Push to left of card placeholder */
+            transform: translateX(-50px);
+        }
+
+        .char-right {
+            margin-left: 480px;
+            transform: translateX(50px);
+        }
+
+        /* LOGIN CARD */
+        .login-card {
+            background: white;
+            padding: 40px 50px;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            /* Sit above chars */
+            position: relative;
+            text-align: center;
+        }
+
+        .welcome-text {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .login-title {
+            color: #2e5c46;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .form-control {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border: 1px solid #777;
+            /* Darker border as per image */
+            border-radius: 6px;
             font-size: 14px;
+            font-family: inherit;
+            outline: none;
             transition: all 0.3s;
         }
 
-        input[type="email"]:focus,
-        input[type="password"]:focus,
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #198754;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .remember-me input {
-            margin-right: 8px;
-        }
-
-        .remember-me label {
-            margin: 0;
-            font-weight: normal;
-            cursor: pointer;
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #198754 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
-        .register-link {
-            text-align: center;
-            margin-top: 25px;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .register-link a {
-            color: #198754;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-
-        .error-message {
-            background: #fee;
-            border: 1px solid #fcc;
-            color: #c33;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .password-wrapper {
-            position: relative;
+        .form-control:focus {
+            border-color: #2e5c46;
+            box-shadow: 0 0 0 2px rgba(46, 92, 70, 0.1);
         }
 
         .toggle-password {
@@ -165,155 +179,171 @@
             background: none;
             border: none;
             cursor: pointer;
-            color: #666;
-            font-size: 18px;
-            /* Slightly larger for emoji */
-            padding: 0;
-            line-height: 1;
+            font-size: 16px;
+            color: #333;
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
+        .forgot-pass {
+            display: block;
+            text-align: right;
+            font-size: 11px;
+            color: #888;
+            text-decoration: none;
+            margin-top: 5px;
+        }
 
-            .login-container {
-                max-width: 100%;
-                border-radius: 15px;
-            }
+        .btn-submit {
+            background: #739E82;
+            /* Matches mockup button color */
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background 0.3s;
+        }
 
-            .login-header {
-                padding: 30px 20px;
-            }
+        .btn-submit:hover {
+            background: #5a8069;
+        }
 
-            .login-header img {
-                height: 50px;
-            }
+        /* Error Message */
+        .error-alert {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
 
-            .login-header h1 {
-                font-size: 24px;
-            }
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
 
-            .login-header p {
-                font-size: 13px;
-            }
-
-            .login-body {
-                padding: 30px 20px;
-            }
-
-            .form-group {
-                margin-bottom: 20px;
-            }
-
-            input[type="email"],
-            input[type="password"],
-            input[type="text"] {
-                padding: 14px 15px;
-                font-size: 16px;
-                /* Prevent zoom on iOS */
-            }
-
-            .btn-login {
-                padding: 16px;
-                font-size: 16px;
-                min-height: 48px;
-                /* Touch-friendly */
-            }
-
-            label {
-                font-size: 13px;
-            }
-
-            .register-link {
-                font-size: 13px;
+            .char-left,
+            .char-right {
+                opacity: 0.3;
+                /* Fade specific images on smaller screens if overlapping */
+                height: 300px;
             }
         }
 
-        @media (max-width: 480px) {
-            .login-header {
-                padding: 25px 15px;
+        @media (max-width: 500px) {
+            .navbar {
+                padding: 10px 20px;
+                height: auto;
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
             }
 
-            .login-body {
-                padding: 25px 15px;
+            .navbar-links {
+                gap: 15px;
+            }
+
+            .navbar-brand {
+                gap: 8px;
+            }
+
+            .brand-text h1 {
+                font-size: 16px;
+            }
+
+            .brand-text p {
+                font-size: 10px;
+            }
+
+            .character-img {
+                display: none;
+            }
+
+            /* Hide characters on mobile */
+            .login-card {
+                padding: 25px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <img src="{{ asset('logo_kalsel.png') }}" alt="Provinsi Logo" class="logo">
-            <h1>Pelayanan K3</h1>
-            <p>Masuk ke akun Anda</p>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <!-- Ganti dengan logo provinsi -->
+            <img src="{{ asset('logo_kalsel.png') }}" alt="Logo">
+            <div class="brand-text">
+                <h1>SIPENAKER</h1>
+                <p>Sistem Informasi Pengaduan Pengawasan Ketenagakerjaan</p>
+            </div>
         </div>
-        <div class="login-body">
+        <div class="navbar-links">
+            <a href="{{ route('register') }}">Daftar</a>
+            <a href="{{ route('login') }}" class="active">Login</a>
+        </div>
+    </nav>
+
+    <!-- Main Section -->
+    <div class="main-container">
+
+        <!-- 
+            TIP UNTUK PENGEMBANG:
+            Untuk memunculkan gambar karakter (PNS Pria/Wanita) seperti desain:
+            1. Simpan gambar karakter di folder: public/pns_pria.png dan public/pns_wanita.png
+            2. Hapus komentar (uncomment) baris <img> di bawah ini.
+        -->
+
+        <!-- <img src="{{ asset('pns_pria.png') }}" class="character-img" style="margin-right: 450px; transform: scaleX(-1);"> -->
+        <!-- <img src="{{ asset('pns_wanita.png') }}" class="character-img" style="margin-left: 450px;"> -->
+
+        <div class="login-card">
+            <p class="welcome-text">welcome !!!</p>
+            <h2 class="login-title">Log In</h2>
+
             @if ($errors->any())
-                <div class="error-message">
+                <div class="error-alert">
                     {{ $errors->first() }}
                 </div>
             @endif
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
-
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus>
+                    <input type="email" name="email" id="email" class="form-control" required autofocus placeholder="">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                    <div style="margin-top: 10px; display: flex; align-items: center;">
-                        <input type="checkbox" id="showPass" onclick="togglePassword()">
-                        <label for="showPass"
-                            style="margin: 0 0 0 8px; font-weight: normal; cursor: pointer; font-size: 14px;">Tampilkan
-                            sandi</label>
+                    <div class="input-group">
+                        <input type="password" name="password" id="password" class="form-control" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <!-- Icon mata sederhana -->
+                            &#128065;
+                        </button>
                     </div>
+                    <a href="#" class="forgot-pass">Forgot Password ?</a>
                 </div>
 
-                <div class="remember-me">
-                    <input type="checkbox" id="remember" name="remember">
-                    <label for="remember">Ingat saya</label>
-                </div>
-
-                <button type="submit" class="btn-login">Masuk</button>
+                <button type="submit" class="btn-submit">Sign In</button>
             </form>
-
-            <div class="register-link">
-                Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a>
-            </div>
         </div>
     </div>
+
     <script>
         function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const checkbox = document.getElementById('showPass');
-
-            if (checkbox.checked) {
-                passwordInput.type = 'text';
+            const input = document.getElementById('password');
+            if (input.type === 'password') {
+                input.type = 'text';
             } else {
-                passwordInput.type = 'password';
+                input.type = 'password';
             }
         }
-
-        // Handle form submission without browser warning
-        document.addEventListener('DOMContentLoaded', function () {
-            const loginForm = document.querySelector('form[action*="login"]');
-            if (loginForm) {
-                loginForm.addEventListener('submit', function (e) {
-                    const submitButton = this.querySelector('button[type="submit"]');
-                    submitButton.disabled = true;
-                    submitButton.textContent = 'Memproses...';
-                    // Let the form submit normally
-                    return true;
-                });
-            }
-        });
     </script>
 </body>
 
