@@ -2136,9 +2136,11 @@
                             <strong>Hasil Preview (JSON)</strong>
                             <pre id="json-output" class="json-preview"></pre>
                             <div class="actions mt-8">
-                                <button type="button" id="download">Download JSON</button>
                             </div>
                         </div>
+                    </form>
+
+                    </form>
                     </form>
                 </div>
             </div>
@@ -2155,10 +2157,21 @@
                                 {{ $item->title }}
                                 <div style="font-size: 13px; color: #555; margin-top: 2px;">{{ $item->subtitle ?? '' }}
                                 </div>
-                                <div style="margin-top: 4px;">
-                                    <span class="badge"
-                                        style="background: #e6fdf0; color: #198754; padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
-                                    <span style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
+                                <div
+                                    style="margin-top: 4px; display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <span class="badge"
+                                            style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
+                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                        <span
+                                            style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
+                                    </div>
+                                    @if($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI')
+                                        <button onclick="editSubmission('{{ $item->type }}', {{ $item->id }})"
+                                            class="btn btn-warning" style="padding: 4px 10px; font-size: 12px;">✏️
+                                            Perbaiki</button>
+                                    @endif
                                 </div>
                                 @if(!empty($item->catatan))
                                     <div
@@ -2758,8 +2771,15 @@
                 }
             }
 
+            let url = '/submit-pengesahan';
+            let editId = document.getElementById('editIdPengesahan').value;
+            if (editId) {
+                url = '/update-pengesahan';
+                formData.append('id', editId);
+            }
+
             try {
-                const resp = await fetch('/submit-pengesahan', {
+                const resp = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -2794,84 +2814,58 @@
             // nothing else for no      w
         });
 
-        async function editSubmission(id, typeRaw) {
-            // Map type label to internal type if needed
-            // Currently typeRaw is display label e.g 'Pelayanan Kesekerja'
-            // Need to map back to 'pelayanan_kesekerja'
-
-            let typeMap = {
-                'Pelayanan Kesekerja': 'pelayanan_kesekerja', // Corrected label from DB
-                'SK P2K3': 'sk_p2k3',
-                'Laporan KK/PAK': 'pelaporan_kk_pak',
-                'Laporan P2K3': 'pelaporan_p2k3'
-            };
-
-            let type = typeMap[typeRaw];
-            if (!type) return alert("Fitur edit belum tersedia untuk jenis layanan ini (" + typeRaw + ")");
-            if (type !== 'pelayanan_kesekerja') return alert("Maaf, saat ini baru Pengesahan Pelayanan K3 yang mendukung fitur Edit.");
-
-            // 1. Fetch Data
+        async function editSubmission(type, id) {
             try {
+                alert("⏳ Sedang mengambil data pengajuan...");
                 let res = await fetch(`/user/submission/${type}/${id}`);
-                if (!res.ok) throw new Error("Gagal mengambil data");
+                if (!res.ok) throw new Error("Gagal mengambil data.");
                 let data = await res.json();
 
-                // 2. Open Form
-                document.getElementById('pelayanan').classList.remove('hidden');
-                document.getElementById('dashboard').classList.add('hidden'); // Hide dashboard if simple hide class used
-                // Or standard showPage if multiple tabs exist. Here standard is "page" class.
-                // Re-using exiting dashboard logic:
-                document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-                document.getElementById('pelayanan').classList.remove('hidden');
+                if (type === 'pelayanan_kesekerja') {
+                    // 1. Show Form
+                    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+                    document.getElementById('pelayanan').classList.remove('hidden');
+                    document.getElementById('pilihanLayanan').value = 'pelkes_full';
+                    tampilForm();
 
-                // 3. Select Service & Show Form
-                document.getElementById('pilihanLayanan').value = 'pelkes_full';
-                tampilForm(); // Existing function to toggle forms
+                    // 2. Fill Data
+                    document.getElementById('editIdPengesahan').value = data.id; // Important: ID for Update
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('jenis').value = data.jenis_pengajuan || '';
+                    document.getElementById('jenis').dispatchEvent(new Event('change')); // Trigger change logic
 
-                // 4. Populate Form
-                document.getElementById('editIdPengesahan').value = data.id;
+                    document.getElementById('tanggal').value = data.tanggal_pengusulan || '';
+                    document.getElementById('nama-perusahaan').value = data.nama_perusahaan || '';
+                    document.getElementById('alamat').value = data.alamat_perusahaan || '';
+                    document.getElementById('sektor').value = data.sektor || '';
 
-                // Populate Inputs by ID assumption (ID matches column usually? No, ids use camelCase in HTML)
-                // Need manual mapping or consistent naming.
-                // HTML IDs: email, jenis, tanggal, nama-perusahaan, alamat, sektor
-                // DB Columns: email, jenis_pengajuan, tanggal_pengusulan, nama_perusahaan, alamat_perusahaan, sektor
+                    // Tenaga Kerja
+                    document.getElementById('wni-laki').value = data.tk_wni_laki || 0;
+                    document.getElementById('wni-perempuan').value = data.tk_wni_perempuan || 0;
+                    document.getElementById('wna-laki').value = data.tk_wna_laki || 0;
+                    document.getElementById('wna-perempuan').value = data.tk_wna_perempuan || 0;
 
-                document.getElementById('email').value = data.email || '';
-                document.getElementById('jenis').value = data.jenis_pengajuan || '';
-                // Trigger change event for 'jenis' to show data-umum and uploads sections
-                document.getElementById('jenis').dispatchEvent(new Event('change'));
+                    // Dokter
+                    document.getElementById('dokter').value = data.nama_dokter || '';
+                    document.getElementById('ttl').value = data.ttl_dokter || '';
+                    document.getElementById('nomor-skp').value = data.nomor_skp_dokter || '';
+                    document.getElementById('masa-skp').value = data.masa_berlaku_skp || '';
+                    document.getElementById('no-hiperkes').value = data.nomor_hiperkes || '';
+                    document.getElementById('str').value = data.nomor_str || '';
+                    document.getElementById('sip').value = data.nomor_sip || '';
+                    document.getElementById('kontak').value = data.kontak || '';
 
-                document.getElementById('tanggal').value = data.tanggal_pengusulan || '';
-                document.getElementById('nama-perusahaan').value = data.nama_perusahaan || '';
-                document.getElementById('alamat').value = data.alamat_perusahaan || '';
-                document.getElementById('sektor').value = data.sektor || '';
-
-                // Tenaga Kerja
-                document.getElementById('wni-laki').value = data.tk_wni_laki || 0;
-                document.getElementById('wni-perempuan').value = data.tk_wni_perempuan || 0;
-                document.getElementById('wna-laki').value = data.tk_wna_laki || 0;
-                document.getElementById('wna-perempuan').value = data.tk_wna_perempuan || 0;
-
-                // Dokter details
-                document.getElementById('dokter').value = data.nama_dokter || '';
-                document.getElementById('ttl').value = data.ttl_dokter || '';
-                document.getElementById('nomor-skp').value = data.nomor_skp_dokter || '';
-                document.getElementById('masa-skp').value = data.masa_berlaku_skp || '';
-                document.getElementById('no-hiperkes').value = data.nomor_hiperkes || '';
-                document.getElementById('str').value = data.nomor_str || '';
-                document.getElementById('sip').value = data.nomor_sip || '';
-                document.getElementById('kontak').value = data.kontak || '';
-
-                // Scroll to form
-                document.getElementById('form_pelkes_full').scrollIntoView({ behavior: 'smooth' });
-
-                alert("Silakan perbaiki data dan submit ulang. File yang tidak diupload ulang akan tetap menggunakan file lama.");
-
+                    alert("✅ Formulir telah diisi dengan data sebelumnya. Silakan perbaiki bagian yang salah dan upload ulang file jika diperlukan.");
+                    window.scrollTo(0, 0);
+                } else {
+                    alert("⚠️ Fitur edit untuk layanan tipe ini belum tersedia di demo ini.");
+                }
             } catch (e) {
                 console.error(e);
-                alert("Gagal memuat data pengajuan.");
+                alert("❌ Error: " + e.message);
             }
         }
+
         // Handle logout - simplified
         const userLogoutForm = document.getElementById('userLogoutForm');
         if (userLogoutForm) {
