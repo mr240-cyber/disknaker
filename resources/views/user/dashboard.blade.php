@@ -2162,8 +2162,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2578,7 +2578,16 @@
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             const el = document.getElementById(pageId);
             if (el) el.classList.remove('hidden');
-            // if (pageId === 'story') updateStory(); // removed
+            // Close sidebar on mobile if open
+            const sidebar = document.querySelector('aside');
+            const overlay = document.querySelector('.overlay');
+            if (sidebar && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+            if (overlay && overlay.classList.contains('active')) {
+                overlay.classList.remove('active');
+            }
+            window.scrollTo(0, 0);
         }
         showPage('dashboard');
 
@@ -2800,7 +2809,13 @@
         }
 
         // attach submit
-        document.getElementById('form').addEventListener('submit', submitReal);
+
+        // attach submit
+        const formPelkes = document.getElementById('form_pelkes_full');
+        if (formPelkes) {
+            formPelkes.addEventListener('submit', submitReal);
+        }
+
 
         // show data-umum & uploads when jenis changes
         document.getElementById('jenis').addEventListener('change', (e) => {
