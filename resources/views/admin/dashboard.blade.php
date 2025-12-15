@@ -835,6 +835,12 @@
             let b = berkas[selectedIndex];
             let catatan = document.getElementById("catatanInput").value;
 
+            // Validation: Reject/Revise MUST have a note
+            if ((status === 'DITOLAK' || status === 'PERLU REVISI') && !catatan.trim()) {
+                alert("⚠️ Harap isi catatan alasan penolakan/revisi terlebih dahulu!");
+                return;
+            }
+
             try {
                 let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 let res = await fetch('/admin/submission/update', {
@@ -845,7 +851,7 @@
                     },
                     body: JSON.stringify({
                         id: b.id,
-                        type: b.type, // Use b.type here too
+                        type: b.type,
                         status: status,
                         catatan: catatan
                     })
@@ -857,21 +863,31 @@
                     return;
                 }
 
-                let result = await res.json();
+                let text = await res.text();
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (err) {
+                    console.error("Invalid JSON:", text);
+                    throw new Error("Respon server tidak valid (Bukan JSON). Cek konsol.");
+                }
+
+                if (!res.ok) {
+                     throw new Error(result.message || "Gagal memperbarui status.");
+                }
+
                 if (result.status === 'success') {
                     alert("✅ Status berhasil diperbarui!");
-                    // Update local data just for UI
                     berkas[selectedIndex].status = status;
                     renderValidasi();
+                    renderSurat(); // Update surat table too if needed
                     closeModal();
-                    // Optional: reload page to refresh data strictly
-                    // window.location.reload(); 
                 } else {
-                    alert("❌ Gagal memperbarui: " + result.message);
+                    alert("❌ Gagal: " + result.message);
                 }
             } catch (e) {
                 console.error(e);
-                alert("❌ Terjadi kesalahan sistem.");
+                alert("❌ Error: " + e.message);
             }
         }
 
