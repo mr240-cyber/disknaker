@@ -291,9 +291,7 @@
     <!-- Main Section -->
     <div class="main-container">
 
-        <!-- Character Images -->
-        <img src="{{ asset('pns_pria.png') }}" class="character-img char-left" alt="PNS Pria">
-        <img src="{{ asset('pns_wanita.png') }}" class="character-img char-right" alt="PNS Wanita">
+
 
         <div class="login-card">
             <p class="welcome-text">welcome !!!</p>
