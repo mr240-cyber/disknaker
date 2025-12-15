@@ -618,8 +618,9 @@
                                                 style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; {{ $style }}">
                                                 {{ $s->status }}
                                             </span>
-                                            @if($s->catatan)
-                                                <div style="font-size: 11px; color: #666; margin-top: 4px;">Admin: {{ $s->catatan }}
+                                            @if(!empty($s->catatan))
+                                                <div style="font-size: 11px; color: #666; margin-top: 4px;">Admin:
+                                                    {{ $s->catatan ?? '' }}
                                                 </div>
                                             @endif
 
