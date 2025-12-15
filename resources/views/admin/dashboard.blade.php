@@ -590,7 +590,7 @@
     <!-- MODAL -->
     <div class="modal" id="modalDetail">
         <div class="modal-content">
-            <h3>Detail Berkas</h3>
+            <h3>Detail Berkas (Updated)</h3>
             <div id="detailContent"></div>
             <br>
             <br>
