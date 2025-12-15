@@ -467,6 +467,81 @@
             if (sidebar) sidebar.classList.toggle('active');
             if (overlay) overlay.classList.toggle('active');
         }
+    async function editSubmission(type, id) {
+            try {
+                // Ensure page is ready
+                const pelSection = document.getElementById('pelayanan');
+                if(!pelSection) {
+                    alert('Halaman tidak siap. Silakan refresh.');
+                    return;
+                }
+
+                alert("⏳ Sedang mengambil data pengajuan...");
+                let res = await fetch(`/user/submission/${type}/${id}`);
+                if (!res.ok) throw new Error("Gagal mengambil data.");
+                let data = await res.json();
+
+                if (type === 'pelayanan_kesekerja') {
+                    // 1. Show Form
+                    showPage('pelayanan'); // Use the helper
+                    document.getElementById('pilihanLayanan').value = 'pelkes_full';
+                    
+                    // Call user-defined 'tampilForm' if available, otherwise manual
+                    if(typeof tampilForm === 'function') {
+                        tampilForm();
+                    } else {
+                        // Fallback manual show
+                        document.querySelectorAll('.formdata').forEach(f => f.classList.add('hidden'));
+                        document.getElementById('form_pelkes_full').classList.remove('hidden');
+                        document.getElementById('data-umum').classList.remove('hidden');
+                        document.getElementById('uploads').classList.remove('hidden');
+                    }
+
+                    // 2. Fill Data
+                    const setVal = (id, val) => {
+                        const el = document.getElementById(id);
+                        if(el && val !== null && val !== undefined) el.value = val;
+                    };
+
+                    setVal('editIdPengesahan', data.id); // Important: ID for Update
+                    setVal('email', data.email);
+                    setVal('jenis', data.jenis_pengajuan);
+                    
+                    // Trigger change logic for jenis
+                    const jenisEl = document.getElementById('jenis');
+                    if(jenisEl) jenisEl.dispatchEvent(new Event('change'));
+
+                    setVal('tanggal', data.tanggal_pengusulan);
+                    setVal('nama-perusahaan', data.nama_perusahaan);
+                    setVal('alamat', data.alamat_perusahaan);
+                    setVal('sektor', data.sektor);
+
+                    // Tenaga Kerja
+                    setVal('wni-laki', data.tk_wni_laki || 0);
+                    setVal('wni-perempuan', data.tk_wni_perempuan || 0);
+                    setVal('wna-laki', data.tk_wna_laki || 0);
+                    setVal('wna-perempuan', data.tk_wna_perempuan || 0);
+
+                    // Dokter
+                    setVal('dokter', data.nama_dokter);
+                    setVal('ttl', data.ttl_dokter);
+                    setVal('nomor-skp', data.nomor_skp_dokter);
+                    setVal('masa-skp', data.masa_berlaku_skp);
+                    setVal('no-hiperkes', data.nomor_hiperkes);
+                    setVal('str', data.nomor_str);
+                    setVal('sip', data.nomor_sip);
+                    setVal('kontak', data.kontak);
+
+                    alert("✅ Formulir telah diisi dengan data sebelumnya. Silakan perbaiki bagian yang salah dan upload ulang file jika diperlukan.");
+                    window.scrollTo(0, 0);
+                } else {
+                    alert("⚠️ Fitur edit untuk layanan tipe ini belum tersedia di demo ini.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("❌ Error: " + e.message);
+            }
+        }
     </script>
 </head>
 
@@ -653,9 +728,9 @@
                                                 </div>
                                             @endif
 
-                                            @if(in_array($s->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)']))
+                                            @if(in_array($s->status, ['DITOLAK', 'PERLU REVISI', 'DITOLAK (Revisi)', 'Revisi', 'REVISI']))
                                                 <div style="margin-top: 5px;">
-                                                    <button onclick="editSubmission({{ $s->id }}, '{{ $s->type }}')"
+                                                    <button onclick="editSubmission('{{ $s->type }}', {{ $s->id }})"
                                                         style="padding: 4px 8px; border: 1px solid #ea580c; background: #fff7ed; color: #ea580c; border-radius: 4px; cursor: pointer; font-size: 11px;">
                                                         ✏️ Perbaiki
                                                     </button>
@@ -2191,8 +2266,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                               color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                               padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2211,8 +2286,8 @@
                             </div>
                         @endforeach
                     @else
-                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
-                        @endif
+                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                    @endif
                     </div>
                 </div>
             </div>
@@ -2843,57 +2918,7 @@
             // nothing else for no      w
         });
 
-        async function editSubmission(type, id) {
-            try {
-                alert("⏳ Sedang mengambil data pengajuan...");
-                let res = await fetch(`/user/submission/${type}/${id}`);
-                if (!res.ok) throw new Error("Gagal mengambil data.");
-                let data = await res.json();
-
-                if (type === 'pelayanan_kesekerja') {
-                    // 1. Show Form
-                    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-                    document.getElementById('pelayanan').classList.remove('hidden');
-                    document.getElementById('pilihanLayanan').value = 'pelkes_full';
-                    tampilForm();
-
-                    // 2. Fill Data
-                    document.getElementById('editIdPengesahan').value = data.id; // Important: ID for Update
-                    document.getElementById('email').value = data.email || '';
-                    document.getElementById('jenis').value = data.jenis_pengajuan || '';
-                    document.getElementById('jenis').dispatchEvent(new Event('change')); // Trigger change logic
-
-                    document.getElementById('tanggal').value = data.tanggal_pengusulan || '';
-                    document.getElementById('nama-perusahaan').value = data.nama_perusahaan || '';
-                    document.getElementById('alamat').value = data.alamat_perusahaan || '';
-                    document.getElementById('sektor').value = data.sektor || '';
-
-                    // Tenaga Kerja
-                    document.getElementById('wni-laki').value = data.tk_wni_laki || 0;
-                    document.getElementById('wni-perempuan').value = data.tk_wni_perempuan || 0;
-                    document.getElementById('wna-laki').value = data.tk_wna_laki || 0;
-                    document.getElementById('wna-perempuan').value = data.tk_wna_perempuan || 0;
-
-                    // Dokter
-                    document.getElementById('dokter').value = data.nama_dokter || '';
-                    document.getElementById('ttl').value = data.ttl_dokter || '';
-                    document.getElementById('nomor-skp').value = data.nomor_skp_dokter || '';
-                    document.getElementById('masa-skp').value = data.masa_berlaku_skp || '';
-                    document.getElementById('no-hiperkes').value = data.nomor_hiperkes || '';
-                    document.getElementById('str').value = data.nomor_str || '';
-                    document.getElementById('sip').value = data.nomor_sip || '';
-                    document.getElementById('kontak').value = data.kontak || '';
-
-                    alert("✅ Formulir telah diisi dengan data sebelumnya. Silakan perbaiki bagian yang salah dan upload ulang file jika diperlukan.");
-                    window.scrollTo(0, 0);
-                } else {
-                    alert("⚠️ Fitur edit untuk layanan tipe ini belum tersedia di demo ini.");
-                }
-            } catch (e) {
-                console.error(e);
-                alert("❌ Error: " + e.message);
-            }
-        }
+        // editSubmission moved to HEAD for safety
 
         // Handle logout - simplified
         const userLogoutForm = document.getElementById('userLogoutForm');
