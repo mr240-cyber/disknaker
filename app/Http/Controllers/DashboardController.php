@@ -85,7 +85,11 @@ class DashboardController extends Controller
             'revisi' => $submissions->filter(fn($i) => in_array($i->status, ['DITOLAK', 'PERLU REVISI']))->count(),
         ];
 
-        return view('user.dashboard', compact('submissions', 'stats'));
+        return view('user.dashboard', [
+            'submissions' => $submissions,
+            'stats' => $stats,
+            'history' => $submissions // Alias for 'story' page
+        ]);
     }
 
     public function adminIndex()
@@ -221,6 +225,8 @@ class DashboardController extends Controller
 
     public function uploadSurat(Request $request)
     {
+        \Illuminate\Support\Facades\Log::info('Upload Surat Request', $request->all());
+
         $request->validate([
             'id' => 'required',
             'type' => 'required',
@@ -233,18 +239,40 @@ class DashboardController extends Controller
         }
 
         if ($request->hasFile('file_surat')) {
-            $path = $request->file('file_surat')->store('uploads/surat_balasan', 'public');
+            try {
+                $path = $request->file('file_surat')->store('uploads/surat_balasan', 'public');
+                \Illuminate\Support\Facades\Log::info('File stored at: ' . $path);
 
-            DB::table($table)->where('id', $request->input('id'))->update([
-                'file_balasan' => $path,
-                'status_pengajuan' => 'DOKUMEN TERSEDIA', // Auto update status
-                'updated_at' => now()
-            ]);
+                $updated = DB::table($table)->where('id', $request->input('id'))->update([
+                    'file_balasan' => $path,
+                    'status_pengajuan' => 'DOKUMEN TERSEDIA', // Auto update status
+                    'updated_at' => now()
+                ]);
 
-            return response()->json([
-                "status" => "success",
-                "message" => "Surat berhasil diupload dan status diperbarui menjadi DOKUMEN TERSEDIA."
-            ]);
+                if ($updated === 0) {
+                    \Illuminate\Support\Facades\Log::warning("Update failed: No row affected for ID {$request->input('id')} in table $table");
+
+                    // Cleanup orphan file
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+                    }
+
+                    // Check if row actually exists
+                    $exists = DB::table($table)->where('id', $request->input('id'))->exists();
+                    if (!$exists) {
+                        return response()->json(["status" => "error", "message" => "Data tidak ditemukan di database."], 404);
+                    }
+                }
+
+                return response()->json([
+                    "status" => "success",
+                    "message" => "Surat berhasil diupload dan status diperbarui menjadi DOKUMEN TERSEDIA.",
+                    "path" => $path
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Upload Error: " . $e->getMessage());
+                return response()->json(["status" => "error", "message" => "Gagal menyimpan file: " . $e->getMessage()], 500);
+            }
         }
 
         return response()->json(["status" => "error", "message" => "File tidak ditemukan."], 400);

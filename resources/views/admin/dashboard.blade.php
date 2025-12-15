@@ -1125,23 +1125,41 @@
                     body: formData
                 });
 
+                let data = await res.json();
+
                 if (res.status === 419) {
                     alert("Session expired"); window.location.reload(); return;
                 }
 
-                let data = await res.json();
+                if (res.status === 422) {
+                    // Validation errors
+                    let errorMsg = "Validasi Gagal:\n";
+                    if (data.errors) {
+                        for (const [key, msgs] of Object.entries(data.errors)) {
+                            errorMsg += `- ${msgs.join(', ')}\n`;
+                        }
+                    } else {
+                        errorMsg += data.message;
+                    }
+                    alert(errorMsg);
+                    return;
+                }
+
                 if (data.status === 'success') {
                     alert("✅ Berhasil upload!");
                     berkas[currentUploadIndex].status = "DOKUMEN TERSEDIA";
+                    // Update local file path if returned
+                    if (data.path) berkas[currentUploadIndex].file_balasan = data.path;
+
                     renderSurat();
                     renderValidasi(); // Update main table too
                     document.getElementById("modalUpload").style.display = "none";
                 } else {
-                    alert("❌ Gagal: " + data.message);
+                    alert("❌ Gagal: " + (data.message || 'Unknown Error'));
                 }
             } catch (e) {
                 console.error(e);
-                alert("❌ Error sistem.");
+                alert("❌ Error sistem (Cek Konsol)");
             }
         }
 
