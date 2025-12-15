@@ -951,9 +951,15 @@
             let dateString = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
             // Data Mapping (Handle nulls)
-            let namaPerusahaan = data.subtitle || data.perusahaan || "....................";
+            // Use specific fields from 'pelayanan_kesekerja' table
+            let namaPerusahaan = data.nama_perusahaan || data.subtitle || data.perusahaan || "....................";
             let alamatPerusahaan = data.alamat_perusahaan || "....................";
-            let namaDokter = data.dokter_nama || data.personil_nama || data.nama || "....................";
+
+            // Doctor Details
+            let namaDokter = data.nama_dokter || data.personil_nama || "....................";
+            let ttlDokter = data.ttl_dokter || "....................";
+            let nomorStr = data.nomor_str || "....................";
+            let nomorSkp = data.nomor_skp_dokter || "....................";
 
             // Header HTML
             let kop = `
@@ -1039,9 +1045,11 @@
                         <td style="vertical-align: top;">:</td>
                         <td style="text-align: justify;">
                             Dokter Perusahaan yang bertanggungjawab dalam pelayanan kesehatan kerja:<br>
-                            <table>
-                                <tr><td>Nama</td><td>: <strong>${namaDokter}</strong></td></tr>
-                                <tr><td>Tempat, Tgl. Lahir</td><td>: -</td></tr>
+                            <table style="width: 100%;">
+                                <tr><td style="width: 140px;">Nama</td><td>: <strong>${namaDokter}</strong></td></tr>
+                                <tr><td>Tempat, Tgl. Lahir</td><td>: ${ttlDokter}</td></tr>
+                                <tr><td>Nomor STR Dokter</td><td>: ${nomorStr}</td></tr>
+                                <tr><td>SKP Dokter Pemeriksa</td><td>: ${nomorSkp}</td></tr>
                             </table>
                         </td>
                     </tr>
