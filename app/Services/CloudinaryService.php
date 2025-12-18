@@ -18,6 +18,19 @@ class CloudinaryService
     public static function upload(UploadedFile $file, string $folder = 'uploads'): ?string
     {
         try {
+            // Verify credentials are loaded
+            $cloudName = config('cloudinary.cloud_url') ?: env('CLOUDINARY_URL');
+
+            if (!$cloudName) {
+                Log::error('Cloudinary Upload Failed: CLOUDINARY_URL not configured', [
+                    'folder' => $folder,
+                    'file' => $file->getClientOriginalName(),
+                    'env_cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'env_api_key' => env('CLOUDINARY_API_KEY') ? 'SET' : 'NOT SET',
+                ]);
+                return null;
+            }
+
             // Upload file to Cloudinary
             $uploadedFileUrl = Cloudinary::upload($file->getRealPath(), [
                 'folder' => $folder,
@@ -38,7 +51,9 @@ class CloudinaryService
             Log::error('Cloudinary Upload Failed', [
                 'folder' => $folder,
                 'error' => $e->getMessage(),
-                'file' => $file->getClientOriginalName()
+                'error_class' => get_class($e),
+                'file' => $file->getClientOriginalName(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return null;
