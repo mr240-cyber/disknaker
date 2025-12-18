@@ -110,8 +110,6 @@ if (app()->isLocal()) {
             echo "<p style='color: red;'><b>WARNING: No users found! Please run /migrate first.</b></p>";
         }
     });
-
-    });
 }
 
 // Debug: Check Cloudinary Config (TEMPORARY - Remove after debugging)
