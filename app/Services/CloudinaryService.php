@@ -48,6 +48,7 @@ class CloudinaryService
             return $uploadedFileUrl;
 
         } catch (\Exception $e) {
+            self::$lastError = $e->getMessage();
             Log::error('Cloudinary Upload Failed', [
                 'folder' => $folder,
                 'error' => $e->getMessage(),

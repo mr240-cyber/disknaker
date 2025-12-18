@@ -264,14 +264,11 @@ class DashboardController extends Controller
             );
 
             if (!$cloudinaryUrl) {
-                $errorDetail = "";
-                if (!env('CLOUDINARY_URL') && !config('cloudinary.cloud_url')) {
-                    $errorDetail = " [Error: CLOUDINARY_URL tidak terbaca di server]";
-                }
+                $errorDetail = \App\Services\CloudinaryService::$lastError ?: "Gagal koneksi ke Cloudinary.";
 
                 return response()->json([
                     "status" => "error",
-                    "message" => "Gagal mengupload file ke Cloudinary." . $errorDetail . " Silakan hubungi admin atau cek log server."
+                    "message" => "Gagal upload: " . $errorDetail . " (Cek koneksi/konfigurasi)"
                 ], 500);
             }
 
