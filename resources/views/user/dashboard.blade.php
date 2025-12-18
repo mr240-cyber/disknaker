@@ -2488,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                               color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                               padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2517,381 +2517,386 @@
             <!-- UNDUH -->
             <div id="unduhDok" class="page hidden">
                 <style>
-                    /* Scoped styles for unduh form to avoid conflicts */
-                    .unduh-container {
-                        max-width: 880px;
-                        margin: 16px auto;
-                        padding: 20px
+                    /* Premium Aesthetics for Unduh Page */
+                    .unduh-wrapper {
+                        max-width: 900px;
+                        margin: 0 auto;
+                        padding: 24px;
+                        font-family: 'Inter', sans-serif;
                     }
 
-                    .unduh-header {
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
-                        margin-bottom: 12px
+                    .unduh-hero {
+                        background: linear-gradient(135deg, #0c2c66 0%, #1e40af 100%);
+                        color: white;
+                        padding: 32px;
+                        border-radius: 20px;
+                        margin-bottom: 24px;
+                        box-shadow: 0 10px 25px -5px rgba(12, 44, 102, 0.3);
+                        position: relative;
+                        overflow: hidden;
                     }
 
-                    .unduh-brand {
-                        background: #0c2c66;
-                        color: #fff;
-                        padding: 8px 12px;
-                        border-radius: 8px;
-                        font-weight: 700
+                    .unduh-hero::after {
+                        content: '';
+                        position: absolute;
+                        top: -50%;
+                        right: -10%;
+                        width: 300px;
+                        height: 300px;
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: 50%;
                     }
 
-                    .unduh-card {
-                        background: #fff;
-                        padding: 18px;
-                        border-radius: 12px;
-                        box-shadow: 0 6px 18px rgba(12, 44, 102, 0.06)
+                    .unduh-hero h2 {
+                        margin: 0;
+                        font-size: 24px;
+                        font-weight: 700;
                     }
 
-                    .unduh-lead {
-                        color: #6b7280;
-                        font-size: 13px
-                    }
-
-                    .unduh-row {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 12px
-                    }
-
-                    label {
-                        display: block;
-                        font-size: 13px;
-                        margin-bottom: 6px
-                    }
-
-                    .unduh-required {
-                        color: #e11d48;
-                        margin-left: 6px
-                    }
-
-                    input[type=text],
-                    input[type=email],
-                    input[type=date],
-                    select,
-                    textarea {
-                        width: 100%;
-                        padding: 10px 12px;
-                        border: 1px solid #e6e9ef;
-                        border-radius: 8px;
+                    .unduh-hero p {
+                        margin: 8px 0 0;
+                        opacity: 0.9;
                         font-size: 14px;
-                        background: #fff
                     }
 
-                    textarea {
-                        min-height: 86px;
-                        resize: vertical
+                    .doc-grid {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                        gap: 20px;
                     }
 
-                    .unduh-full {
-                        grid-column: 1 / -1
-                    }
-
-                    .unduh-actions {
-                        display: flex;
-                        gap: 10px;
-                        align-items: center;
-                        margin-top: 16px
-                    }
-
-                    .unduh-btn {
-                        background: #0c2c66;
-                        color: #fff;
-                        border: 0;
-                        padding: 10px 14px;
-                        border-radius: 10px;
-                        cursor: pointer
-                    }
-
-                    .unduh-btn.secondary {
-                        background: #f3f4f6;
-                        color: #111;
-                        border: 1px solid #e5e7eb
-                    }
-
-                    .unduh-muted {
-                        color: #6b7280;
-                        font-size: 13px
-                    }
-
-                    .unduh-success {
-                        display: none;
-                        margin-top: 18px;
-                        padding: 14px;
-                        border-radius: 10px;
-                        background: linear-gradient(180deg, #ecfeff 0%, #f8fcff 100%);
-                        border: 1px solid #c0f0f0
-                    }
-
-                    .unduh-links {
+                    .doc-card {
+                        background: rgba(255, 255, 255, 0.8);
+                        backdrop-filter: blur(10px);
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+                        border-radius: 16px;
+                        padding: 20px;
+                        transition: all 0.3s ease;
                         display: flex;
                         flex-direction: column;
-                        gap: 8px;
-                        margin-top: 8px
-                    }
-
-                    .unduh-doc-link {
-                        display: flex;
                         justify-content: space-between;
-                        align-items: center;
-                        padding: 10px;
-                        border-radius: 8px;
-                        border: 1px dashed #dbeafe
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
                     }
 
-                    .unduh-doc-link a {
+                    .doc-card:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 12px 20px -8px rgba(12, 44, 102, 0.15);
+                        border-color: #0c2c66;
+                    }
+
+                    .doc-type {
+                        font-size: 12px;
+                        font-weight: 600;
                         color: #0c2c66;
-                        text-decoration: none;
-                        font-weight: 600
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                        margin-bottom: 8px;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
                     }
 
-                    .unduh-note {
-                        margin-top: 12px;
+                    .doc-title {
+                        font-size: 16px;
+                        font-weight: 700;
+                        color: #1f2937;
+                        margin-bottom: 4px;
+                    }
+
+                    .doc-subtitle {
                         font-size: 13px;
-                        color: #6b7280
+                        color: #6b7280;
+                        margin-bottom: 16px;
                     }
 
-                    @media (max-width:720px) {
-                        .unduh-row {
-                            grid-template-columns: 1fr
+                    .btn-unduh {
+                        background: #0c2c66;
+                        color: white;
+                        border: none;
+                        padding: 10px 16px;
+                        border-radius: 10px;
+                        font-weight: 600;
+                        font-size: 14px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        transition: background 0.2s;
+                    }
+
+                    .btn-unduh:hover {
+                        background: #081e4a;
+                    }
+
+                    /* Receipt Modal */
+                    .modal-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0, 0, 0, 0.5);
+                        backdrop-filter: blur(4px);
+                        display: none;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 1000;
+                        padding: 16px;
+                    }
+
+                    .modal-content {
+                        background: white;
+                        width: 100%;
+                        max-width: 500px;
+                        border-radius: 20px;
+                        padding: 32px;
+                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                        position: relative;
+                        animation: modalSlide 0.3s ease-out;
+                    }
+
+                    @keyframes modalSlide {
+                        from {
+                            transform: translateY(20px);
+                            opacity: 0;
                         }
+
+                        to {
+                            transform: translateY(0);
+                            opacity: 1;
+                        }
+                    }
+
+                    .modal-close {
+                        position: absolute;
+                        top: 20px;
+                        right: 20px;
+                        background: #f3f4f6;
+                        border: none;
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .modal-header h3 {
+                        margin: 0;
+                        font-size: 20px;
+                        color: #111827;
+                    }
+
+                    .modal-body {
+                        margin-top: 20px;
+                    }
+
+                    .form-group {
+                        margin-bottom: 16px;
+                    }
+
+                    .form-group label {
+                        display: block;
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: #374151;
+                        margin-bottom: 6px;
+                    }
+
+                    .form-group input,
+                    .form-group select {
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 10px;
+                        font-size: 14px;
+                        transition: border-color 0.2s;
+                    }
+
+                    .form-group input:focus {
+                        outline: none;
+                        border-color: #0c2c66;
+                        ring: 2px solid rgba(12, 44, 102, 0.1);
+                    }
+
+                    .empty-state {
+                        text-align: center;
+                        padding: 60px 20px;
+                        background: #f9fafb;
+                        border-radius: 20px;
+                        border: 2px dashed #e5e7eb;
+                    }
+
+                    .empty-state i {
+                        font-size: 48px;
+                        color: #d1d5db;
+                        margin-bottom: 16px;
+                        display: block;
+                    }
+
+                    .empty-state p {
+                        color: #6b7280;
+                        font-size: 16px;
+                    }
+
+                    /* Reveal Link Style */
+                    .reveal-box {
+                        display: none;
+                        margin-top: 24px;
+                        padding: 20px;
+                        background: #ecfdf5;
+                        border: 1px solid #10b981;
+                        border-radius: 12px;
+                        text-align: center;
+                    }
+
+                    .btn-download-now {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: #10b981;
+                        color: white;
+                        text-decoration: none;
+                        padding: 12px 24px;
+                        border-radius: 10px;
+                        font-weight: 700;
+                        margin-top: 12px;
+                    }
+
+                    .btn-download-now:hover {
+                        background: #059669;
                     }
                 </style>
 
-                <div class="unduh-container">
-                    <div class="unduh-header">
-                        <div class="unduh-brand">K3</div>
-                        <div>
-                            <div class="bold-title">Tanda Terima Unduh Dokumen Layanan K3</div>
-                            <div class="unduh-muted">Isi form sebelum mengunduh dokumen.</div>
-                        </div>
+                <div class="unduh-wrapper">
+                    <div class="unduh-hero">
+                        <h2>Pusat Unduh Dokumen</h2>
+                        <p>Dokumen hasil pengajuan Anda yang telah disetujui dapat diunduh di sini setelah mengisi tanda
+                            terima digital.</p>
                     </div>
 
-                    <main>
-                        <div class="unduh-card">
-                            <form id="unduh_formUnduh" novalidate>
-                                <div class="login-info">
-                                    <div class="unduh-muted">Anda masuk sebagai</div>
-                                    <div class="account-info">
-                                        <input id="unduh_emailAccount" type="email" value="email@example.com" readonly
-                                            class="email-display" />
-                                        <a href="#" id="unduh_gantiAkun" class="unduh-muted">Ganti akun</a>
-                                    </div>
-                                </div>
-
-                                <div class="unduh-row">
+                    @if(isset($finished) && count($finished) > 0)
+                        <div class="doc-grid">
+                            @foreach($finished as $doc)
+                                <div class="doc-card">
                                     <div>
-                                        <label for="unduh_email">Email <span class="unduh-required">*</span></label>
-                                        <input id="unduh_email" name="unduh_email" type="email"
-                                            placeholder="email@contoh.com" required />
-                                    </div>
-
-                                    <div>
-                                        <label for="unduh_nama">Nama Penerima Dokumen <span
-                                                class="unduh-required">*</span></label>
-                                        <input id="unduh_nama" name="unduh_nama" type="text" placeholder="Nama lengkap"
-                                            required />
-                                    </div>
-
-                                    <div>
-                                        <label for="unduh_jabatan">Jabatan <span class="unduh-required">*</span></label>
-                                        <input id="unduh_jabatan" name="unduh_jabatan" type="text"
-                                            placeholder="Contoh: HR Manager" required />
-                                    </div>
-
-                                    <div>
-                                        <label for="unduh_namaPerusahaan">Nama Perusahaan <span
-                                                class="unduh-required">*</span></label>
-                                        <input id="unduh_namaPerusahaan" name="unduh_namaPerusahaan" type="text"
-                                            placeholder="Nama perusahaan" required />
-                                    </div>
-
-                                    <div class="unduh-full">
-                                        <label for="unduh_alamat">Alamat Perusahaan <span
-                                                class="unduh-required">*</span></label>
-                                        <textarea id="unduh_alamat" name="unduh_alamat" placeholder="Alamat lengkap"
-                                            required></textarea>
-                                    </div>
-
-                                    <div>
-                                        <label for="unduh_sektor">Sektor Perusahaan <span
-                                                class="unduh-required">*</span></label>
-                                        <select id="unduh_sektor" name="unduh_sektor" required>
-                                            <option value="">-- Pilih sektor --</option>
-                                            <option>Manufaktur</option>
-                                            <option>Jasa</option>
-                                            <option>Konstruksi</option>
-                                            <option>Kesehatan</option>
-                                            <option>Pendidikan</option>
-                                            <option>Lainnya</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label for="unduh_tanggalUnduh">Tanggal Unduh Dokumen <span
-                                                class="unduh-required">*</span></label>
-                                        <input id="unduh_tanggalUnduh" name="unduh_tanggalUnduh" type="date" required />
-                                    </div>
-
-                                    <div class="unduh-full">
-                                        <label>Dokumen yang diunduh <span class="unduh-required">*</span></label>
-                                        <div class="doc-links-container">
-                                            <label><input type="radio" name="unduh_dokumen" value="sk_p2k3" required />
-                                                SK P2K3</label>
-                                            <label><input type="radio" name="unduh_dokumen"
-                                                    value="sk_pelayanan_kesehatan" /> SK Pengesahan
-                                                Penyelenggaraan Pelayanan Kesehatan Kerja</label>
+                                        <div class="doc-type">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                            {{ str_replace('_', ' ', $doc->type) }}
                                         </div>
+                                        <div class="doc-title">{{ $doc->title }}</div>
+                                        <div class="doc-subtitle">{{ $doc->subtitle }}</div>
                                     </div>
-
-                                    <div id="unduh_pilihanDetail" class="unduh-full hidden">
-                                        <label>Detail Dokumen</label>
-                                        <div class="unduh-muted">(informasi tambahan jika perlu)</div>
-                                        <input id="unduh_detailDokumen" name="unduh_detailDokumen" type="text"
-                                            placeholder="Contoh: versi, nomor SK, catatan lain" />
-                                    </div>
-
+                                    <button class="btn-unduh" onclick="openReceiptModal('{{ $doc->title }}', '{{ $doc->file_balasan }}')">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                        Unduh Dokumen
+                                    </button>
                                 </div>
-
-                                <div class="unduh-actions">
-                                    <button type="submit" class="unduh-btn">Kirim &amp; Tampilkan Link Unduhan</button>
-                                    <button type="button" class="unduh-btn secondary" id="unduh_resetBtn">Reset</button>
-                                    <div class="unduh-muted ml-auto">* Menunjukkan pertanyaan yang wajib diisi</div>
-                                </div>
-                            </form>
-
-                            <div id="unduh_successBox" class="unduh-success" role="status" aria-live="polite">
-                                <strong>Tanda Terima Unduh Dokumen Layanan K3</strong>
-                                <p class="unduh-muted mt-6">Terima kasih telah mengisi tanda terima unduh dokumen.
-                                    Selanjutnya dapat mengunduh dokumen pada link berikut:</p>
-
-                                <div class="unduh-links">
-                                    <div class="unduh-doc-link" id="unduh_linkSkP2k3">
-                                        <div>SK P2K3</div>
-                                        <div class="account-info">
-                                            <a href="https://shorturl.at/fFM7o" target="_blank" rel="noopener">Buka /
-                                                Unduh</a>
-                                            <button type="button" class="unduh-btn secondary"
-                                                data-copy="https://shorturl.at/fFM7o">Salin</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="unduh-doc-link" id="unduh_linkSkPelayanan">
-                                        <div>SK Pengesahan Penyelenggaraan Pelayanan Kesehatan Kerja</div>
-                                        <div class="account-info">
-                                            <a href="https://shorturl.at/DSuYx" target="_blank" rel="noopener">Buka /
-                                                Unduh</a>
-                                            <button type="button" class="unduh-btn secondary"
-                                                data-copy="https://shorturl.at/DSuYx">Salin</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="unduh-note">Catatan: Link tersedia sesuai pilihan dokumen yang Anda pilih
-                                    pada form. Jika
-                                    hanya memilih satu, link lain tetap terlihat untuk referensi.</div>
-                            </div>
+                            @endforeach
                         </div>
-                    </main>
+                    @else
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px; display: block;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                            <p>Belum ada dokumen yang tersedia untuk diunduh.<br><span style="font-size: 13px; opacity: 0.7;">Pastikan pengajuan Anda telah berstatus "SELESAI".</span></p>
+                        </div>
+                    @endif
                 </div>
 
+                <!-- Tanda Terima Modal -->
+                <div id="receiptModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <button class="modal-close" onclick="closeReceiptModal()">&times;</button>
+                        <div class="modal-header">
+                            <h3>Tanda Terima Penjemputan Dokumen</h3>
+                            <p id="modalDocTitle" class="doc-subtitle" style="margin-top: 4px;"></p>
+                        </div>
+                        <div class="modal-body">
+                            <form id="receiptForm" onsubmit="handleReceiptSubmit(event)">
+                                <div class="form-group">
+                                    <label>Nama Penerima</label>
+                                    <input type="text" id="receipt_name" required value="{{ Auth::user()->nama_lengkap }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Jabatan</label>
+                                    <input type="text" id="receipt_position" required placeholder="Contoh: HR Manager">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tanggal Unduh</label>
+                                    <input type="date" id="receipt_date" required value="{{ date('Y-m-d') }}">
+                                </div>
+                                <input type="hidden" id="current_download_url">
+                                
+                                <button type="submit" class="btn-unduh" style="width: 100%; margin-top: 10px;">
+                                    Konfirmasi & Dapatkan Link
+                                </button>
+                            </form>
+
+                            <div id="revealProgress" style="display: none; margin-top: 20px; text-align: center;">
+                                <div class="spinner" style="border: 3px solid #f3f4f6; border-top: 3px solid #0c2c66; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto 10px;"></div>
+                                <p style="font-size: 13px; color: #6b7280;">Memproses tanda terima...</p>
+                            </div>
+
+                            <div id="revealBox" class="reveal-box">
+                                <p style="color: #065f46; font-size: 14px; font-weight: 600;">Berhasil! Dokumen Anda siap diunduh.</p>
+                                <a id="actualDownloadLink" href="#" target="_blank" class="btn-download-now">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                    Klik di Sini untuk Unduh
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                </style>
+
                 <script>
-                    (function () {
-                        const form = document.getElementById('unduh_formUnduh');
-                        const successBox = document.getElementById('unduh_successBox');
-                        const pilihanDetail = document.getElementById('unduh_pilihanDetail');
-                        const resetBtn = document.getElementById('unduh_resetBtn');
-                        const emailAccount = document.getElementById('unduh_emailAccount');
-                        const gantiAkun = document.getElementById('unduh_gantiAkun');
+                    function openReceiptModal(title, url) {
+                        document.getElementById('modalDocTitle').textContent = title;
+                        document.getElementById('current_download_url').value = url;
+                        document.getElementById('receiptModal').style.display = 'flex';
+                        document.getElementById('receiptForm').style.display = 'block';
+                        document.getElementById('revealBox').style.display = 'none';
+                        document.getElementById('revealProgress').style.display = 'none';
+                    }
 
-                        // show detail input when a dokumen option is selected
-                        form.addEventListener('change', (e) => {
-                            if (e.target.name === 'unduh_dokumen') {
-                                pilihanDetail.style.display = 'block';
-                            }
-                        });
+                    function closeReceiptModal() {
+                        document.getElementById('receiptModal').style.display = 'none';
+                    }
 
-                        // copy buttons
-                        document.addEventListener('click', (e) => {
-                            const btn = e.target.closest('button[data-copy]');
-                            if (!btn) return;
-                            const url = btn.getAttribute('data-copy');
-                            navigator.clipboard?.writeText(url).then(() => {
-                                const prev = btn.textContent;
-                                btn.textContent = 'Tersalin';
-                                setTimeout(() => btn.textContent = prev, 1500);
-                            }).catch(() => {
-                                alert('Gagal menyalin. Silakan salin secara manual: ' + url);
-                            });
-                        });
+                    function handleReceiptSubmit(e) {
+                        e.preventDefault();
+                        
+                        const form = document.getElementById('receiptForm');
+                        const progress = document.getElementById('revealProgress');
+                        const reveal = document.getElementById('revealBox');
+                        const downloadLink = document.getElementById('actualDownloadLink');
+                        const url = document.getElementById('current_download_url').value;
 
-                        // replace akun (simple prompt)
-                        gantiAkun.addEventListener('click', (ev) => {
-                            ev.preventDefault();
-                            const v = prompt('Masukkan email baru (atau kosongkan untuk batal):', emailAccount.value);
-                            if (v && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) {
-                                emailAccount.value = v;
-                                document.getElementById('unduh_email').value = v;
-                            } else if (v !== null) {
-                                alert('Format email tidak valid. Perubahan dibatalkan.');
-                            }
-                        });
+                        form.style.display = 'none';
+                        progress.style.display = 'block';
 
-                        // reset
-                        resetBtn.addEventListener('click', () => {
-                            form.reset();
-                            pilihanDetail.style.display = 'none';
-                            successBox.style.display = 'none';
-                            document.getElementById('unduh_email').value = emailAccount.value;
-                        });
+                        // Simulate small delay for "processing" feel
+                        setTimeout(() => {
+                            progress.style.display = 'none';
+                            reveal.style.display = 'block';
+                            downloadLink.href = url;
+                            
+                            // Track (can be added here to send to server if needed)
+                            console.log('User signed receipt for: ' + url);
+                        }, 1200);
+                    }
 
-                        // on submit: basic client-side validation + show links
-                        form.addEventListener('submit', (ev) => {
-                            ev.preventDefault();
-                            // check required
-                            const requiredFields = form.querySelectorAll('[required]');
-                            let ok = true;
-                            requiredFields.forEach(f => {
-                                if (!f.value) {
-                                    ok = false;
-                                    f.style.outline = '2px solid rgba(225,29,72,0.12)';
-                                    setTimeout(() => f.style.outline = '', 1200);
-                                }
-                            });
-                            if (!ok) {
-                                alert('Mohon lengkapi semua field yang bertanda *');
-                                return;
-                            }
-
-                            // show success
-                            successBox.style.display = 'block';
-                            successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            successBox.setAttribute('aria-hidden', 'false');
-
-                            // tailor visible links based on choice
-                            const pilihan = form.querySelector('input[name="unduh_dokumen"]:checked')?.value;
-                            const elSk = document.getElementById('unduh_linkSkP2k3');
-                            const elPel = document.getElementById('unduh_linkSkPelayanan');
-                            if (pilihan === 'sk_p2k3') {
-                                elSk.style.display = 'flex';
-                                elPel.style.display = 'none';
-                            } else if (pilihan === 'sk_pelayanan_kesehatan') {
-                                elSk.style.display = 'none';
-                                elPel.style.display = 'flex';
-                            } else {
-                                elSk.style.display = 'flex';
-                                elPel.style.display = 'flex';
-                            }
-
-                            // (Optional) Here you could send the form to server with fetch/ajax
-                        });
-
-                        // initialize email field from account
-                        document.getElementById('unduh_email').value = emailAccount.value;
-                    })();
+                    // Close modal on click outside content
+                    window.onclick = function(event) {
+                        const modal = document.getElementById('receiptModal');
+                        if (event.target == modal) {
+                            closeReceiptModal();
+                        }
+                    }
                 </script>
             </div>
 
@@ -3164,4 +3169,3 @@
 </body>
 
 </html>
-```

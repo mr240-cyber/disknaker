@@ -85,10 +85,17 @@ class DashboardController extends Controller
             'revisi' => $submissions->filter(fn($i) => in_array($i->status, ['DITOLAK', 'PERLU REVISI']))->count(),
         ];
 
+        // Filter finished for downloads
+        $finishedSubmissions = $submissions->filter(
+            fn($i) =>
+            in_array($i->status, ['SELESAI', 'DOKUMEN TERSEDIA']) && !empty($i->file_balasan)
+        )->values();
+
         return view('user.dashboard', [
             'submissions' => $submissions,
             'stats' => $stats,
-            'history' => $submissions // Alias for 'story' page
+            'history' => $submissions, // Alias for 'story' page
+            'finished' => $finishedSubmissions
         ]);
     }
 
