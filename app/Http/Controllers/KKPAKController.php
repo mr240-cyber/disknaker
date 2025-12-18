@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
+use App\Services\CloudinaryService;
 
 class KKPAKController extends Controller
 {
@@ -16,7 +17,10 @@ class KKPAKController extends Controller
 
         $uploadPath = null;
         if ($request->hasFile('dokumen')) {
-            $uploadPath = $request->file('dokumen')->store('uploads/kk_pak', 'public');
+            $uploadPath = CloudinaryService::upload(
+                $request->file('dokumen'),
+                'uploads/kk_pak'
+            );
         }
 
         // Extra info for 'catatan'

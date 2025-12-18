@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
+use App\Services\CloudinaryService;
 
 class PengesahanK3Controller extends Controller
 {
@@ -37,14 +38,16 @@ class PengesahanK3Controller extends Controller
         $uploadedPaths = [];
         foreach ($fileFields as $inputName => $dbColumn) {
             if ($request->hasFile($inputName)) {
-                try {
-                    // Try to store in 'public/uploads'
-                    $path = $request->file($inputName)->store('uploads/pelkes', 'public');
-                    $uploadedPaths[$dbColumn] = $path;
-                } catch (\Exception $e) {
-                    // Fallback for Read-Only environments (like Vercel without S3)
-                    \Illuminate\Support\Facades\Log::error("Upload Failed (Vercel/ReadOnly): " . $e->getMessage());
-                    $uploadedPaths[$dbColumn] = 'uploads/dummy_vercel_storage_limit.pdf';
+                $cloudinaryUrl = CloudinaryService::upload(
+                    $request->file($inputName),
+                    'uploads/pelkes'
+                );
+
+                if ($cloudinaryUrl) {
+                    $uploadedPaths[$dbColumn] = $cloudinaryUrl;
+                } else {
+                    // Log error but continue with other uploads
+                    \Illuminate\Support\Facades\Log::warning("Failed to upload {$inputName} to Cloudinary");
                 }
             }
         }
@@ -147,16 +150,15 @@ class PengesahanK3Controller extends Controller
 
         foreach ($fileFields as $inputName => $dbColumn) {
             if ($request->hasFile($inputName)) {
-                try {
-                    // Delete old file if exists? For now just overwrite reference
-                    // if ($existing->$dbColumn) Storage::delete($existing->$dbColumn);
+                $cloudinaryUrl = CloudinaryService::upload(
+                    $request->file($inputName),
+                    'uploads/pelkes'
+                );
 
-                    $path = $request->file($inputName)->store('uploads/pelkes', 'public');
-                    $updateData[$dbColumn] = $path;
-                } catch (\Exception $e) {
-                    // Fallback for Read-Only environments
-                    \Illuminate\Support\Facades\Log::error("Upload Failed (Update): " . $e->getMessage());
-                    $updateData[$dbColumn] = 'uploads/dummy_vercel_storage_limit.pdf';
+                if ($cloudinaryUrl) {
+                    $updateData[$dbColumn] = $cloudinaryUrl;
+                } else {
+                    \Illuminate\Support\Facades\Log::warning("Failed to upload {$inputName} to Cloudinary during update");
                 }
             }
         }

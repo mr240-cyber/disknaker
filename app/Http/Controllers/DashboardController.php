@@ -257,40 +257,29 @@ class DashboardController extends Controller
         }
 
         if ($request->hasFile('file_surat')) {
-            $path = null;
-            $uploadSuccess = false;
+            // Upload to Cloudinary
+            $cloudinaryUrl = \App\Services\CloudinaryService::upload(
+                $request->file('file_surat'),
+                'uploads/surat_balasan'
+            );
 
-            try {
-                // Try to store file (will fail in read-only environments like Vercel)
-                $path = $request->file('file_surat')->store('uploads/surat_balasan', 'public');
-                \Illuminate\Support\Facades\Log::info('File stored at: ' . $path);
-                $uploadSuccess = true;
-            } catch (\Exception $e) {
-                // Fallback for Read-Only Filesystem (Vercel/Serverless)
-                \Illuminate\Support\Facades\Log::warning("Storage failed (read-only filesystem): " . $e->getMessage());
-
-                // Use placeholder path - Admin should use cloud storage for production
-                $filename = 'surat_balasan_' . $request->input('id') . '_' . time() . '.pdf';
-                $path = 'uploads/vercel_placeholder/' . $filename;
-
-                \Illuminate\Support\Facades\Log::info('Using placeholder path: ' . $path);
+            if (!$cloudinaryUrl) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Gagal mengupload file ke Cloudinary. Silakan coba lagi."
+                ], 500);
             }
 
             try {
-                // Update database regardless of storage success
+                // Update database with Cloudinary URL
                 $updated = DB::table($table)->where('id', $request->input('id'))->update([
-                    'file_balasan' => $path,
+                    'file_balasan' => $cloudinaryUrl,
                     'status_pengajuan' => 'DOKUMEN TERSEDIA', // Auto update status
                     'updated_at' => now()
                 ]);
 
                 if ($updated === 0) {
                     \Illuminate\Support\Facades\Log::warning("Update failed: No row affected for ID {$request->input('id')} in table $table");
-
-                    // Cleanup orphan file if upload was successful
-                    if ($uploadSuccess && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
-                        \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
-                    }
 
                     // Check if row actually exists
                     $exists = DB::table($table)->where('id', $request->input('id'))->exists();
@@ -299,21 +288,12 @@ class DashboardController extends Controller
                     }
                 }
 
-                // Return appropriate message based on upload success
-                if ($uploadSuccess) {
-                    return response()->json([
-                        "status" => "success",
-                        "message" => "Surat berhasil diupload dan status diperbarui menjadi DOKUMEN TERSEDIA.",
-                        "path" => $path
-                    ]);
-                } else {
-                    return response()->json([
-                        "status" => "warning",
-                        "message" => "Status berhasil diperbarui menjadi DOKUMEN TERSEDIA. CATATAN: File tidak dapat disimpan (environment read-only). Untuk production, gunakan Cloud Storage (Cloudinary/S3).",
-                        "path" => $path,
-                        "upload_failed" => true
-                    ]);
-                }
+                return response()->json([
+                    "status" => "success",
+                    "message" => "Surat berhasil diupload dan status diperbarui menjadi DOKUMEN TERSEDIA.",
+                    "url" => $cloudinaryUrl
+                ]);
+
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error("Database Update Error: " . $e->getMessage());
                 return response()->json(["status" => "error", "message" => "Gagal mengupdate database: " . $e->getMessage()], 500);

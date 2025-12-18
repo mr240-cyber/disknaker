@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
+use App\Services\CloudinaryService;
 
 class PelaporanP2K3Controller extends Controller
 {
@@ -16,7 +17,10 @@ class PelaporanP2K3Controller extends Controller
 
         $uploadPath = null;
         if ($request->hasFile('dokumen')) {
-            $uploadPath = $request->file('dokumen')->store('uploads/laporan_p2k3', 'public');
+            $uploadPath = CloudinaryService::upload(
+                $request->file('dokumen'),
+                'uploads/laporan_p2k3'
+            );
         }
 
         // Gather all extra form data to store in 'catatan' JSON

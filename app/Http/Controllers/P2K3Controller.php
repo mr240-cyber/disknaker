@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
+use App\Services\CloudinaryService;
 
 class P2K3Controller extends Controller
 {
@@ -28,7 +29,14 @@ class P2K3Controller extends Controller
 
         foreach ($files as $input => $col) {
             if ($request->hasFile($input)) {
-                $paths[$col] = $request->file($input)->store('uploads/p2k3', 'public');
+                $cloudinaryUrl = CloudinaryService::upload(
+                    $request->file($input),
+                    'uploads/p2k3'
+                );
+
+                if ($cloudinaryUrl) {
+                    $paths[$col] = $cloudinaryUrl;
+                }
             }
         }
 
