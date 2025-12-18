@@ -111,18 +111,22 @@ if (app()->isLocal()) {
         }
     });
 
-    // Debug: Check Cloudinary Config (TEMPORARY - Remove after debugging)
-    Route::get('/debug-cloudinary', function () {
-        return response()->json([
-            'cloudinary_url' => env('CLOUDINARY_URL') ? 'SET (hidden)' : 'NOT SET',
-            'cloud_name' => env('CLOUDINARY_CLOUD_NAME') ?: 'NOT SET',
-            'api_key' => env('CLOUDINARY_API_KEY') ? 'SET (hidden)' : 'NOT SET',
-            'api_secret' => env('CLOUDINARY_API_SECRET') ? 'SET (hidden)' : 'NOT SET',
-            'config_cloud_url' => config('cloudinary.cloud_url') ? 'SET (hidden)' : 'NOT SET',
-            'package_exists' => class_exists('CloudinaryLabs\\CloudinaryLaravel\\Facades\\Cloudinary') ? 'YES' : 'NO',
-        ]);
     });
 }
+
+// Debug: Check Cloudinary Config (TEMPORARY - Remove after debugging)
+Route::get('/debug-cloudinary', function () {
+    return response()->json([
+        'cloudinary_url' => env('CLOUDINARY_URL') ? 'SET (hidden)' : 'NOT SET',
+        'cloud_name' => env('CLOUDINARY_CLOUD_NAME') ?: 'NOT SET',
+        'api_key' => env('CLOUDINARY_API_KEY') ? 'SET (hidden)' : 'NOT SET',
+        'api_secret' => env('CLOUDINARY_API_SECRET') ? 'SET (hidden)' : 'NOT SET',
+        'config_cloud_url' => config('cloudinary.cloud_url') ? 'SET (hidden)' : 'NOT SET',
+        'package_exists' => class_exists('CloudinaryLabs\\CloudinaryLaravel\\Facades\\Cloudinary') ? 'YES' : 'NO',
+        'app_env' => app()->environment(),
+        'is_local' => app()->isLocal() ? 'YES' : 'NO',
+    ]);
+});
 
 // Authentication routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
