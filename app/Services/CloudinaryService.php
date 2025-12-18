@@ -8,6 +8,8 @@ use Illuminate\Http\UploadedFile;
 
 class CloudinaryService
 {
+    public static $lastError = null;
+
     /**
      * Upload a file to Cloudinary
      *
