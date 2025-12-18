@@ -2488,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2520,534 +2520,542 @@
                 <style>
                     /* Grid & Header Styles */
                     .unduh-wrapper {
-                        max-width: 1000px;
+                        max-width: 1100px;
                         margin: 0 auto;
-                        padding: 24px;
-                        font-family: 'Inter', sans-serif;
+                        padding: 40px 24px;
+                        font-family: 'Outfit', 'Inter', sans-serif;
                     }
 
                     .unduh-hero {
-                        background: linear-gradient(135deg, #0c2c66 0%, #1e40af 100%);
+                        background: linear-gradient(135deg, #061c47 0%, #0c2c66 50%, #1e40af 100%);
                         color: white;
-                        padding: 40px;
-                        border-radius: 24px;
-                        margin-bottom: 30px;
-                        box-shadow: 0 10px 30px -10px rgba(12, 44, 102, 0.4);
+                        padding: 50px;
+                        border-radius: 32px;
+                        margin-bottom: 40px;
+                        box-shadow: 0 20px 40px -15px rgba(12, 44, 102, 0.5);
                         position: relative;
                         overflow: hidden;
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                    }
+
+                    .unduh-hero::before {
+                        content: '';
+                        position: absolute;
+                        top: -50%;
+                        left: -50%;
+                        width: 200%;
+                        height: 200%;
+                        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+                        animation: shimmer 15s infinite linear;
+                        pointer-events: none;
+                    }
+
+                    @keyframes shimmer {
+                        from {
+                            transform: rotate(0deg);
+                        }
+
+                        to {
+                            transform: rotate(360deg);
+                        }
                     }
 
                     .unduh-hero h2 {
                         margin: 0;
-                        font-size: 28px;
+                        font-size: 32px;
                         font-weight: 800;
-                        letter-spacing: -0.5px;
+                        letter-spacing: -1px;
+                        position: relative;
                     }
 
                     .unduh-hero p {
-                        margin: 10px 0 0;
-                        opacity: 0.85;
-                        font-size: 15px;
-                        max-width: 600px;
-                        line-height: 1.6;
+                        margin: 15px 0 0;
+                        opacity: 0.8;
+                        font-size: 16px;
+                        max-width: 550px;
+                        line-height: 1.7;
+                        position: relative;
                     }
 
                     .doc-grid {
                         display: grid;
-                        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                        gap: 24px;
+                        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                        gap: 30px;
                     }
 
                     .doc-card {
                         background: white;
-                        border-radius: 20px;
-                        padding: 24px;
-                        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                        border-radius: 24px;
+                        padding: 30px;
+                        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
                         display: flex;
                         flex-direction: column;
                         justify-content: space-between;
-                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-                        border: 1px solid #f0f0f0;
+                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+                        border: 1px solid #f1f5f9;
                         position: relative;
+                        cursor: pointer;
                     }
 
                     .doc-card:hover {
-                        transform: translateY(-8px);
-                        box-shadow: 0 20px 25px -5px rgba(12, 44, 102, 0.1);
+                        transform: translateY(-12px) scale(1.02);
+                        box-shadow: 0 30px 60px -12px rgba(12, 44, 102, 0.15);
                         border-color: #0c2c66;
                     }
 
+                    .doc-icon-float {
+                        position: absolute;
+                        top: 20px;
+                        right: 20px;
+                        font-size: 40px;
+                        color: #f1f5f9;
+                        transition: all 0.4s;
+                        z-index: 0;
+                    }
+
+                    .doc-card:hover .doc-icon-float {
+                        color: rgba(12, 44, 102, 0.05);
+                        transform: scale(1.2) rotate(10deg);
+                    }
+
+                    .doc-content {
+                        position: relative;
+                        z-index: 1;
+                    }
+
                     .doc-type {
-                        font-size: 12px;
+                        font-size: 11px;
                         font-weight: 800;
-                        color: #0c2c66;
+                        color: #3b82f6;
                         text-transform: uppercase;
                         margin-bottom: 12px;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        letter-spacing: 0.5px;
+                        letter-spacing: 1.5px;
                     }
 
                     .doc-title {
-                        font-size: 18px;
-                        font-weight: 700;
-                        color: #111827;
-                        margin-bottom: 6px;
-                        line-height: 1.4;
+                        font-size: 20px;
+                        font-weight: 800;
+                        color: #1e293b;
+                        margin-bottom: 8px;
+                        line-height: 1.3;
                     }
 
                     .doc-subtitle {
                         font-size: 14px;
-                        color: #6b7280;
-                        margin-bottom: 20px;
+                        color: #64748b;
+                        margin-bottom: 25px;
+                        line-height: 1.5;
                     }
 
-                    .btn-trigger-form {
+                    .btn-trigger-ultra {
                         background: #0c2c66;
                         color: white;
                         border: none;
-                        padding: 12px;
-                        border-radius: 12px;
-                        font-weight: 600;
+                        padding: 14px 24px;
+                        border-radius: 16px;
+                        font-weight: 700;
                         font-size: 14px;
                         cursor: pointer;
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        gap: 10px;
-                        transition: all 0.2s;
+                        gap: 12px;
+                        transition: all 0.3s;
+                        width: 100%;
                     }
 
-                    .btn-trigger-form:hover {
+                    .btn-trigger-ultra:hover {
                         background: #1e40af;
-                        transform: scale(1.02);
+                        box-shadow: 0 10px 20px rgba(12, 44, 102, 0.3);
                     }
 
-                    /* Modal Overlay */
-                    .receipt-modal-overlay {
+                    /* Glassmorphism Modal */
+                    .ultra-modal-overlay {
                         position: fixed;
                         top: 0;
                         left: 0;
                         width: 100%;
                         height: 100%;
-                        background: rgba(12, 44, 102, 0.4);
-                        backdrop-filter: blur(8px);
+                        background: rgba(6, 28, 71, 0.5);
+                        backdrop-filter: blur(12px);
                         display: none;
                         align-items: center;
                         justify-content: center;
                         z-index: 9999;
-                        padding: 20px;
+                        padding: 24px;
+                        animation: fadeIn 0.4s ease-out;
                     }
 
-                    .receipt-modal-content {
-                        background: #f8fafc;
+                    @keyframes fadeIn {
+                        from {
+                            opacity: 0;
+                        }
+
+                        to {
+                            opacity: 1;
+                        }
+                    }
+
+                    .ultra-modal-content {
+                        background: rgba(255, 255, 255, 0.95);
                         width: 100%;
-                        max-width: 800px;
-                        max-height: 92vh;
-                        border-radius: 24px;
+                        max-width: 850px;
+                        max-height: 94vh;
+                        border-radius: 32px;
                         position: relative;
                         overflow-y: auto;
-                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-                        border: 1px solid rgba(255, 255, 255, 0.4);
+                        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.4);
+                        border: 1px solid rgba(255, 255, 255, 0.7);
+                        transform: translateY(20px);
+                        animation: slideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
                     }
 
-                    .btn-close-modal {
+                    @keyframes slideUp {
+                        to {
+                            transform: translateY(0);
+                        }
+                    }
+
+                    .btn-close-ultra {
                         position: absolute;
-                        top: 20px;
-                        right: 24px;
-                        font-size: 28px;
-                        color: white;
-                        background: rgba(255, 255, 255, 0.2);
-                        border: none;
-                        cursor: pointer;
-                        z-index: 10;
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 12px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        transition: all 0.2s;
-                    }
-
-                    .btn-close-modal:hover {
-                        background: rgba(255, 255, 255, 0.3);
-                        transform: rotate(90deg);
-                    }
-
-                    /* Beautified Form Styles */
-                    .form-page-inner {
-                        padding-bottom: 40px;
-                    }
-
-                    .modal-header-banner {
-                        background: linear-gradient(135deg, #0c2c66 0%, #1e40af 100%);
-                        padding: 40px 40px 30px 40px;
-                        border-radius: 0 0 30px 30px;
-                        margin-bottom: 30px;
-                        color: white;
-                        box-shadow: 0 4px 15px rgba(12, 44, 102, 0.2);
-                    }
-
-                    .modal-header-banner h1 {
+                        top: 24px;
+                        right: 30px;
                         font-size: 24px;
-                        font-weight: 800;
-                        margin: 0 0 12px 0;
-                        letter-spacing: -0.5px;
-                    }
-
-                    .modal-header-banner p {
-                        font-size: 15px;
-                        opacity: 0.9;
-                        line-height: 1.6;
-                        margin: 0;
-                    }
-
-                    .form-body-container {
-                        max-width: 90%;
-                        margin: 0 auto;
-                    }
-
-                    .form-section-card {
-                        background: white;
-                        padding: 28px;
-                        border-radius: 20px;
-                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-                        margin-bottom: 20px;
-                        border: 1px solid #f0f0f0;
-                        transition: all 0.3s;
-                    }
-
-                    .form-section-card:focus-within {
-                        border-color: #0c2c66;
-                        box-shadow: 0 10px 20px rgba(12, 44, 102, 0.05);
-                    }
-
-                    .form-q-label {
-                        font-size: 15px;
-                        color: #374151;
-                        margin-bottom: 12px;
-                        display: block;
-                        font-weight: 600;
-                    }
-
-                    .form-input-premium {
-                        width: 100%;
-                        border: 2px solid #f3f4f6;
-                        background: #f9fafb;
-                        padding: 12px 16px;
-                        border-radius: 12px;
-                        font-size: 14px;
-                        outline: none;
-                        transition: all 0.2s;
-                        color: #111827;
-                    }
-
-                    .form-input-premium:focus {
-                        border-color: #0c2c66;
-                        background: white;
-                        box-shadow: 0 0 0 4px rgba(12, 44, 102, 0.1);
-                    }
-
-                    .custom-radio-wrap {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 12px;
-                        margin-top: 10px;
-                    }
-
-                    .custom-radio-option {
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
-                        padding: 14px 18px;
-                        background: #f9fafb;
-                        border: 2px solid #f3f4f6;
-                        border-radius: 14px;
-                        cursor: pointer;
-                        transition: all 0.2s;
-                        font-size: 14px;
-                        color: #4b5563;
-                    }
-
-                    .custom-radio-option:hover {
-                        background: #f3f4f6;
-                    }
-
-                    .custom-radio-option input[type="radio"]:checked+span {
-                        color: #0c2c66;
-                        font-weight: 700;
-                    }
-
-                    .custom-radio-option:has(input[type="radio"]:checked) {
-                        border-color: #0c2c66;
-                        background: rgba(12, 44, 102, 0.03);
-                    }
-
-                    .form-footer-actions {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding-top: 10px;
-                    }
-
-                    .btn-submit-premium {
-                        background: #0c2c66;
-                        color: white;
+                        color: #64748b;
+                        background: #f1f5f9;
                         border: none;
-                        padding: 14px 32px;
-                        border-radius: 14px;
-                        font-weight: 700;
                         cursor: pointer;
-                        font-size: 15px;
-                        box-shadow: 0 4px 12px rgba(12, 44, 102, 0.2);
-                        transition: all 0.2s;
-                    }
-
-                    .btn-submit-premium:hover {
-                        background: #1e40af;
-                        transform: translateY(-2px);
-                        box-shadow: 0 8px 20px rgba(12, 44, 102, 0.3);
-                    }
-
-                    .success-card-premium {
-                        text-align: center;
-                        padding: 40px;
-                    }
-
-                    .success-icon-wrap {
-                        width: 80px;
-                        height: 80px;
-                        background: #ecfdf5;
-                        color: #10b981;
+                        z-index: 20;
+                        width: 44px;
+                        height: 44px;
                         border-radius: 50%;
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        font-size: 40px;
-                        margin: 0 auto 24px;
+                        transition: all 0.3s;
                     }
 
-                    .link-box-premium {
+                    .btn-close-ultra:hover {
+                        background: #e2e8f0;
+                        color: #0c2c66;
+                        transform: rotate(90deg);
+                    }
+
+                    /* Floating Label Inputs */
+                    .input-group-premium {
+                        position: relative;
+                        margin-bottom: 24px;
+                    }
+
+                    .input-premium-ultra {
+                        width: 100%;
+                        padding: 18px 20px 10px;
+                        background: #f8fafc;
+                        border: 2px solid #f1f5f9;
+                        border-radius: 18px;
+                        font-size: 15px;
+                        font-weight: 600;
+                        transition: all 0.3s;
+                        outline: none;
+                        color: #1e293b;
+                    }
+
+                    .input-premium-ultra:focus {
                         background: white;
-                        border: 2px solid #e5e7eb;
+                        border-color: #0c2c66;
+                        box-shadow: 0 0 0 5px rgba(12, 44, 102, 0.08);
+                    }
+
+                    .label-floating {
+                        position: absolute;
+                        left: 20px;
+                        top: 18px;
+                        font-size: 15px;
+                        color: #94a3b8;
+                        transition: all 0.3s;
+                        pointer-events: none;
+                        font-weight: 600;
+                    }
+
+                    .input-premium-ultra:focus~.label-floating,
+                    .input-premium-ultra:not(:placeholder-shown)~.label-floating {
+                        top: 10px;
+                        font-size: 11px;
+                        color: #0c2c66;
+                        transform: translateY(-5px);
+                    }
+
+                    /* Custom Radio Chips */
+                    .chip-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px;
+                        margin-top: 15px;
+                    }
+
+                    .radio-chip {
+                        background: #f8fafc;
+                        border: 2px solid #f1f5f9;
                         padding: 20px;
                         border-radius: 20px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        position: relative;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        text-align: center;
+                        gap: 10px;
+                    }
+
+                    .radio-chip:hover {
+                        border-color: #cbd5e1;
+                    }
+
+                    .radio-chip input {
+                        position: absolute;
+                        opacity: 0;
+                    }
+
+                    .radio-chip i {
+                        font-size: 24px;
+                        color: #94a3b8;
+                        transition: all 0.3s;
+                    }
+
+                    .radio-chip span {
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #64748b;
+                        line-height: 1.4;
+                    }
+
+                    .radio-chip:has(input:checked) {
+                        border-color: #0c2c66;
+                        background: rgba(12, 44, 102, 0.03);
+                    }
+
+                    .radio-chip:has(input:checked) i {
+                        color: #0c2c66;
+                        transform: scale(1.2);
+                    }
+
+                    .radio-chip:has(input:checked) span {
+                        color: #0c2c66;
+                    }
+
+                    .btn-submit-ultra {
+                        background: linear-gradient(135deg, #0c2c66 0%, #1e40af 100%);
+                        color: white;
+                        border: none;
+                        padding: 18px 40px;
+                        border-radius: 20px;
+                        font-weight: 800;
+                        cursor: pointer;
+                        font-size: 16px;
+                        width: 100%;
+                        box-shadow: 0 15px 35px -10px rgba(12, 44, 102, 0.4);
+                        transition: all 0.3s;
+                        margin-top: 20px;
+                    }
+
+                    .btn-submit-ultra:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 20px 45px -12px rgba(12, 44, 102, 0.5);
+                    }
+
+                    /* Success Reveal */
+                    .link-box-ultra {
+                        background: white;
+                        border-radius: 24px;
+                        padding: 25px;
+                        border-left: 8px solid #0c2c66;
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
                         margin-top: 30px;
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
                     }
 
-                    .btn-download-premium {
+                    .btn-dl-ultra {
                         background: #0c2c66;
                         color: white;
                         text-decoration: none;
-                        padding: 12px 24px;
-                        border-radius: 12px;
+                        padding: 14px 28px;
+                        border-radius: 16px;
                         font-weight: 700;
                         font-size: 14px;
                         display: flex;
                         align-items: center;
-                        gap: 8px;
-                        transition: all 0.2s;
+                        gap: 10px;
+                        transition: 0.3s;
                     }
 
-                    .btn-download-premium:hover {
+                    .btn-dl-ultra:hover {
                         background: #1e40af;
+                        transform: scale(1.05);
                     }
 
                     .hide-modal {
                         display: none !important;
                     }
-
-                    /* Utility classes */
-                    .req-star {
-                        color: #ef4444;
-                        margin-left: 2px;
-                    }
                 </style>
 
                 <div class="unduh-wrapper">
                     <div class="unduh-hero">
-                        <h2>Pusat Unduh Dokumen</h2>
-                        <p>Akses dokumen administrasi K3 Anda secara instan. Silakan pilih dokumen di bawah dan lengkapi
-                            tanda terima digital untuk melanjutkan.</p>
-                        <i class="fas fa-cloud-download-alt"
-                            style="position:absolute; right: 40px; bottom: -20px; font-size: 120px; opacity: 0.1;"></i>
+                        <div class="content">
+                            <h2>Arsip Dokumen Digital</h2>
+                            <p>Manajemen hasil pengajuan layanan K3 Anda secara modern dan terintegrasi. Semua dokumen
+                                di bawah ini adalah salinan resmi yang telah disahkan.</p>
+                        </div>
+                        <i class="fas fa-folder-open"
+                            style="position:absolute; right: -20px; bottom: -30px; font-size: 200px; opacity: 0.05; transform: rotate(-15deg);"></i>
                     </div>
 
                     @if(isset($finished) && count($finished) > 0)
                         <div class="doc-grid">
                             @foreach($finished as $doc)
-                                <div class="doc-card">
-                                    <div>
+                                <div class="doc-card"
+                                    onclick="openReceiptModal('{{ ($doc->type === 'pelayanan_kesekerja') ? 'sk_pelkes' : 'sk_p2k3' }}', '{{ $doc->file_balasan }}')">
+                                    <i class="fas fa-file-alt doc-icon-float"></i>
+                                    <div class="doc-content">
                                         <div class="doc-type">
-                                            <i class="fas fa-check-circle" style="color:#10b981;"></i>
-                                            {{ str_replace('_', ' ', $doc->type) }}
+                                            <i class="fas fa-certificate" style="margin-right:5px; color:#f59e0b;"></i> Official
+                                            Document
                                         </div>
                                         <div class="doc-title">{{ $doc->title }}</div>
                                         <div class="doc-subtitle">{{ $doc->subtitle }}</div>
                                     </div>
-                                    @php
-                                        $typeKey = ($doc->type === 'pelayanan_kesekerja') ? 'sk_pelkes' : 'sk_p2k3';
-                                    @endphp
-                                    <button class="btn-trigger-form"
-                                        onclick="openReceiptModal('{{ $typeKey }}', '{{ $doc->file_balasan }}')">
-                                        <i class="fas fa-file-invoice"></i> Isi Tanda Terima & Unduh
+                                    <button class="btn-trigger-ultra">
+                                        Isi Tanda Terima & Unduh <i class="fas fa-arrow-right"></i>
                                     </button>
                                 </div>
                             @endforeach
                         </div>
                     @else
                         <div
-                            style="text-align: center; padding: 100px 40px; background: white; border-radius: 30px; border: 2px dashed #e2e8f0; color: #94a3b8;">
+                            style="text-align: center; padding: 120px 40px; background: white; border-radius: 40px; border: 2px dashed #e2e8f0; color: #94a3b8;">
                             <div
-                                style="width: 80px; height: 80px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                                <i class="fas fa-folder-open" style="font-size: 32px; opacity: 0.5;"></i>
+                                style="width: 100px; height: 100px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
+                                <i class="fas fa-box-open" style="font-size: 42px; opacity: 0.3;"></i>
                             </div>
-                            <h3 style="color:#475569; margin-bottom:8px; font-weight:700;">Belum Ada Dokumen</h3>
-                            <p style="font-size:14px;">Dokumen akan muncul di sini setelah disetujui oleh admin.</p>
+                            <h3 style="color:#1e293b; margin-bottom:10px; font-weight:800; font-size:20px;">Belum Ada Arsip
+                            </h3>
+                            <p style="font-size:15px; max-width:400px; margin:0 auto;">Jika pengajuan Anda sudah selesai
+                                divalidasi, dokumen resmi akan muncul secara otomatis di sini.</p>
                         </div>
                     @endif
                 </div>
 
-                <!-- PREMIUM RECEIPT MODAL -->
-                <div id="receiptModal" class="receipt-modal-overlay">
-                    <div class="receipt-modal-content">
-                        <button class="btn-close-modal" onclick="closeReceiptModal()">&times;</button>
+                <!-- ULTRA-PREMIUM MODAL -->
+                <div id="receiptModal" class="ultra-modal-overlay">
+                    <div class="ultra-modal-content">
+                        <button class="btn-close-ultra" onclick="closeReceiptModal()"><i
+                                class="fas fa-times"></i></button>
 
-                        <div class="form-page-inner">
-                            <!-- STEP 1: BEAUTIFIED FORM -->
+                        <div class="modal-inner" style="padding: 50px;">
+                            <!-- STEP 1: FORM -->
                             <div id="modal_form_step">
-                                <div class="modal-header-banner">
-                                    <h1>Tanda Terima Digital</h1>
-                                    <p>Silahkan lengkapi data di bawah ini untuk mengunduh dokumen resmi Layanan K3
-                                        Anda.</p>
-                                    <div
-                                        style="margin-top: 20px; display: flex; align-items: center; gap: 12px; font-size: 13px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);">
-                                        <i class="fas fa-user-circle"></i>
-                                        <span>User Aktif: <strong>{{ Auth::user()->email }}</strong></span>
+                                <div style="margin-bottom: 40px;">
+                                    <h1 style="font-size: 30px; font-weight: 800; color: #0c2c66; margin-bottom: 10px;">
+                                        Lengkapi Tanda Terima</h1>
+                                    <p style="color: #64748b; font-size: 15px; line-height: 1.6;">Demi keperluan arsip
+                                        digital, mohon lengkapi data penerima dokumen di bawah ini.</p>
+                                </div>
+
+                                <form id="modal_receipt_form" onsubmit="handleReceiptSubmit(event)">
+                                    <input type="hidden" id="active_doc_url">
+
+                                    <div class="input-group-premium">
+                                        <input type="email" required class="input-premium-ultra" placeholder=" "
+                                            value="{{ Auth::user()->email }}">
+                                        <label class="label-floating">Email Penerima</label>
                                     </div>
-                                </div>
 
-                                <div class="form-body-container">
-                                    <form id="modal_receipt_form" onsubmit="handleReceiptSubmit(event)">
-                                        <input type="hidden" id="active_doc_url">
-
-                                        <div class="form-section-card">
-                                            <label class="form-q-label">Email Penerima <span
-                                                    class="req-star">*</span></label>
-                                            <input type="email" required class="form-input-premium"
-                                                placeholder="nama@perusahaan.com" value="{{ Auth::user()->email }}">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                        <div class="input-group-premium">
+                                            <input type="text" required class="input-premium-ultra" placeholder=" "
+                                                value="{{ Auth::user()->nama_lengkap }}">
+                                            <label class="label-floating">Nama Lengkap</label>
                                         </div>
-
-                                        <div
-                                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                                            <div class="form-section-card" style="margin-bottom: 0;">
-                                                <label class="form-q-label">Nama Lengkap <span
-                                                        class="req-star">*</span></label>
-                                                <input type="text" required class="form-input-premium"
-                                                    placeholder="Nama Anda" value="{{ Auth::user()->nama_lengkap }}">
-                                            </div>
-                                            <div class="form-section-card" style="margin-bottom: 0;">
-                                                <label class="form-q-label">Jabatan <span
-                                                        class="req-star">*</span></label>
-                                                <input type="text" required class="form-input-premium"
-                                                    placeholder="Contoh: HR Manager">
-                                            </div>
+                                        <div class="input-group-premium">
+                                            <input type="text" required class="input-premium-ultra" placeholder=" ">
+                                            <label class="label-floating">Jabatan Anda</label>
                                         </div>
+                                    </div>
 
-                                        <div class="form-section-card">
-                                            <label class="form-q-label">Nama Perusahaan <span
-                                                    class="req-star">*</span></label>
-                                            <input type="text" required class="form-input-premium"
-                                                placeholder="PT. Contoh Indonesia">
-                                        </div>
+                                    <div class="input-group-premium">
+                                        <input type="text" required class="input-premium-ultra" placeholder=" ">
+                                        <label class="label-floating">Nama Perusahaan / Instansi</label>
+                                    </div>
 
-                                        <div class="form-section-card">
-                                            <label class="form-q-label">Alamat Perusahaan <span
-                                                    class="req-star">*</span></label>
-                                            <textarea required class="form-input-premium"
-                                                style="min-height: 80px; resize: vertical;"
-                                                placeholder="Alamat Lengkap Kantor"></textarea>
-                                        </div>
+                                    <div class="input-group-premium">
+                                        <textarea required class="input-premium-ultra"
+                                            style="min-height: 60px; resize: none; padding-top: 25px;"
+                                            placeholder=" "></textarea>
+                                        <label class="label-floating">Alamat Kantor Lengkap</label>
+                                    </div>
 
-                                        <div
-                                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                                            <div class="form-section-card" style="margin-bottom: 0;">
-                                                <label class="form-q-label">Sektor Bisnis <span
-                                                        class="req-star">*</span></label>
-                                                <input type="text" required class="form-input-premium"
-                                                    placeholder="Misal: Manufaktur">
-                                            </div>
-                                            <div class="form-section-card" style="margin-bottom: 0;">
-                                                <label class="form-q-label">Tanggal Unduh <span
-                                                        class="req-star">*</span></label>
-                                                <input type="date" required class="form-input-premium"
-                                                    value="{{ date('Y-m-d') }}">
-                                            </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                        <div class="input-group-premium">
+                                            <input type="text" required class="input-premium-ultra" placeholder=" ">
+                                            <label class="label-floating">Sektor Usaha</label>
                                         </div>
+                                        <div class="input-group-premium">
+                                            <input type="date" required class="input-premium-ultra"
+                                                value="{{ date('Y-m-d') }}">
+                                            <label class="label-floating">Tanggal Unduh</label>
+                                        </div>
+                                    </div>
 
-                                        <div class="form-section-card">
-                                            <label class="form-q-label">Konfirmasi Dokumen <span
-                                                    class="req-star">*</span></label>
-                                            <div class="custom-radio-wrap">
-                                                <label class="custom-radio-option">
-                                                    <input type="radio" name="modal_dokumen" value="sk_p2k3" required
-                                                        id="radio_sk_p2k3">
-                                                    <span>SK P2K3</span>
-                                                </label>
-                                                <label class="custom-radio-option">
-                                                    <input type="radio" name="modal_dokumen" value="sk_pelkes"
-                                                        id="radio_sk_pelkes">
-                                                    <span>SK Pengesahan Penyelenggaraan Pelayanan Kesehatan Kerja</span>
-                                                </label>
-                                            </div>
+                                    <div style="margin-top: 10px;">
+                                        <label
+                                            style="font-size: 14px; font-weight: 800; color: #1e293b; letter-spacing: 0.5px;">KONFIRMASI
+                                            JENIS DOKUMEN</label>
+                                        <div class="chip-grid">
+                                            <label class="radio-chip">
+                                                <input type="radio" name="modal_dokumen" value="sk_p2k3" required
+                                                    id="radio_sk_p2k3">
+                                                <i class="fas fa-users-cog"></i>
+                                                <span>SK P2K3</span>
+                                            </label>
+                                            <label class="radio-chip">
+                                                <input type="radio" name="modal_dokumen" value="sk_pelkes"
+                                                    id="radio_sk_pelkes">
+                                                <i class="fas fa-hospital-user"></i>
+                                                <span>SK Pelayanan Kesehatan</span>
+                                            </label>
                                         </div>
+                                    </div>
 
-                                        <div class="form-footer-actions">
-                                            <button type="reset"
-                                                style="background:transparent; border:none; color:#64748b; cursor:pointer; font-weight:600; font-size:14px;">Kosongkan
-                                                Form</button>
-                                            <button type="submit" class="btn-submit-premium">
-                                                Kirim Tanda Terima & Lanjut <i class="fas fa-arrow-right"
-                                                    style="margin-left:8px;"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
+                                    <button type="submit" class="btn-submit-ultra">
+                                        Validasi & Buka Link Unduhan <i class="fas fa-unlock-alt"
+                                            style="margin-left:10px;"></i>
+                                    </button>
+                                </form>
                             </div>
 
-                            <!-- STEP 2: BEAUTIFIED SUCCESS -->
-                            <div id="modal_success_step" class="hide-modal">
-                                <div class="modal-header-banner">
-                                    <h1>Tanda Terima Berhasil!</h1>
-                                    <p>Data Anda telah tercatat. Silahkan gunakan link di bawah ini untuk mengunduh
-                                        dokumen resmi Anda.</p>
+                            <!-- STEP 2: SUCCESS -->
+                            <div id="modal_success_step" class="hide-modal" style="text-align: center;">
+                                <div style="margin-bottom: 40px;">
+                                    <div
+                                        style="width: 100px; height: 100px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 45px; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <h1 style="font-size: 32px; font-weight: 800; color: #0c2c66; margin-bottom: 10px;">
+                                        Verifikasi Berhasil!</h1>
+                                    <p style="color: #64748b; font-size: 16px;">Tanda terima Anda telah disimpan dalam
+                                        sistem kami.</p>
                                 </div>
 
-                                <div class="form-body-container">
-                                    <div class="success-card-premium">
-                                        <div class="success-icon-wrap">
-                                            <i class="fas fa-check"></i>
-                                        </div>
-                                        <h2 style="color:#111827; margin-bottom:10px;">Dokumen Siap Diunduh</h2>
-                                        <p style="color:#6b7280; font-size:14px;">Pastikan Anda menyimpan dokumen ini
-                                            dengan baik.</p>
+                                <div id="revealed_link_container_ultra">
+                                    <!-- Dynamic -->
+                                </div>
 
-                                        <div id="revealed_link_container">
-                                            <!-- Will show link here -->
-                                        </div>
-
-                                        <div style="margin-top:40px;">
-                                            <button onclick="closeReceiptModal()"
-                                                style="color:#64748b; background:none; border:none; cursor:pointer; font-weight:600; text-decoration:underline;">Selesai
-                                                & Tutup</button>
-                                        </div>
-                                    </div>
+                                <div style="margin-top: 50px;">
+                                    <button onclick="closeReceiptModal()"
+                                        style="background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:1px;">Tutup
+                                        Halaman Ini</button>
                                 </div>
                             </div>
                         </div>
@@ -3059,12 +3067,11 @@
                         document.getElementById('modal_form_step').classList.remove('hide-modal');
                         document.getElementById('modal_success_step').classList.add('hide-modal');
                         document.getElementById('modal_receipt_form').reset();
+ document.getElementById('active_doc_url').value = url;
+                        if (type === 'sk_p2k3') do cument.getElementById('radio_sk_p2k3').checked = true;
+                        if (type === 'sk_pelkes')  document.getElementById('radio_sk_pelkes').checked = true;
 
-                        document.getElementById('active_doc_url').value = url;
-                        if (type === 'sk_p2k3') document.getElementById('radio_sk_p2k3').checked = true;
-                        if (type === 'sk_pelkes') document.getElementById('radio_sk_pelkes').checked = true;
-
-                        document.getElementById('receiptModal').style.display = 'flex';
+                     document.getElementById('receiptModal').style.display = 'flex';
                         document.body.style.overflow = 'hidden';
                     }
 
@@ -3075,24 +3082,35 @@
 
                     function handleReceiptSubmit(e) {
                         e.preventDefault();
-                        const url = document.getElementById('active_doc_url').value;
-                        const label = document.querySelector('input[name="modal_dokumen"]:checked').parentElement.innerText.trim();
+                        let url = document.getElementById('active_doc_url').value;
+                        const label = document.querySelector('input[name="modal_dokumen"]:checked').parentElement.querySelector('span').innerText.trim();
+
+                        // Force download for Cloudinary URLs
+                        if (url.includes('cloudinary.com')) {
+                            url = url.replace('/upload/', '/upload/fl_attachment/');
+                        }
 
                         document.getElementById('modal_form_step').classList.add('hide-modal');
                         document.getElementById('modal_success_step').classList.remove('hide-modal');
 
-                        const container = document.getElementById('revealed_link_container');
+                        const container = document.getElementById('revealed_link_container_ultra');
                         container.innerHTML = `
-                            <div class="link-box-premium">
+                            <div class="link-box-ultra">
                                 <div style="text-align:left;">
-                                    <div style="font-size:12px; color:#6b7280; text-transform:uppercase; font-weight:700;">Dokumen Anda</div>
-                                    <div style="font-weight:700; font-size:16px; color:#111827;">${label}</div>
+                                    <div style="font-size:11px; color:#3b82f6; text-transform:uppercase; font-weight:800; letter-spacing:1px; margin-bottom:5px;">Dokumen Siap</div>
+                                    <div style="font-weight:800; font-size:18px; color:#1e293b;">${label}</div>
                                 </div>
-                                <a href="${url}" target="_blank" class="btn-download-premium">
-                                    <i class="fas fa-download"></i> Unduh Sekarang
+                                <a href="${url}" id="auto_download_link" class="btn-dl-ultra">
+                                    <i class="fas fa-cloud-download-alt"></i> Unduh Berkas
                                 </a>
                             </div>
                         `;
+
+                        // Automatically trigger download
+                        setTimeout(() => {
+                            const link = document.getElementById('auto_download_link');
+                            if (link) link.click();
+                        }, 500);
                     }
 
                     window.addEventListener('click', (e) => {
