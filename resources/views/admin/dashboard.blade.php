@@ -1174,8 +1174,13 @@
                     alert("❌ Gagal: " + (data.message || 'Unknown Error'));
                 }
             } catch (e) {
-                console.error(e);
-                alert("❌ Error sistem (Cek Konsol)");
+                console.error("Upload Error:", e);
+                let errorDetails = e.message;
+                try {
+                    const text = await res.text();
+                    errorDetails = text.substring(0, 500);
+                } catch (inner) { }
+                alert("❌ Error sistem: " + errorDetails);
             }
         }
 
