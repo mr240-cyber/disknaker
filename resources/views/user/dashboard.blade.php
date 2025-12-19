@@ -2488,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                               color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                               padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2747,42 +2747,26 @@
                         margin-bottom: 24px;
                     }
 
+                    .label-floating {
+                        display: block;
+                        font-size: 14px;
+                        color: #0c2c66;
+                        margin-bottom: 8px;
+                        font-weight: 700;
+                        margin-left: 5px;
+                    }
+
                     .input-premium-ultra {
                         width: 100%;
-                        padding: 22px 20px 10px;
+                        padding: 15px 20px;
                         background: #f8fafc;
                         border: 2px solid #f1f5f9;
-                        border-radius: 18px;
+                        border-radius: 16px;
                         font-size: 15px;
                         font-weight: 600;
                         transition: all 0.2s ease;
                         outline: none;
                         color: #1e293b;
-                    }
-
-                    .input-premium-ultra:focus {
-                        background: white;
-                        border-color: #0c2c66;
-                        box-shadow: 0 0 0 5px rgba(12, 44, 102, 0.08);
-                    }
-
-                    .label-floating {
-                        position: absolute;
-                        left: 20px;
-                        top: 20px;
-                        font-size: 15px;
-                        color: #94a3b8;
-                        transition: all 0.2s ease;
-                        pointer-events: none;
-                        font-weight: 600;
-                        transform-origin: left top;
-                    }
-
-                    .input-premium-ultra:focus~.label-floating,
-                    .input-premium-ultra:not(:placeholder-shown)~.label-floating,
-                    .input-premium-ultra.has-value~.label-floating {
-                        transform: translateY(-12px) scale(0.8);
-                        color: #0c2c66;
                     }
 
                     /* Custom Radio Chips */
@@ -2969,44 +2953,43 @@
                                     <input type="hidden" id="active_doc_url">
 
                                     <div class="input-group-premium">
-                                        <input type="email" required class="input-premium-ultra" placeholder=" "
-                                            value="{{ Auth::user()->email }}">
                                         <label class="label-floating">Email Penerima</label>
+                                        <input type="email" required class="input-premium-ultra"
+                                            value="{{ Auth::user()->email }}">
                                     </div>
 
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                                         <div class="input-group-premium">
-                                            <input type="text" required class="input-premium-ultra" placeholder=" "
-                                                value="{{ Auth::user()->nama_lengkap }}">
                                             <label class="label-floating">Nama Lengkap</label>
+                                            <input type="text" required class="input-premium-ultra"
+                                                value="{{ Auth::user()->nama_lengkap }}">
                                         </div>
                                         <div class="input-group-premium">
-                                            <input type="text" required class="input-premium-ultra" placeholder=" ">
                                             <label class="label-floating">Jabatan Anda</label>
+                                            <input type="text" required class="input-premium-ultra">
                                         </div>
                                     </div>
 
                                     <div class="input-group-premium">
-                                        <input type="text" required class="input-premium-ultra" placeholder=" ">
                                         <label class="label-floating">Nama Perusahaan / Instansi</label>
+                                        <input type="text" required class="input-premium-ultra">
                                     </div>
 
                                     <div class="input-group-premium">
-                                        <textarea required class="input-premium-ultra"
-                                            style="min-height: 60px; resize: none; padding-top: 25px;"
-                                            placeholder=" "></textarea>
                                         <label class="label-floating">Alamat Kantor Lengkap</label>
+                                        <textarea required class="input-premium-ultra"
+                                            style="min-height: 80px; resize: none;"></textarea>
                                     </div>
 
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                                         <div class="input-group-premium">
-                                            <input type="text" required class="input-premium-ultra" placeholder=" ">
                                             <label class="label-floating">Sektor Usaha</label>
+                                            <input type="text" required class="input-premium-ultra">
                                         </div>
                                         <div class="input-group-premium">
+                                            <label class="label-floating">Tanggal Unduh</label>
                                             <input type="date" required class="input-premium-ultra"
                                                 value="{{ date('Y-m-d') }}">
-                                            <label class="label-floating">Tanggal Unduh</label>
                                         </div>
                                     </div>
 
@@ -3075,27 +3058,6 @@
 
                         document.getElementById('receiptModal').style.display = 'flex';
                         document.body.style.overflow = 'hidden';
-
-                        // SYNC LABELS: Ensure pre-filled labels float
-                        setTimeout(() => {
-                            const inputs = document.querySelectorAll('.input-premium-ultra');
-                            inputs.forEach(input => {
-                                if (input.value && input.value.trim() !== "") {
-                                    input.classList.add('has-value');
-                                } else {
-                                    input.classList.remove('has-value');
-                                }
-
-                                // Listen for input changes to toggle class
-                                input.addEventListener('input', () => {
-                                    if (input.value && input.value.trim() !== "") {
-                                        input.classList.add('has-value');
-                                    } else {
-                                        input.classList.remove('has-value');
-                                    }
-                                });
-                            });
-                        }, 50);
                     }
 
                     function closeReceiptModal() {
