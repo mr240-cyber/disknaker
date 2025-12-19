@@ -2488,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                               color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                               padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2779,7 +2779,8 @@
                     }
 
                     .input-premium-ultra:focus~.label-floating,
-                    .input-premium-ultra:not(:placeholder-shown)~.label-floating {
+                    .input-premium-ultra:not(:placeholder-shown)~.label-floating,
+                    .input-premium-ultra.has-value~.label-floating {
                         transform: translateY(-12px) scale(0.8);
                         color: #0c2c66;
                     }
@@ -3074,6 +3075,27 @@
 
                         document.getElementById('receiptModal').style.display = 'flex';
                         document.body.style.overflow = 'hidden';
+
+                        // SYNC LABELS: Ensure pre-filled labels float
+                        setTimeout(() => {
+                            const inputs = document.querySelectorAll('.input-premium-ultra');
+                            inputs.forEach(input => {
+                                if (input.value && input.value.trim() !== "") {
+                                    input.classList.add('has-value');
+                                } else {
+                                    input.classList.remove('has-value');
+                                }
+
+                                // Listen for input changes to toggle class
+                                input.addEventListener('input', () => {
+                                    if (input.value && input.value.trim() !== "") {
+                                        input.classList.add('has-value');
+                                    } else {
+                                        input.classList.remove('has-value');
+                                    }
+                                });
+                            });
+                        }, 50);
                     }
 
                     function closeReceiptModal() {
