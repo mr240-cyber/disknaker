@@ -2488,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2736,8 +2736,8 @@
                     }
 
                     .btn-close-ultra:hover {
-                        background: #e2e8f0;
-                        color: #0c2c66;
+                        background: #fee2e2;
+                        color: #ef4444;
                         transform: rotate(90deg);
                     }
 
@@ -2749,13 +2749,13 @@
 
                     .input-premium-ultra {
                         width: 100%;
-                        padding: 18px 20px 10px;
+                        padding: 22px 20px 10px;
                         background: #f8fafc;
                         border: 2px solid #f1f5f9;
                         border-radius: 18px;
                         font-size: 15px;
                         font-weight: 600;
-                        transition: all 0.3s;
+                        transition: all 0.2s ease;
                         outline: none;
                         color: #1e293b;
                     }
@@ -2769,20 +2769,19 @@
                     .label-floating {
                         position: absolute;
                         left: 20px;
-                        top: 18px;
+                        top: 20px;
                         font-size: 15px;
                         color: #94a3b8;
-                        transition: all 0.3s;
+                        transition: all 0.2s ease;
                         pointer-events: none;
                         font-weight: 600;
+                        transform-origin: left top;
                     }
 
                     .input-premium-ultra:focus~.label-floating,
                     .input-premium-ultra:not(:placeholder-shown)~.label-floating {
-                        top: 10px;
-                        font-size: 11px;
+                        transform: translateY(-12px) scale(0.8);
                         color: #0c2c66;
-                        transform: translateY(-5px);
                     }
 
                     /* Custom Radio Chips */
@@ -2956,10 +2955,12 @@
                         <div class="modal-inner" style="padding: 50px;">
                             <!-- STEP 1: FORM -->
                             <div id="modal_form_step">
-                                <div style="margin-bottom: 40px;">
-                                    <h1 style="font-size: 30px; font-weight: 800; color: #0c2c66; margin-bottom: 10px;">
+                                <div
+                                    style="margin-bottom: 35px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px;">
+                                    <h1
+                                        style="font-size: 32px; font-weight: 800; color: #0c2c66; margin-bottom: 8px; letter-spacing: -0.5px;">
                                         Lengkapi Tanda Terima</h1>
-                                    <p style="color: #64748b; font-size: 15px; line-height: 1.6;">Demi keperluan arsip
+                                    <p style="color: #64748b; font-size: 16px; line-height: 1.6;">Demi keperluan arsip
                                         digital, mohon lengkapi data penerima dokumen di bawah ini.</p>
                                 </div>
 
