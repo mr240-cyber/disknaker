@@ -133,14 +133,9 @@ class CloudinaryService
                 $publicIdWithExt = $afterUpload;
             }
 
-            // 4. Handle extension
-            // For raw files, the extension is part of the public ID.
-            // For image/video, the extension is a format and should be stripped.
-            if (str_contains($url, '/raw/')) {
-                return $publicIdWithExt;
-            } else {
-                return preg_replace('/\.[^.]+$/', '', $publicIdWithExt);
-            }
+            // 4. Return the full path including extension
+            // Cloudinary SDK handles public IDs with extensions correctly by including them in the final URL.
+            return $publicIdWithExt;
 
         } catch (\Exception $e) {
             Log::error('Failed to extract public ID from URL', [
