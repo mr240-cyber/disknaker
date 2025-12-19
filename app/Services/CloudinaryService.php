@@ -16,12 +16,21 @@ class CloudinaryService
     public static function upload(UploadedFile $file, string $folder = 'uploads'): ?string
     {
         try {
-            $cloudName = config('cloudinary.cloud_url') ?: env('CLOUDINARY_URL');
+            $cloudUrl = trim(config('cloudinary.cloud_url', ''));
 
-            if (!$cloudName) {
-                Log::error('Cloudinary Upload Failed: CLOUDINARY_URL not configured');
+            if (!$cloudUrl) {
+                $msg = 'Cloudinary URL is not configured in config/cloudinary.php';
+                Log::error('Cloudinary (Upload): ' . $msg);
+                self::$lastError = $msg;
                 return null;
             }
+
+            Log::debug('Cloudinary (Upload): Attempting upload', [
+                'folder' => $folder,
+                'file' => $file->getClientOriginalName(),
+                'url_len' => strlen($cloudUrl),
+                'url_start' => substr($cloudUrl, 0, 15) . '...'
+            ]);
 
             $uploadedFileUrl = Cloudinary::upload($file->getRealPath(), [
                 'folder' => $folder,
@@ -30,7 +39,7 @@ class CloudinaryService
                 'unique_filename' => true,
             ])->getSecurePath();
 
-            Log::info('Cloudinary Upload Success', ['url' => $uploadedFileUrl]);
+            Log::info('Cloudinary (Upload): Success', ['url' => $uploadedFileUrl]);
             return $uploadedFileUrl;
 
         } catch (\Exception $e) {
