@@ -160,32 +160,73 @@ class CloudinaryService
                 return $url;
             }
 
-            $publicId = self::getPublicIdFromUrl($url);
-            if (!$publicId) {
+            // 1. Precise extraction of resource type and path
+            // Format: .../{resource_type}/{delivery_type}/[version/][public_id].[ext]
+            if (!preg_match('~/(image|video|raw)/(upload|private|authenticated)/~', $url, $matches)) {
                 return $url;
             }
 
-            // Determine resource type from original URL
-            $resourceType = 'image';
-            if (str_contains($url, '/raw/'))
-                $resourceType = 'raw';
-            else if (str_contains($url, '/video/'))
-                $resourceType = 'video';
+            $resourceType = $matches[1];
+            $deliveryType = $matches[2];
+            $searchStr = $matches[0];
 
-            // Generate signed URL with attachment flag via asset classes
-            if ($resourceType === 'video') {
-                return (string) Cloudinary::getVideo($publicId)->addFlag('attachment')->signUrl();
-            } else if ($resourceType === 'raw') {
-                return (string) Cloudinary::getFile($publicId)->addFlag('attachment')->signUrl();
+            $pos = strpos($url, $searchStr);
+            $afterDelivery = substr($url, $pos + strlen($searchStr));
+
+            // Separate path and query
+            $pathParts = explode('?', $afterDelivery)[0];
+
+            // Extract version if exists
+            $version = null;
+            if (preg_match('~^v\d+/~', $pathParts, $vMatches)) {
+                $version = rtrim($vMatches[0], '/');
+                $pathNoVersion = substr($pathParts, strlen($vMatches[0]));
             } else {
-                // PDF is usually 'image' in Cloudinary but we force it to work
-                return (string) Cloudinary::getImage($publicId)->addFlag('attachment')->signUrl();
+                $pathNoVersion = $pathParts;
             }
+
+            $extension = pathinfo($pathNoVersion, PATHINFO_EXTENSION);
+
+            // 2. Prepare the asset object for signing
+            if ($resourceType === 'raw') {
+                // For raw, public ID MUST include extension
+                $asset = Cloudinary::getFile($pathNoVersion);
+            } else {
+                // For image/video, strip extension and use format()
+                $publicId = $extension ? substr($pathNoVersion, 0, -(strlen($extension) + 1)) : $pathNoVersion;
+
+                if ($resourceType === 'video') {
+                    $asset = Cloudinary::getVideo($publicId);
+                } else {
+                    $asset = Cloudinary::getImage($publicId);
+                }
+
+                if ($extension) {
+                    $asset->format($extension);
+                }
+            }
+
+            // 3. Add flags and sign
+            // Using array for addTransformation to avoid strict type lints
+            $asset->addTransformation(['flags' => 'attachment']);
+
+            $finalUrl = (string) $asset->signUrl();
+
+            Log::debug('Cloudinary Signed URL Generated', [
+                'resource_type' => $resourceType,
+                'path' => $pathNoVersion,
+                'extension' => $extension,
+                'signed_url' => $finalUrl,
+                'config_url' => config('cloudinary.cloud_url') ? 'SET' : 'NOT SET'
+            ]);
+
+            return $finalUrl;
 
         } catch (\Exception $e) {
             Log::error('Failed to generate download URL', [
                 'url' => $url,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
             return $url;
         }
