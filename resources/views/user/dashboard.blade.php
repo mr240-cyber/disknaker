@@ -2488,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -3068,7 +3068,7 @@
                         document.getElementById('modal_success_step').classList.add('hide-modal');
                         document.getElementById('modal_receipt_form').reset();
                         document.getElementById('active_doc_url').value = url;
-                        if (type === 'sk_p2k3') do cument.getElementById('radio_sk_p2k3').checked = true;
+                        if (type === 'sk_p2k3') document.getElementById('radio_sk_p2k3').checked = true;
                         if (type === 'sk_pelkes') document.getElementById('radio_sk_pelkes').checked = true;
 
                         document.getElementById('receiptModal').style.display = 'flex';
