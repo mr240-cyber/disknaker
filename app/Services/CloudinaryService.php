@@ -27,9 +27,7 @@ class CloudinaryService
 
             Log::debug('Cloudinary (Upload): Attempting upload', [
                 'folder' => $folder,
-                'file' => $file->getClientOriginalName(),
-                'url_len' => strlen($cloudUrl),
-                'url_start' => substr($cloudUrl, 0, 15) . '...'
+                'file' => $file->getClientOriginalName()
             ]);
 
             $uploadedFileUrl = Cloudinary::upload($file->getRealPath(), [
@@ -72,12 +70,18 @@ class CloudinaryService
             if (empty($url))
                 return null;
             $url = explode('?', $url)[0];
+
+            // Matches: .../upload/[v1234/][public_id].[ext]
             if (!preg_match('~/(upload|private|authenticated|raw|video|image)/~', $url))
                 return null;
+
             $pos = strrpos($url, '/upload/');
             if ($pos === false)
                 return null;
+
             $afterUpload = substr($url, $pos + strlen('/upload/'));
+
+            // Extract public path ignoring version v123/
             if (preg_match('~^(?:.*/)?v\d+/(.+)~', $afterUpload, $pathMatches)) {
                 return $pathMatches[1];
             }
@@ -97,8 +101,7 @@ class CloudinaryService
                 return $url;
             }
 
-            // 1. Precise extraction of Cloud Name, Resource Type, and Delivery Path
-            // Regex matches: https://res.cloudinary.com/{cloud_name}/{resource_type}/{delivery_type}/...
+            // 1. Extract Info
             if (!preg_match('~cloudinary\.com/([^/]+)/(image|video|raw)/(upload|private|authenticated)/~', $url, $matches)) {
                 return $url;
             }
@@ -106,56 +109,44 @@ class CloudinaryService
             $extractedCloudName = $matches[1];
             $resourceType = $matches[2];
             $deliveryType = $matches[3];
-            $searchStr = $matches[0];
 
-            $pos = strpos($url, $searchStr);
-            $afterDelivery = substr($url, $pos + strlen($searchStr));
-            $pathParts = explode('?', $afterDelivery)[0];
+            $publicIdWithExt = self::getPublicIdFromUrl($url);
+            if (!$publicIdWithExt)
+                return $url;
 
-            // Extract version and public path
-            if (preg_match('~^v\d+/~', $pathParts, $vMatches)) {
-                $pathNoVersion = substr($pathParts, strlen($vMatches[0]));
-            } else {
-                $pathNoVersion = $pathParts;
-            }
+            $extension = pathinfo($publicIdWithExt, PATHINFO_EXTENSION);
+            $cleanPublicId = $extension ? substr($publicIdWithExt, 0, -(strlen($extension) + 1)) : $publicIdWithExt;
 
-            $extension = pathinfo($pathNoVersion, PATHINFO_EXTENSION);
-
-            // 2. Prepare Asset Object via Facade
+            // 2. Build Asset via SDK Builder
             if ($resourceType === 'raw') {
-                $asset = Cloudinary::getFile($pathNoVersion);
+                $asset = Cloudinary::getFile($publicIdWithExt);
             } else {
-                $publicId = $extension ? substr($pathNoVersion, 0, -(strlen($extension) + 1)) : $pathNoVersion;
-                $asset = ($resourceType === 'video') ? Cloudinary::getVideo($publicId) : Cloudinary::getImage($publicId);
+                $asset = ($resourceType === 'video') ? Cloudinary::getVideo($cleanPublicId) : Cloudinary::getImage($cleanPublicId);
+                if ($extension)
+                    $asset->format($extension);
             }
 
-            // 3. OVERRIDE CLOUD NAME
-            // This ensures signing works even if CLOUDINARY_URL is misconfigured for a different account
+            // 3. FORCE SETTINGS & VERSION
+            // Force Cloud Name from URL to handle mismatches
             $asset->setCloudConfig('cloud_name', $extractedCloudName);
-
-            // 4. Add Flags and Formats
             $asset->addFlag('attachment');
-            if ($extension && $resourceType !== 'raw') {
-                $asset->format($extension);
-            }
 
-            // 5. Generate Final Signed URL
+            // Hardcode version 1 to match existing signed patterns if needed
+            $asset->version('1');
+
+            // 4. Final Sign
             $finalUrl = (string) $asset->signUrl();
 
             Log::debug('Cloudinary Automatic Signed URL', [
-                'input_cloud' => $extractedCloudName,
+                'cloud' => $extractedCloudName,
                 'resource' => $resourceType,
-                'is_signed' => str_contains($finalUrl, '/s--'),
                 'final_url' => $finalUrl
             ]);
 
             return $finalUrl;
 
         } catch (\Exception $e) {
-            Log::error('Cloudinary Signed URL Generation Failed', [
-                'error' => $e->getMessage(),
-                'url' => $url
-            ]);
+            Log::error('Cloudinary Signed URL Error', ['error' => $e->getMessage()]);
             return $url;
         }
     }
