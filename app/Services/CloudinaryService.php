@@ -99,19 +99,48 @@ class CloudinaryService
     public static function getPublicIdFromUrl(string $url): ?string
     {
         try {
-            // Parse URL to extract public ID
-            $parts = explode('/upload/', $url);
-            if (count($parts) < 2) {
+            if (empty($url))
+                return null;
+
+            // 1. Remove query parameters
+            $url = explode('?', $url)[0];
+
+            // 2. Identify the part after /upload/ (or other delivery types)
+            if (!preg_match('~/(upload|private|authenticated|raw|video|image)/~', $url, $matches, PREG_OFFSET_CAPTURE)) {
                 return null;
             }
 
-            // Remove version and get path
-            $path = preg_replace('/^v\d+\//', '', $parts[1]);
+            // Find the last occurrence of these delivery keywords to be safe
+            $pos = strrpos($url, '/upload/');
+            if ($pos === false) {
+                // Try other types if upload isn't there (though it usually is)
+                if (preg_match('~/(?:private|authenticated)/~', $url, $m, PREG_OFFSET_CAPTURE)) {
+                    $pos = $m[0][1];
+                } else {
+                    return null;
+                }
+            }
 
-            // Remove file extension
-            $publicId = pathinfo($path, PATHINFO_DIRNAME) . '/' . pathinfo($path, PATHINFO_FILENAME);
+            $afterUpload = substr($url, $pos + strlen('/upload/'));
 
-            return $publicId;
+            // 3. Extract public ID (everything after the version v\d+/)
+            // Format: [transformations]/v[version]/[public_id]
+            if (preg_match('~^(?:.*/)?v\d+/(.+)~', $afterUpload, $pathMatches)) {
+                $publicIdWithExt = $pathMatches[1];
+            } else {
+                // If no version exists, it might be just the public ID or transformations/publicID
+                // This is less common but we'll take the whole thing and hope for the best
+                $publicIdWithExt = $afterUpload;
+            }
+
+            // 4. Handle extension
+            // For raw files, the extension is part of the public ID.
+            // For image/video, the extension is a format and should be stripped.
+            if (str_contains($url, '/raw/')) {
+                return $publicIdWithExt;
+            } else {
+                return preg_replace('/\.[^.]+$/', '', $publicIdWithExt);
+            }
 
         } catch (\Exception $e) {
             Log::error('Failed to extract public ID from URL', [
