@@ -2488,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2916,7 +2916,7 @@
                         <div class="doc-grid">
                             @foreach($finished as $doc)
                                 <div class="doc-card"
-                                    onclick="openReceiptModal('{{ ($doc->type === 'pelayanan_kesekerja') ? 'sk_pelkes' : 'sk_p2k3' }}', '{{ $doc->file_balasan }}')">
+                                    onclick="openReceiptModal('{{ ($doc->type === 'pelayanan_kesekerja') ? 'sk_pelkes' : 'sk_p2k3' }}', '{{ $doc->download_url }}')">
                                     <i class="fas fa-file-alt doc-icon-float"></i>
                                     <div class="doc-content">
                                         <div class="doc-type">
@@ -3067,11 +3067,11 @@
                         document.getElementById('modal_form_step').classList.remove('hide-modal');
                         document.getElementById('modal_success_step').classList.add('hide-modal');
                         document.getElementById('modal_receipt_form').reset();
- document.getElementById('active_doc_url').value = url;
+                        document.getElementById('active_doc_url').value = url;
                         if (type === 'sk_p2k3') do cument.getElementById('radio_sk_p2k3').checked = true;
-                        if (type === 'sk_pelkes')  document.getElementById('radio_sk_pelkes').checked = true;
+                        if (type === 'sk_pelkes') document.getElementById('radio_sk_pelkes').checked = true;
 
-                     document.getElementById('receiptModal').style.display = 'flex';
+                        document.getElementById('receiptModal').style.display = 'flex';
                         document.body.style.overflow = 'hidden';
                     }
 
@@ -3082,13 +3082,8 @@
 
                     function handleReceiptSubmit(e) {
                         e.preventDefault();
-                        let url = document.getElementById('active_doc_url').value;
+                        const url = document.getElementById('active_doc_url').value;
                         const label = document.querySelector('input[name="modal_dokumen"]:checked').parentElement.querySelector('span').innerText.trim();
-
-                        // Force download for Cloudinary URLs
-                        if (url.includes('cloudinary.com')) {
-                            url = url.replace('/upload/', '/upload/fl_attachment/');
-                        }
 
                         document.getElementById('modal_form_step').classList.add('hide-modal');
                         document.getElementById('modal_success_step').classList.remove('hide-modal');

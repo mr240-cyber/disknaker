@@ -122,4 +122,48 @@ class CloudinaryService
             return null;
         }
     }
+
+    /**
+     * Generate a signed download URL with fl_attachment
+     *
+     * @param string $url The original Cloudinary URL
+     * @return string The signed download URL
+     */
+    public static function getDownloadUrl(string $url): string
+    {
+        try {
+            if (empty($url) || !str_contains($url, 'cloudinary.com')) {
+                return $url;
+            }
+
+            $publicId = self::getPublicIdFromUrl($url);
+            if (!$publicId) {
+                return $url;
+            }
+
+            // Determine resource type from original URL
+            $resourceType = 'image';
+            if (str_contains($url, '/raw/'))
+                $resourceType = 'raw';
+            else if (str_contains($url, '/video/'))
+                $resourceType = 'video';
+
+            // Generate signed URL with attachment flag via asset classes
+            if ($resourceType === 'video') {
+                return (string) Cloudinary::getVideo($publicId)->addFlag('attachment')->signUrl();
+            } else if ($resourceType === 'raw') {
+                return (string) Cloudinary::getFile($publicId)->addFlag('attachment')->signUrl();
+            } else {
+                // PDF is usually 'image' in Cloudinary but we force it to work
+                return (string) Cloudinary::getImage($publicId)->addFlag('attachment')->signUrl();
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Failed to generate download URL', [
+                'url' => $url,
+                'error' => $e->getMessage()
+            ]);
+            return $url;
+        }
+    }
 }

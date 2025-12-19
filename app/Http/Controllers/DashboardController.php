@@ -89,7 +89,10 @@ class DashboardController extends Controller
         $finishedSubmissions = $submissions->filter(
             fn($i) =>
             in_array($i->status, ['SELESAI', 'DOKUMEN TERSEDIA']) && !empty($i->file_balasan)
-        )->values();
+        )->map(function ($i) {
+            $i->download_url = \App\Services\CloudinaryService::getDownloadUrl($i->file_balasan);
+            return $i;
+        })->values();
 
         return view('user.dashboard', [
             'submissions' => $submissions,
