@@ -91,35 +91,12 @@ class CloudinaryService
     }
 
     /**
-     * Generate a download URL with fl_attachment
+     * Get the download URL (Opens in browser)
      */
     public static function getDownloadUrl(string $url): string
     {
-        try {
-            if (empty($url)) {
-                return $url;
-            }
-
-            // If already has attachment flag, return as is
-            if (str_contains($url, '/fl_attachment')) {
-                return $url;
-            }
-
-            // Simply inject fl_attachment after the resource type/upload type segment
-            // Matches: /upload/, /private/, /authenticated/
-            $pattern = '~/(upload|private|authenticated)/~';
-
-            if (preg_match($pattern, $url, $matches)) {
-                // Insert /fl_attachment/ after /upload/
-                $replacement = '/' . $matches[1] . '/fl_attachment/';
-                return preg_replace($pattern, $replacement, $url, 1);
-            }
-
-            return $url;
-
-        } catch (\Exception $e) {
-            Log::error('Cloudinary Download URL Generation Failed', ['error' => $e->getMessage()]);
-            return $url;
-        }
+        // Return original URL to avoid 401 errors from Strict Transformations
+        // User can download manually from the browser viewer
+        return $url;
     }
 }
