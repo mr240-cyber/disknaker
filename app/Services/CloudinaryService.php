@@ -62,7 +62,7 @@ class CloudinaryService
     }
 
     /**
-     * Extract public ID from Cloudinary URL
+     * Extract public ID from Cloudinary URL (preserving extension if present)
      */
     public static function getPublicIdFromUrl(string $url): ?string
     {
@@ -80,6 +80,7 @@ class CloudinaryService
 
             $afterUpload = substr($url, $pos + strlen('/upload/'));
 
+            // Matches: [v123/][path/to/public_id.ext]
             if (preg_match('~^(?:.*/)?v\d+/(.+)~', $afterUpload, $pathMatches)) {
                 return $pathMatches[1];
             }
@@ -90,54 +91,34 @@ class CloudinaryService
     }
 
     /**
-     * Generate a signed download URL with fl_attachment
+     * Generate a download URL with fl_attachment
      */
     public static function getDownloadUrl(string $url): string
     {
         try {
-            if (empty($url) || !str_contains($url, 'cloudinary.com')) {
+            if (empty($url)) {
                 return $url;
             }
 
-            // 1. Extract Details
-            if (!preg_match('~cloudinary\.com/([^/]+)/(image|video|raw)/(upload|private|authenticated)/~', $url, $matches)) {
+            // If already has attachment flag, return as is
+            if (str_contains($url, '/fl_attachment')) {
                 return $url;
             }
 
-            $extractedCloudName = $matches[1];
-            $resourceType = $matches[2];
+            // Simply inject fl_attachment after the resource type/upload type segment
+            // Matches: /upload/, /private/, /authenticated/
+            $pattern = '~/(upload|private|authenticated)/~';
 
-            $publicIdWithExt = self::getPublicIdFromUrl($url);
-            if (!$publicIdWithExt)
-                return $url;
-
-            // 2. Build Asset Object
-            // Including the extension in the public ID ensures it's in the final URL path
-            if ($resourceType === 'raw') {
-                $asset = Cloudinary::getFile($publicIdWithExt);
-            } else if ($resourceType === 'video') {
-                $asset = Cloudinary::getVideo($publicIdWithExt);
-            } else {
-                $asset = Cloudinary::getImage($publicIdWithExt);
+            if (preg_match($pattern, $url, $matches)) {
+                // Insert /fl_attachment/ after /upload/
+                $replacement = '/' . $matches[1] . '/fl_attachment/';
+                return preg_replace($pattern, $replacement, $url, 1);
             }
 
-            // 3. Security Overrides
-            $asset->setCloudConfig('cloud_name', $extractedCloudName);
-            $asset->addFlag('attachment');
-            $asset->version('1');
-
-            // 4. Final Sign
-            $finalUrl = (string) $asset->signUrl();
-
-            Log::debug('Cloudinary Final Signed URL', [
-                'cloud' => $extractedCloudName,
-                'url' => $finalUrl
-            ]);
-
-            return $finalUrl;
+            return $url;
 
         } catch (\Exception $e) {
-            Log::error('Cloudinary Signing Failed', ['error' => $e->getMessage()]);
+            Log::error('Cloudinary Download URL Generation Failed', ['error' => $e->getMessage()]);
             return $url;
         }
     }
