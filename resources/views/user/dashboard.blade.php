@@ -98,6 +98,13 @@
             margin-bottom: 8px
         }
 
+        .input-hint {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+            margin-bottom: 10px;
+        }
+
         input[type=text],
         input[type=email],
         input[type=tel],
@@ -176,10 +183,10 @@
         }
 
         .file-hint {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--muted);
-            margin-top: -8px;
-            margin-bottom: 8px
+            margin-top: 4px;
+            margin-bottom: 10px
         }
 
         .status {
@@ -255,6 +262,37 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap
+        }
+
+        /* Service Card Buttons */
+        .service-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .service-btn {
+            background-color: #4c956c;
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-btn:hover {
+            background-color: #2c6e49;
+            transform: translateY(-3px);
+        }
+
+        .service-btn:active {
+            transform: translateY(0);
         }
 
         .mt-6 {
@@ -987,182 +1025,29 @@
             <!-- PELAYANAN -->
             <div id="pelayanan" class="page hidden">
                 <div class="card">
-                    <h2>Pilih Jenis Pelayanan</h2>
-                    <p class="small">Pilih layanan yang ingin diajukan. Untuk Pengesahan Penyelenggaraan Pelayanan
-                        Kesehatan
-                        Kerja, pilih opsi Form Lengkap di bawah.</p>
-
-                    <select id="pilihanLayanan" onchange="tampilForm()">
-                        <option value="">-- Pilih Layanan --</option>
-                        <option value="pelkes_full">Pengesahan Penyelenggaraan Pelayanan Kesehatan Kerja di Perusahaan
-                        </option>
-                        <option value="pelkes">Form Pengajuan SK Pengesahan P2K3</option>
-                        <option value="p2k3">Formulir Pelaporan P2K3 &amp; Pelayanan Kesehatan Kerja</option>
-                        <option value="kk_pak">Pelaporan Kecelakaan Kerja (KK) / Penyakit Akibat Kerja (PAK)</option>
-                    </select>
+                    <h2>Pilih Layanan</h2>
+                    <div class="service-buttons">
+                        <button type="button" class="service-btn" onclick="tampilFormCard('pelkes')">
+                            Pengesahan Lembaga P2K3
+                        </button>
+                        <button type="button" class="service-btn" onclick="tampilFormCard('pelkes_full')">
+                            Pengesahan Pelayanan Kesehatan Kerja
+                        </button>
+                        <button type="button" class="service-btn" onclick="tampilFormCard('p2k3')">
+                            Pelaporan P2K3/Pelayanan Kesehatan Kerja
+                        </button>
+                        <button type="button" class="service-btn" onclick="tampilFormCard('kk_pak')">
+                            Pelaporan Kecelakaan Kerja/Penyakit Akibat Kerja
+                        </button>
+                    </div>
                 </div>
 
-                <!-- FORM PENGESAHAN PELAYANAN KESEHATAN KERJA (FULL) -->
-                <div id="form_pelkes_full" class="card formdata hidden">
-                    <h2>Pengesahan Penyelenggaraan Pelayanan Kesehatan Kerja di Perusahaan</h2>
-
-                    <form id="form_pelkes" onsubmit="submitReal(event)">
-                        <input type="hidden" id="editIdPengesahan" value="">
-
-                        <div class="fieldset">
-                            <h3>Informasi Pengajuan</h3>
-
-                            <label for="email">Email *</label>
-                            <input type="email" id="email" required value="{{ Auth::user()->email ?? '' }}">
-
-                            <label for="jenis">Jenis Pengajuan *</label>
-                            <select id="jenis" required>
-                                <option value="">-- Pilih Jenis --</option>
-                                <option value="Baru">Pengajuan Baru</option>
-                                <option value="Perpanjangan">Perpanjangan</option>
-                            </select>
-
-                            <label for="tanggal">Tanggal Pengusulan *</label>
-                            <input type="date" id="tanggal" required value="{{ date('Y-m-d') }}">
-                        </div>
-
-                        <div id="data-umum" class="fieldset hidden">
-                            <h3>Data Umum Perusahaan</h3>
-
-                            <label for="nama-perusahaan">Nama Perusahaan *</label>
-                            <input type="text" id="nama-perusahaan" required
-                                placeholder="Contoh: PT. EXAMPLE INDONESIA">
-
-                            <label for="alamat">Alamat Perusahaan *</label>
-                            <textarea id="alamat" required placeholder="Alamat lengkap perusahaan"></textarea>
-
-                            <label for="sektor">Sektor Usaha *</label>
-                            <select id="sektor" required>
-                                <option value="">-- Pilih Sektor --</option>
-                                <option value="Manufaktur">Manufaktur</option>
-                                <option value="Konstruksi">Konstruksi</option>
-                                <option value="Pertambangan">Pertambangan</option>
-                                <option value="Perkebunan">Perkebunan</option>
-                                <option value="Jasa">Jasa</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-
-                            <h4>Jumlah Tenaga Kerja</h4>
-                            <div class="row">
-                                <div class="col">
-                                    <label for="wni-laki">WNI Laki-laki</label>
-                                    <input type="number" id="wni-laki" value="0" min="0">
-                                </div>
-                                <div class="col">
-                                    <label for="wni-perempuan">WNI Perempuan</label>
-                                    <input type="number" id="wni-perempuan" value="0" min="0">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <label for="wna-laki">WNA Laki-laki</label>
-                                    <input type="number" id="wna-laki" value="0" min="0">
-                                </div>
-                                <div class="col">
-                                    <label for="wna-perempuan">WNA Perempuan</label>
-                                    <input type="number" id="wna-perempuan" value="0" min="0">
-                                </div>
-                            </div>
-
-                            <h4>Data Dokter Penanggung Jawab</h4>
-                            <label for="dokter">Nama Dokter *</label>
-                            <input type="text" id="dokter" required placeholder="dr. Nama Lengkap">
-
-                            <label for="ttl">Tempat/Tanggal Lahir Dokter *</label>
-                            <input type="text" id="ttl" required placeholder="Jakarta, 01-01-1980">
-
-                            <label for="nomor-skp">Nomor SKP Dokter *</label>
-                            <input type="text" id="nomor-skp" required placeholder="Nomor Surat Keterangan Praktik">
-
-                            <label for="masa-skp">Masa Berlaku SKP *</label>
-                            <input type="date" id="masa-skp" required>
-
-                            <label for="no-hiperkes">Nomor Sertifikat Hiperkes *</label>
-                            <input type="text" id="no-hiperkes" required placeholder="Nomor sertifikat Hiperkes">
-
-                            <label for="str">Nomor STR *</label>
-                            <input type="text" id="str" required placeholder="Surat Tanda Registrasi">
-
-                            <label for="sip">Nomor SIP *</label>
-                            <input type="text" id="sip" required placeholder="Surat Izin Praktik">
-
-                            <label for="kontak">Kontak (HP/WhatsApp) *</label>
-                            <input type="tel" id="kontak" required placeholder="08xxxxxxxxxx">
-                        </div>
-
-                        <div id="uploads" class="fieldset hidden">
-                            <h3>Upload Dokumen Persyaratan</h3>
-                            <p class="file-hint">Semua file harus berformat PDF dengan ukuran maksimal 1 MB</p>
-
-                            <label for="f-permohonan">Surat Permohonan *</label>
-                            <input type="file" id="f-permohonan" accept="application/pdf" required>
-                            <div id="err-permohonan" class="error"></div>
-
-                            <label for="f-struktur">Struktur Organisasi *</label>
-                            <input type="file" id="f-struktur" accept="application/pdf" required>
-                            <div id="err-struktur" class="error"></div>
-
-                            <label for="f-pernyataan">Surat Pernyataan Kesanggupan *</label>
-                            <input type="file" id="f-pernyataan" accept="application/pdf" required>
-                            <div id="err-pernyataan" class="error"></div>
-
-                            <label for="f-skp">SKP Dokter *</label>
-                            <input type="file" id="f-skp" accept="application/pdf" required>
-                            <div id="err-skp" class="error"></div>
-
-                            <label for="f-hiperkes-dokter">Sertifikat Hiperkes Dokter *</label>
-                            <input type="file" id="f-hiperkes-dokter" accept="application/pdf" required>
-                            <div id="err-hiperkes-dokter" class="error"></div>
-
-                            <label for="f-hiperkes-paramedis">Sertifikat Hiperkes Paramedis</label>
-                            <input type="file" id="f-hiperkes-paramedis" accept="application/pdf">
-                            <div id="err-hiperkes-paramedis" class="error"></div>
-
-                            <label for="f-str-dokter">STR Dokter *</label>
-                            <input type="file" id="f-str-dokter" accept="application/pdf" required>
-                            <div id="err-str-dokter" class="error"></div>
-
-                            <label for="f-sip-dokter">SIP Dokter *</label>
-                            <input type="file" id="f-sip-dokter" accept="application/pdf" required>
-                            <div id="err-sip-dokter" class="error"></div>
-
-                            <label for="f-sarana">Daftar Sarana K3 *</label>
-                            <input type="file" id="f-sarana" accept="application/pdf" required>
-                            <div id="err-sarana" class="error"></div>
-
-                            <label for="f-bpjs-kt">BPJS Ketenagakerjaan *</label>
-                            <input type="file" id="f-bpjs-kt" accept="application/pdf" required>
-                            <div id="err-bpjs-kt" class="error"></div>
-
-                            <label for="f-bpjs-kes">BPJS Kesehatan *</label>
-                            <input type="file" id="f-bpjs-kes" accept="application/pdf" required>
-                            <div id="err-bpjs-kes" class="error"></div>
-
-                            <label for="f-wlkp">WLKP (Wajib Lapor Ketenagakerjaan) *</label>
-                            <input type="file" id="f-wlkp" accept="application/pdf" required>
-                            <div id="err-wlkp" class="error"></div>
-                        </div>
-
-                        <div class="actions">
-                            <button type="button" id="preview" class="ghost">Pratinjau</button>
-                            <button type="button" id="reset" class="ghost">Reset</button>
-                            <button type="submit" style="margin-left: auto;">Kirim Pengajuan</button>
-                        </div>
-
-                        <div id="result" class="card hidden mt-14">
-                            <h3>Pratinjau Data (JSON)</h3>
-                            <pre id="json-output" class="json-preview"></pre>
-                            <button type="button" id="download" class="ghost mt-8">Download JSON</button>
-                        </div>
-                    </form>
-                </div>
+                <!-- NOTE: All forms are below the service buttons card -->
 
                 <div id="form_kk_pak" class="card formdata hidden">
+                    <button type="button" class="ghost" onclick="kembaliKePilihan()" style="margin-bottom: 15px;">
+                        ← Kembali ke Pilihan Layanan
+                    </button>
                     <h2>Pelaporan Kecelakaan Kerja (KK) / Penyakit Akibat Kerja (PAK)</h2>
 
                     <form id="laporForm" novalidate>
@@ -1345,10 +1230,12 @@
                                                 Terpukul (C2)</label>
                                             <label class="checkbox"><input type="checkbox" name="type" value="C3">
                                                 Tertangkap (C3)</label>
-                                            <label class="checkbox"><input type="checkbox" name="type" value="C4"> Jatuh
+                                            <label class="checkbox"><input type="checkbox" name="type" value="C4">
+                                                Jatuh
                                                 sama level
                                                 (C4)</label>
-                                            <label class="checkbox"><input type="checkbox" name="type" value="C5"> Jatuh
+                                            <label class="checkbox"><input type="checkbox" name="type" value="C5">
+                                                Jatuh
                                                 beda level
                                                 (C5)</label>
                                             <label class="checkbox"><input type="checkbox" name="type" value="C9">
@@ -1465,7 +1352,8 @@
                                     </div>
 
                                     <div class="full">
-                                        <label for="pakWorkHistory">Riwayat Jenis Pekerjaan (yang berhubungan)</label>
+                                        <label for="pakWorkHistory">Riwayat Jenis Pekerjaan (yang
+                                            berhubungan)</label>
                                         <textarea id="pakWorkHistory"></textarea>
                                     </div>
 
@@ -1498,7 +1386,8 @@
                                 <button type="button" class="btn" id="previewBtn">Pratinjau & Simpan (Unduh
                                     JSON)</button>
                                 <button type="reset" class="btn secondary">Reset</button>
-                                <div id="formMsg" class="muted ml-auto">Pastikan semua kolom bertanda * terisi.</div>
+                                <div id="formMsg" class="muted ml-auto">Pastikan semua kolom bertanda * terisi.
+                                </div>
                             </div>
 
                             <div id="previewArea" class="preview hidden"></div>
@@ -1813,23 +1702,28 @@
 
 
                 <div id="form_p2k3" class="card formdata hidden">
+                    <button type="button" class="ghost" onclick="kembaliKePilihan()" style="margin-bottom: 15px;">
+                        ← Kembali ke Pilihan Layanan
+                    </button>
                     <h2>Pelaporan Kegiatan P2K3 dan Pelayanan Kesehatan Kerja di Perusahaan</h2>
 
                     <p class="small">
-                        Pelaporan kegiatan P2K3 dan penyelenggaraan pelayanan kesehatan kerja wajib dilakukan setiap 3
+                        Pelaporan kegiatan P2K3 dan penyelenggaraan pelayanan kesehatan kerja wajib dilakukan setiap
+                        3
                         (tiga) bulan
                         sekali kepada Dinas yang membidangi ketenagakerjaan di Provinsi sesuai peraturan terkait.
                     </p>
 
                     <form id="form_p2k3_short" novalidate>
                         <!-- Contact / notice -->
-                        <label for="p2k3_email">Email <span class="small">* (digunakan untuk notifikasi)</span></label>
+                        <label for="p2k3_email">Email <span class="small">* (digunakan untuk
+                                notifikasi)</span></label>
                         <input id="p2k3_email" type="email" placeholder="email@example.com"
                             title="Masukkan alamat email" required>
 
                         <div class="fieldset">
                             <strong>Data Umum Perusahaan</strong>
-                            <div class="small">Silahkan mengisi data umum perusahaan terlebih dahulu.</div>
+                            <div class="input-hint">Silahkan mengisi data umum perusahaan terlebih dahulu.</div>
 
                             <label for="p2k3_nama">Nama Perusahaan <span class="small">*</span></label>
                             <input id="p2k3_nama" type="text" placeholder="CONTOH: PT MAJU TERUS PANTANG MUNDUR"
@@ -1967,10 +1861,12 @@
 
                             <label>Pelaksanaan Evaluasi K3 (pilih yang relevan)</label>
                             <div>
-                                <label><input type="checkbox" name="p2k3_eval" value="proses"> Proses Produksi</label>
+                                <label><input type="checkbox" name="p2k3_eval" value="proses"> Proses
+                                    Produksi</label>
                                 <label><input type="checkbox" name="p2k3_eval" value="peralatan"> Peralatan
                                     Mesin</label>
-                                <label><input type="checkbox" name="p2k3_eval" value="apd"> Alat Pengaman / APD</label>
+                                <label><input type="checkbox" name="p2k3_eval" value="apd"> Alat Pengaman /
+                                    APD</label>
                                 <label><input type="checkbox" name="p2k3_eval" value="tenaga"> Tenaga Kerja</label>
                                 <label><input type="checkbox" name="p2k3_eval" value="kebakaran"> Pencegahan
                                     Kebakaran</label>
@@ -2034,7 +1930,8 @@
                                 <label><input type="radio" name="pelkes_bentuk" value="kerjasama"> Diselenggarakan
                                     melalui
                                     kerjasama</label><br>
-                                <label><input type="radio" name="pelkes_bentuk" value="bersama"> Diselenggarakan bersama
+                                <label><input type="radio" name="pelkes_bentuk" value="bersama"> Diselenggarakan
+                                    bersama
                                     beberapa
                                     perusahaan</label>
                             </div>
@@ -2091,7 +1988,8 @@
                                     Periksa</label>
                                 <label><input type="checkbox" name="pelkes_sarana" value="lemari_obat"> Lemari
                                     Obat</label>
-                                <label><input type="checkbox" name="pelkes_sarana" value="wc"> Kamar Mandi / WC</label>
+                                <label><input type="checkbox" name="pelkes_sarana" value="wc"> Kamar Mandi /
+                                    WC</label>
                                 <label><input type="checkbox" name="pelkes_sarana" value="alat_ukur"> Timbangan /
                                     Pengukur
                                     Tinggi</label>
@@ -2102,7 +2000,8 @@
 
                             <label>Sarana Penunjang Pelayanan Kesehatan Kerja</label>
                             <div>
-                                <label><input type="checkbox" name="pelkes_penunjang" value="apd"> Alat Pelindung Diri
+                                <label><input type="checkbox" name="pelkes_penunjang" value="apd"> Alat Pelindung
+                                    Diri
                                     (APD)</label>
                                 <label><input type="checkbox" name="pelkes_penunjang" value="spirometer">
                                     Spirometer</label>
@@ -2324,6 +2223,9 @@
 
                 <!-- ======= FORM SINGKAT: Pengajuan SK Pengesahan P2K3 ======= -->
                 <div id="form_pelkes" class="card formdata hidden">
+                    <button type="button" class="ghost" onclick="kembaliKePilihan()" style="margin-bottom: 15px;">
+                        ← Kembali ke Pilihan Layanan
+                    </button>
                     <h2>Form Pengajuan SK Pengesahan P2K3</h2>
                     <form id="real_form_sk_p2k3" onsubmit="handleSkP2k3Submit(event)">
                         <label>Jenis Pengajuan <span class="text-red-500">*</span></label>
@@ -2375,7 +2277,8 @@
                             (PDF)</label>
                         <input id="sk_file_bpjs_tk" type="file" accept="application/pdf" required>
 
-                        <label>Tanda Bukti Kepesertaan BPJS Kesehatan <span class="text-red-500">*</span> (PDF)</label>
+                        <label>Tanda Bukti Kepesertaan BPJS Kesehatan <span class="text-red-500">*</span>
+                            (PDF)</label>
                         <input id="sk_file_bpjs_kes" type="file" accept="application/pdf" required>
 
                         <label>Tanda Bukti Pengisian WLKP <span class="text-red-500">*</span> (PDF)</label>
@@ -2451,11 +2354,15 @@
 
                 <!-- ======= FORM LENGKAP: Pengesahan Penyelenggaraan Pelayanan Kesehatan Kerja ======= -->
                 <div id="form_pelkes_full" class="card formdata hidden">
+                    <button type="button" class="ghost" onclick="kembaliKePilihan()" style="margin-bottom: 15px;">
+                        ← Kembali ke Pilihan Layanan
+                    </button>
                     <h2>Pengesahan Penyelenggaraan Pelayanan Kesehatan Kerja di Perusahaan</h2>
 
                     <p class="note">
                         Form ini adalah implementasi persyaratan administratif (Undang-undang dan Permenaker). <br>
-                        Catatan: jika sudah mengisi formulir di website, tidak perlu mengirim berkas fisik lagi ke Dinas
+                        Catatan: jika sudah mengisi formulir di website, tidak perlu mengirim berkas fisik lagi ke
+                        Dinas
                         (Alamat:
                         Jl. Jend.
                         A. Yani Km 6 No 23 Banjarmasin).
@@ -2484,7 +2391,7 @@
                             <label>Nama Perusahaan <span class="small">*</span></label>
                             <input id="nama-perusahaan" type="text" placeholder="PT ANGIN SEPOI SEJUK"
                                 pattern="[A-Z0-9 \-()&,]+" required>
-                            <div class="small">Gunakan huruf besar; jangan gunakan titik setelah PT/CV.</div>
+                            <div class="input-hint">Gunakan huruf besar; jangan gunakan titik setelah PT/CV.</div>
 
                             <label>Alamat Perusahaan <span class="small">*</span></label>
                             <textarea id="alamat" required></textarea>
@@ -2548,7 +2455,8 @@
                         <!-- Upload Dokumen Persyaratan -->
                         <div id="uploads" class="fieldset hidden">
                             <label>Unggah Dokumen Persyaratan (PDF, maks 1 MB tiap file)</label>
-                            <div class="file-hint">jika sudah mengisi formulir di website, tidak perlu mengirim berkas
+                            <div class="file-hint">jika sudah mengisi formulir di website, tidak perlu mengirim
+                                berkas
                                 fisik lagi ke
                                 Dinas.
                             </div>
@@ -2647,8 +2555,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                                                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                                                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -3048,7 +2956,8 @@
                     <div class="unduh-hero">
                         <div class="content">
                             <h2>Arsip Dokumen Digital</h2>
-                            <p>Manajemen hasil pengajuan layanan K3 Anda secara modern dan terintegrasi. Semua dokumen
+                            <p>Manajemen hasil pengajuan layanan K3 Anda secara modern dan terintegrasi. Semua
+                                dokumen
                                 di bawah ini adalah salinan resmi yang telah disahkan.</p>
                         </div>
                         <i class="fas fa-folder-open"
@@ -3063,7 +2972,8 @@
                                     <i class="fas fa-file-alt doc-icon-float"></i>
                                     <div class="doc-content">
                                         <div class="doc-type">
-                                            <i class="fas fa-certificate" style="margin-right:5px; color:#f59e0b;"></i> Official
+                                            <i class="fas fa-certificate" style="margin-right:5px; color:#f59e0b;"></i>
+                                            Official
                                             Document
                                         </div>
                                         <div class="doc-title">{{ $doc->title }}</div>
@@ -3082,7 +2992,8 @@
                                 style="width: 100px; height: 100px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
                                 <i class="fas fa-box-open" style="font-size: 42px; opacity: 0.3;"></i>
                             </div>
-                            <h3 style="color:#1e293b; margin-bottom:10px; font-weight:800; font-size:20px;">Belum Ada Arsip
+                            <h3 style="color:#1e293b; margin-bottom:10px; font-weight:800; font-size:20px;">Belum Ada
+                                Arsip
                             </h3>
                             <p style="font-size:15px; max-width:400px; margin:0 auto;">Jika pengajuan Anda sudah selesai
                                 divalidasi, dokumen resmi akan muncul secara otomatis di sini.</p>
@@ -3104,7 +3015,8 @@
                                     <h1
                                         style="font-size: 32px; font-weight: 800; color: #0c2c66; margin-bottom: 8px; letter-spacing: -0.5px;">
                                         Lengkapi Tanda Terima</h1>
-                                    <p style="color: #64748b; font-size: 16px; line-height: 1.6;">Demi keperluan arsip
+                                    <p style="color: #64748b; font-size: 16px; line-height: 1.6;">Demi keperluan
+                                        arsip
                                         digital, mohon lengkapi data penerima dokumen di bawah ini.</p>
                                 </div>
 
@@ -3188,7 +3100,8 @@
                                     </div>
                                     <h1 style="font-size: 32px; font-weight: 800; color: #0c2c66; margin-bottom: 10px;">
                                         Verifikasi Berhasil!</h1>
-                                    <p style="color: #64748b; font-size: 16px;">Tanda terima Anda telah disimpan dalam
+                                    <p style="color: #64748b; font-size: 16px;">Tanda terima Anda telah disimpan
+                                        dalam
                                         sistem kami.</p>
                                 </div>
 
@@ -3265,20 +3178,64 @@
         // initial show call is now in DOMContentLoaded below
 
 
-        // tampil form sesuai pilihan
-        function tampilForm() {
-            const val = document.getElementById('pilihanLayanan').value;
+        // tampilFormCard - show form based on button click
+        function tampilFormCard(val) {
+            // Hide all forms first
             document.querySelectorAll('.formdata').forEach(f => f.classList.add('hidden'));
-            if (val === 'pelkes') document.getElementById('form_pelkes').classList.remove('hidden');
-            if (val === 'p2k3') document.getElementById('form_p2k3').classList.remove('hidden');
-            if (val === 'kk_pak') document.getElementById('form_kk_pak').classList.remove('hidden');
-            if (val === 'sk_p2k3') document.getElementById('form_sk_p2k3').classList.remove('hidden');
-            if (val === 'unduh') document.getElementById('form_unduh').classList.remove('hidden');
+
+            // Hide the service buttons card
+            const serviceCard = document.querySelector('#pelayanan > .card:first-child');
+            if (serviceCard) serviceCard.classList.add('hidden');
+
+            // Show the selected form
+            if (val === 'pelkes') {
+                const el = document.getElementById('form_pelkes');
+                if (el) el.classList.remove('hidden');
+            }
+            if (val === 'p2k3') {
+                const el = document.getElementById('form_p2k3');
+                if (el) el.classList.remove('hidden');
+            }
+            if (val === 'kk_pak') {
+                const el = document.getElementById('form_kk_pak');
+                if (el) el.classList.remove('hidden');
+            }
+            if (val === 'sk_p2k3') {
+                const el = document.getElementById('form_sk_p2k3');
+                if (el) el.classList.remove('hidden');
+            }
             if (val === 'pelkes_full') {
-                document.getElementById('form_pelkes_full').classList.remove('hidden');
-                // show inner sections
-                document.getElementById('data-umum').classList.remove('hidden');
-                document.getElementById('uploads').classList.remove('hidden');
+                const el = document.getElementById('form_pelkes_full');
+                if (el) {
+                    el.classList.remove('hidden');
+                    // show inner sections
+                    const dataUmum = document.getElementById('data-umum');
+                    const uploads = document.getElementById('uploads');
+                    if (dataUmum) dataUmum.classList.remove('hidden');
+                    if (uploads) uploads.classList.remove('hidden');
+                }
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show service buttons again (back to selection)
+        function kembaliKePilihan() {
+            // Hide all forms
+            document.querySelectorAll('.formdata').forEach(f => f.classList.add('hidden'));
+            // Show service buttons card
+            const serviceCard = document.querySelector('#pelayanan > .card:first-child');
+            if (serviceCard) serviceCard.classList.remove('hidden');
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Legacy tampilForm - kept for compatibility (if dropdown is used elsewhere)
+        function tampilForm() {
+            const select = document.getElementById('pilihanLayanan');
+            if (select) {
+                tampilFormCard(select.value);
             }
         }
 

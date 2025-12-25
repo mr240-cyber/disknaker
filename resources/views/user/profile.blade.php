@@ -135,7 +135,8 @@
         </aside>
         <main>
             <div class="profile-card">
-                <img src="{{ asset('default_avatar.png') }}" alt="Avatar">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=198754&color=fff&size=128"
+                    alt="Avatar">
                 <h2>{{ Auth::user()->name }}</h2>
                 <p>{{ Auth::user()->email }}</p>
                 <div class="field"><span>Role:</span> {{ Auth::user()->role ?? 'Pengguna' }}</div>
