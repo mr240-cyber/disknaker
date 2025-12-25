@@ -136,15 +136,9 @@ class CloudinaryService
             $publicId = $parsed['public_id'];
             $resourceType = $parsed['resource_type'];
 
-            // Adjust public_id for 'image' and 'video' types: Cloudinary typically expects public_id WITHOUT extension
-            // unless use_filename was used. But if we pass extension, it might duplicate it.
-            // Heuristic: If resource_type is 'image' or 'video', strip extension.
-            if (($resourceType === 'image' || $resourceType === 'video') && strpos($publicId, '.') !== false) {
-                $pathInfo = pathinfo($publicId);
-                if (isset($pathInfo['extension'])) {
-                    $publicId = substr($publicId, 0, -(strlen($pathInfo['extension']) + 1));
-                }
-            }
+            // Do not strip extension automatically. 
+            // If the URL contains extension, we should preserve it to ensure we sign the exact same resource path.
+            // Cloudinary SDK respects the publicId we pass.
 
             if ($resourceType === 'image') {
                 $comp = new \Cloudinary\Asset\Image($publicId);
