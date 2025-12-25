@@ -2222,14 +2222,14 @@
                 </div>
 
                 <!-- ======= FORM SINGKAT: Pengajuan SK Pengesahan P2K3 ======= -->
-                <div id="form_pelkes" class="card formdata hidden">
+                <div id="form_sk_wrapper" class="card formdata hidden">
                     <button type="button" class="ghost" onclick="kembaliKePilihan()" style="margin-bottom: 15px;">
                         ← Kembali ke Pilihan Layanan
                     </button>
                     <h2>Form Pengajuan SK Pengesahan P2K3</h2>
                     <form id="real_form_sk_p2k3" onsubmit="handleSkP2k3Submit(event)">
                         <label>Jenis Pengajuan <span class="text-red-500">*</span></label>
-                        <select id="sk_jenis" required>
+                        <select id="sk_jenis" name="jenis" required>
                             <option value="">-- Pilih --</option>
                             <option value="baru">Pembuatan Baru SK Pengesahan P2K3</option>
                             <option value="perubahan">Perubahan SK Pengesahan P2K3</option>
@@ -2237,55 +2237,55 @@
 
                         <div id="div_sk_lama" class="hidden" style="margin-top:10px;">
                             <label>Dokumen SK Pengesahan P2K3 Lama</label>
-                            <input id="sk_file_lama" type="file" accept="application/pdf">
+                            <input id="sk_file_lama" name="dokumen" type="file" accept="application/pdf">
                         </div>
 
                         <label>Nama Perusahaan <span class="text-red-500">*</span></label>
-                        <input id="sk_nama_perusahaan" type="text" required placeholder="PT...">
+                        <input id="sk_nama_perusahaan" name="nama_perusahaan" type="text" required placeholder="PT...">
 
                         <label>Alamat Perusahaan <span class="text-red-500">*</span></label>
-                        <textarea id="sk_alamat" required placeholder="Alamat Lengkap"></textarea>
+                        <textarea id="sk_alamat" name="alamat" required placeholder="Alamat Lengkap"></textarea>
 
                         <label>Sektor Perusahaan <span class="text-red-500">*</span></label>
-                        <input id="sk_sektor" type="text" required>
+                        <input id="sk_sektor" name="sektor" type="text" required>
 
                         <div class="row">
                             <div class="col">
                                 <label>Jumlah Tenaga Kerja (Laki-Laki) <span class="text-red-500">*</span></label>
-                                <input id="sk_tk_laki" type="number" required min="0">
+                                <input id="sk_tk_laki" name="jumlah_tk" type="number" required min="0">
                             </div>
                             <div class="col">
                                 <label>Jumlah Tenaga Kerja (Perempuan) <span class="text-red-500">*</span></label>
-                                <input id="sk_tk_perempuan" type="number" required min="0">
+                                <input id="sk_tk_perempuan" name="tk_perempuan" type="number" required min="0">
                             </div>
                         </div>
 
                         <label>Surat Permohonan Pengesahan P2K3 <span class="text-red-500">*</span> (PDF)</label>
-                        <input id="sk_file_permohonan" type="file" accept="application/pdf" required>
+                        <input id="sk_file_permohonan" name="f_surat_permohonan" type="file" accept="application/pdf" required>
 
                         <label>Nama Ahli K3 / Sekretaris P2K3 <span class="text-red-500">*</span></label>
-                        <input id="sk_ahli_k3" type="text" required>
+                        <input id="sk_ahli_k3" name="ahli_k3" type="text" required>
 
                         <label>Sertifikat Ahli K3, SKP dan Kartu Kewenangan <span class="text-red-500">*</span>
                             (PDF)</label>
-                        <input id="sk_file_sertifikat" type="file" accept="application/pdf" required>
+                        <input id="sk_file_sertifikat" name="f_sertifikat_ahli_k3" type="file" accept="application/pdf" required>
 
                         <label>Sertifikat Ahli K3 Tambahan (Jika Ada) (PDF)</label>
-                        <input id="sk_file_tambahan" type="file" accept="application/pdf">
+                        <input id="sk_file_tambahan" name="f_sertifikat_tambahan" type="file" accept="application/pdf">
 
                         <label>Tanda Bukti Kepesertaan BPJS Ketenagakerjaan <span class="text-red-500">*</span>
                             (PDF)</label>
-                        <input id="sk_file_bpjs_tk" type="file" accept="application/pdf" required>
+                        <input id="sk_file_bpjs_tk" name="f_bpjs_kt" type="file" accept="application/pdf" required>
 
                         <label>Tanda Bukti Kepesertaan BPJS Kesehatan <span class="text-red-500">*</span>
                             (PDF)</label>
-                        <input id="sk_file_bpjs_kes" type="file" accept="application/pdf" required>
+                        <input id="sk_file_bpjs_kes" name="f_bpjs_kes" type="file" accept="application/pdf" required>
 
                         <label>Tanda Bukti Pengisian WLKP <span class="text-red-500">*</span> (PDF)</label>
-                        <input id="sk_file_wlkp" type="file" accept="application/pdf" required>
+                        <input id="sk_file_wlkp" name="f_wlkp" type="file" accept="application/pdf" required>
 
                         <label>Nomor yang bisa dihubungi <span class="text-red-500">*</span></label>
-                        <input id="sk_kontak" type="tel" placeholder="0812xxxxxxx" required>
+                        <input id="sk_kontak" name="kontak" type="tel" placeholder="0812xxxxxxx" required>
 
                         <div style="margin-top: 20px;">
                             <button type="submit" class="btn-primary">Kirim Pengajuan SK P2K3</button>
@@ -2345,10 +2345,6 @@
                             }
                         }
                     </script>
-
-
-                    <button type="submit">Kirim Pengajuan</button>
-                    </form>
                 </div>
 
 
@@ -2531,9 +2527,6 @@
                             <div class="actions mt-8">
                             </div>
                         </div>
-                    </form>
-
-                    </form>
                     </form>
                 </div>
             </div>
@@ -3189,7 +3182,7 @@
 
             // Show the selected form
             if (val === 'pelkes') {
-                const el = document.getElementById('form_pelkes');
+                const el = document.getElementById('form_sk_wrapper');
                 if (el) el.classList.remove('hidden');
             }
             if (val === 'p2k3') {
