@@ -185,7 +185,7 @@ return [
         /*
          * Package Service Providers...
          */
-        CloudinaryLabs\CloudinaryLaravel\CloudinaryServiceProvider::class,
+        // CloudinaryServiceProvider removed (using Vercel Blob now)
 
         /*
          * Application Service Providers...

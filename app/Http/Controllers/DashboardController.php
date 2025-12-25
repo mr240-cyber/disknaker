@@ -89,13 +89,8 @@ class DashboardController extends Controller
             fn($i) =>
             in_array($i->status, ['SELESAI', 'DOKUMEN TERSEDIA']) && !empty($i->file_balasan)
         )->map(function ($i) {
-            // Check if it is a Cloudinary URL (legacy)
-            if (strpos($i->file_balasan, 'cloudinary.com') !== false) {
-                $i->download_url = \App\Services\CloudinaryService::getDownloadUrl($i->file_balasan);
-            } else {
-                // Assume Vercel Blob (direct link)
-                $i->download_url = \App\Services\VercelBlobService::getDownloadUrl($i->file_balasan);
-            }
+            // Vercel Blob URLs are public - use directly
+            $i->download_url = $i->file_balasan;
             return $i;
         })->values();
 
@@ -273,14 +268,12 @@ class DashboardController extends Controller
 
         if ($request->hasFile('file_surat')) {
             // Upload to Vercel Blob
-            // $cloudinaryUrl = \App\Services\CloudinaryService::upload(...) -> replaced
             $blobUrl = \App\Services\VercelBlobService::upload(
                 $request->file('file_surat'),
                 'uploads/surat_balasan'
             );
 
             if (!$blobUrl) {
-                // $errorDetail = \App\Services\CloudinaryService::$lastError ...
                 return response()->json([
                     "status" => "error",
                     "message" => "Gagal upload ke Vercel Blob. Cek konfigurasi token."

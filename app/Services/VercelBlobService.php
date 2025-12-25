@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 use DB;
 
 // Using community package: dam-bal/vercel-blob-php
-use Vercel\Blob\Client;
+use VercelBlobPhp\Client;
 
 class VercelBlobService
 {
@@ -30,16 +30,12 @@ class VercelBlobService
             // Note: API might change, but typically pathname is supported
             $filename = $folder . '/' . uniqid() . '_' . $file->getClientOriginalName();
 
-            // Put file
-            // options: access => 'public' (default)
-            $response = $client->put($filename, file_get_contents($file->getRealPath()), [
-                'access' => 'public',
-                'contentType' => $file->getMimeType()
-            ]);
+            // Put file - the package uses 2 args: pathname, content
+            // Access is public by default
+            $response = $client->put($filename, file_get_contents($file->getRealPath()));
 
-            // Response typically contains 'url'
-            // We can verify response structure if needed, but usually it's an object/array with url
-            return $response['url'] ?? null;
+            // Response is a PutBlobResult object with url property
+            return $response->url ?? null;
 
         } catch (\Exception $e) {
             Log::error('Vercel Blob Upload Failed: ' . $e->getMessage());

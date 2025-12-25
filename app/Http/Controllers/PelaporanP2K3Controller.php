@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
-use App\Services\CloudinaryService;
+use App\Services\VercelBlobService;
 
 class PelaporanP2K3Controller extends Controller
 {
@@ -17,7 +17,7 @@ class PelaporanP2K3Controller extends Controller
 
         $uploadPath = null;
         if ($request->hasFile('dokumen')) {
-            $uploadPath = CloudinaryService::upload(
+            $uploadPath = VercelBlobService::upload(
                 $request->file('dokumen'),
                 'uploads/laporan_p2k3'
             );

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
-use App\Services\CloudinaryService;
+use App\Services\VercelBlobService;
 
 class P2K3Controller extends Controller
 {
@@ -29,13 +29,13 @@ class P2K3Controller extends Controller
 
         foreach ($files as $input => $col) {
             if ($request->hasFile($input)) {
-                $cloudinaryUrl = CloudinaryService::upload(
+                $blobUrl = VercelBlobService::upload(
                     $request->file($input),
                     'uploads/p2k3'
                 );
 
-                if ($cloudinaryUrl) {
-                    $paths[$col] = $cloudinaryUrl;
+                if ($blobUrl) {
+                    $paths[$col] = $blobUrl;
                 }
             }
         }

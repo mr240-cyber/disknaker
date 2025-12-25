@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
-use App\Services\CloudinaryService;
+use App\Services\VercelBlobService;
 
 class PengesahanK3Controller extends Controller
 {
@@ -38,16 +38,16 @@ class PengesahanK3Controller extends Controller
         $uploadedPaths = [];
         foreach ($fileFields as $inputName => $dbColumn) {
             if ($request->hasFile($inputName)) {
-                $cloudinaryUrl = CloudinaryService::upload(
+                $blobUrl = VercelBlobService::upload(
                     $request->file($inputName),
                     'uploads/pelkes'
                 );
 
-                if ($cloudinaryUrl) {
-                    $uploadedPaths[$dbColumn] = $cloudinaryUrl;
+                if ($blobUrl) {
+                    $uploadedPaths[$dbColumn] = $blobUrl;
                 } else {
                     // Log error but continue with other uploads
-                    \Illuminate\Support\Facades\Log::warning("Failed to upload {$inputName} to Cloudinary");
+                    \Illuminate\Support\Facades\Log::warning("Failed to upload {$inputName} to Vercel Blob");
                 }
             }
         }
@@ -150,15 +150,15 @@ class PengesahanK3Controller extends Controller
 
         foreach ($fileFields as $inputName => $dbColumn) {
             if ($request->hasFile($inputName)) {
-                $cloudinaryUrl = CloudinaryService::upload(
+                $blobUrl = VercelBlobService::upload(
                     $request->file($inputName),
                     'uploads/pelkes'
                 );
 
-                if ($cloudinaryUrl) {
-                    $updateData[$dbColumn] = $cloudinaryUrl;
+                if ($blobUrl) {
+                    $updateData[$dbColumn] = $blobUrl;
                 } else {
-                    \Illuminate\Support\Facades\Log::warning("Failed to upload {$inputName} to Cloudinary during update");
+                    \Illuminate\Support\Facades\Log::warning("Failed to upload {$inputName} to Vercel Blob during update");
                 }
             }
         }

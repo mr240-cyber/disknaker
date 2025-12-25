@@ -959,8 +959,7 @@
                                         @endif
 
                                         @if(($s->status == 'DOKUMEN TERSEDIA' || $s->status == 'Selesai') && !empty($s->file_balasan))
-                                            <a href="{{ \App\Services\CloudinaryService::getDownloadUrl($s->file_balasan) }}"
-                                                target="_blank"
+                                            <a href="{{ $s->file_balasan }}" target="_blank"
                                                 style="background: #5b9bd5; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 13px;">
                                                 <i class="fas fa-download"></i> Download Surat
                                             </a>
@@ -2489,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>

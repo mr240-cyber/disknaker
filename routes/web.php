@@ -9,18 +9,81 @@ use App\Http\Controllers\KKPAKController;
 use App\Http\Controllers\PelaporanP2K3Controller;
 use App\Http\Controllers\DashboardController;
 
-// Debug: Check Cloudinary Config (Public)
-Route::get('/debug-cloudinary', function () {
-    return response()->json([
-        'cloudinary_url' => env('CLOUDINARY_URL') ? 'SET (hidden)' : 'NOT SET',
-        'cloud_name' => env('CLOUDINARY_CLOUD_NAME') ?: 'NOT SET',
-        'api_key' => env('CLOUDINARY_API_KEY') ? 'SET (hidden)' : 'NOT SET',
-        'package_exists' => class_exists('CloudinaryLabs\\CloudinaryLaravel\\Facades\\Cloudinary') ? 'YES' : 'NO',
-        'app_env' => app()->environment(),
-        'php_version' => PHP_VERSION,
-        'config_loaded' => config('cloudinary.cloud_url') ? 'YES' : 'NO',
-    ]);
-});
+// Debug route removed (Cloudinary no longer used)
+
+// Migration Route: Cloudinary to Vercel Blob (Admin only, run once)
+Route::get('/migrate-to-blob', function () {
+    // Simple auth check - you should protect this better in production
+    if (!auth()->check() || auth()->user()->role !== 'admin') {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+
+    $tables = [
+        'pelayanan_kesekerja' => ['file_balasan'],
+        'sk_p2k3' => ['file_balasan'],
+        'pelaporan_kk_pak' => ['file_balasan', 'file_bukti'],
+        'pelaporan_p2k3' => ['file_balasan', 'file_laporan'],
+    ];
+
+    $results = ['migrated' => 0, 'failed' => 0, 'details' => []];
+    $token = env('BLOB_READ_WRITE_TOKEN');
+
+    if (!$token) {
+        return response()->json(['error' => 'BLOB_READ_WRITE_TOKEN not set'], 500);
+    }
+
+    $client = new \VercelBlobPhp\Client($token);
+
+    foreach ($tables as $table => $columns) {
+        foreach ($columns as $column) {
+            if (!\Schema::hasColumn($table, $column))
+                continue;
+
+            $records = \DB::table($table)
+                ->whereNotNull($column)
+                ->where($column, 'LIKE', '%cloudinary.com%')
+                ->select('id', $column)
+                ->get();
+
+            foreach ($records as $record) {
+                $oldUrl = $record->$column;
+
+                try {
+                    // Download from Cloudinary
+                    $content = @file_get_contents($oldUrl);
+                    if ($content === false) {
+                        $results['failed']++;
+                        $results['details'][] = "Failed to download: {$oldUrl}";
+                        continue;
+                    }
+
+                    // Get filename
+                    $pathInfo = pathinfo(parse_url($oldUrl, PHP_URL_PATH));
+                    $filename = $pathInfo['basename'] ?? 'file_' . uniqid();
+                    $pathname = 'migrated/' . uniqid() . '_' . $filename;
+
+                    // Upload to Vercel Blob
+                    $response = $client->put($pathname, $content);
+
+                    $newUrl = $response->url ?? null;
+
+                    if ($newUrl) {
+                        \DB::table($table)->where('id', $record->id)->update([$column => $newUrl]);
+                        $results['migrated']++;
+                        $results['details'][] = "OK: {$filename}";
+                    } else {
+                        $results['failed']++;
+                    }
+                } catch (\Exception $e) {
+                    $results['failed']++;
+                    $results['details'][] = "Error: " . $e->getMessage();
+                }
+            }
+        }
+    }
+
+    return response()->json($results);
+})->middleware('auth');
 
 // Public routes
 Route::get('/', function () {

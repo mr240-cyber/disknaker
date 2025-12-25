@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
-use App\Services\CloudinaryService;
+use App\Services\VercelBlobService;
 
 class KKPAKController extends Controller
 {
@@ -17,7 +17,7 @@ class KKPAKController extends Controller
 
         $uploadPath = null;
         if ($request->hasFile('dokumen')) {
-            $uploadPath = CloudinaryService::upload(
+            $uploadPath = VercelBlobService::upload(
                 $request->file('dokumen'),
                 'uploads/kk_pak'
             );
