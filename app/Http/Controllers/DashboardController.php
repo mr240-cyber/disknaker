@@ -85,12 +85,17 @@ class DashboardController extends Controller
             'revisi' => $submissions->filter(fn($i) => in_array($i->status, ['DITOLAK', 'PERLU REVISI']))->count(),
         ];
 
-        // Filter finished for downloads
         $finishedSubmissions = $submissions->filter(
             fn($i) =>
             in_array($i->status, ['SELESAI', 'DOKUMEN TERSEDIA']) && !empty($i->file_balasan)
         )->map(function ($i) {
-            $i->download_url = \App\Services\CloudinaryService::getDownloadUrl($i->file_balasan);
+            // Check if it is a Cloudinary URL (legacy)
+            if (strpos($i->file_balasan, 'cloudinary.com') !== false) {
+                $i->download_url = \App\Services\CloudinaryService::getDownloadUrl($i->file_balasan);
+            } else {
+                // Assume Vercel Blob (direct link)
+                $i->download_url = \App\Services\VercelBlobService::getDownloadUrl($i->file_balasan);
+            }
             return $i;
         })->values();
 
@@ -267,25 +272,25 @@ class DashboardController extends Controller
         }
 
         if ($request->hasFile('file_surat')) {
-            // Upload to Cloudinary
-            $cloudinaryUrl = \App\Services\CloudinaryService::upload(
+            // Upload to Vercel Blob
+            // $cloudinaryUrl = \App\Services\CloudinaryService::upload(...) -> replaced
+            $blobUrl = \App\Services\VercelBlobService::upload(
                 $request->file('file_surat'),
                 'uploads/surat_balasan'
             );
 
-            if (!$cloudinaryUrl) {
-                $errorDetail = \App\Services\CloudinaryService::$lastError ?: "Gagal koneksi ke Cloudinary.";
-
+            if (!$blobUrl) {
+                // $errorDetail = \App\Services\CloudinaryService::$lastError ...
                 return response()->json([
                     "status" => "error",
-                    "message" => "Gagal upload: " . $errorDetail . " (Cek koneksi/konfigurasi)"
+                    "message" => "Gagal upload ke Vercel Blob. Cek konfigurasi token."
                 ], 500);
             }
 
             try {
-                // Update database with Cloudinary URL
+                // Update database with Blob URL
                 $updated = DB::table($table)->where('id', $request->input('id'))->update([
-                    'file_balasan' => $cloudinaryUrl,
+                    'file_balasan' => $blobUrl,
                     'status_pengajuan' => 'DOKUMEN TERSEDIA', // Auto update status
                     'updated_at' => now()
                 ]);
@@ -303,7 +308,7 @@ class DashboardController extends Controller
                 return response()->json([
                     "status" => "success",
                     "message" => "Surat berhasil diupload dan status diperbarui menjadi DOKUMEN TERSEDIA.",
-                    "url" => $cloudinaryUrl
+                    "url" => $blobUrl
                 ]);
 
             } catch (\Exception $e) {
