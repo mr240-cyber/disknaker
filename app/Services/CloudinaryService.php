@@ -19,7 +19,12 @@ class CloudinaryService
             $cloudUrl = trim(config('cloudinary.cloud_url', ''));
 
             if (!$cloudUrl) {
-                $msg = 'Cloudinary URL is not configured in config/cloudinary.php';
+                // Fallback to env if config returns empty string/null unexpectedly
+                $cloudUrl = env('CLOUDINARY_URL');
+            }
+
+            if (!$cloudUrl) {
+                $msg = 'Cloudinary URL is not configured';
                 Log::error('Cloudinary (Upload): ' . $msg);
                 self::$lastError = $msg;
                 return null;
@@ -29,6 +34,9 @@ class CloudinaryService
                 'folder' => $folder,
                 'file' => $file->getClientOriginalName()
             ]);
+
+            // Ensure folder is clean
+            $folder = trim($folder, '/');
 
             $uploadedFileUrl = Cloudinary::upload($file->getRealPath(), [
                 'folder' => $folder,
@@ -66,37 +74,102 @@ class CloudinaryService
      */
     public static function getPublicIdFromUrl(string $url): ?string
     {
+        $parsed = self::parseCloudinaryUrl($url);
+        return $parsed ? $parsed['public_id'] : null;
+    }
+
+    /**
+     * Parse Cloudinary URL to get resource type, type and public_id
+     */
+    private static function parseCloudinaryUrl(string $url): ?array
+    {
         try {
             if (empty($url))
                 return null;
-            $url = explode('?', $url)[0];
 
-            if (!preg_match('~/(upload|private|authenticated|raw|video|image)/~', $url))
-                return null;
+            // Basic parsing to handle standard Cloudinary URLs
+            $path = parse_url($url, PHP_URL_PATH);
 
-            $pos = strrpos($url, '/upload/');
-            if ($pos === false)
-                return null;
-
-            $afterUpload = substr($url, $pos + strlen('/upload/'));
-
-            // Matches: [v123/][path/to/public_id.ext]
-            if (preg_match('~^(?:.*/)?v\d+/(.+)~', $afterUpload, $pathMatches)) {
-                return $pathMatches[1];
+            // Regex to capture: /cloud_name/resource_type/type/(v\d+/)?public_id
+            // Example: /demo/image/upload/v12345/folder/file.jpg
+            if (preg_match('#^/([^/]+)/([^/]+)/([^/]+)/(?:v\d+/)?(.+)$#', $path, $matches)) {
+                return [
+                    'cloud_name' => $matches[1],
+                    'resource_type' => $matches[2], // image, raw, video
+                    'type' => $matches[3], // upload, authenticated, private
+                    'public_id' => urldecode($matches[4]) // folder/file.ext
+                ];
             }
-            return $afterUpload;
+
+            return null;
         } catch (\Exception $e) {
             return null;
         }
     }
 
     /**
-     * Get the download URL (Opens in browser)
+     * Get the download URL (Signed with fl_attachment)
      */
     public static function getDownloadUrl(string $url): string
     {
-        // Return original URL to avoid 401 errors from Strict Transformations
-        // User can download manually from the browser viewer
-        return $url;
+        try {
+            $parsed = self::parseCloudinaryUrl($url);
+
+            if (!$parsed) {
+                return $url;
+            }
+
+            // Manually configure accessible Cloudinary instance for signing
+            // We need to parse the CLOUDINARY_URL environment variable or config
+            // to get api_key and api_secret if not readily available via Facade in this context.
+            // Using the full URL string in constructor is supported by Cloudinary PHP SDK.
+
+            $cloudUrl = config('cloudinary.cloud_url');
+            if (!$cloudUrl)
+                $cloudUrl = env('CLOUDINARY_URL');
+
+            if (!$cloudUrl)
+                return $url;
+
+            $c = new \Cloudinary\Cloudinary($cloudUrl);
+
+            $publicId = $parsed['public_id'];
+            $resourceType = $parsed['resource_type'];
+
+            // Adjust public_id for 'image' and 'video' types: Cloudinary typically expects public_id WITHOUT extension
+            // unless use_filename was used. But if we pass extension, it might duplicate it.
+            // Heuristic: If resource_type is 'image' or 'video', strip extension.
+            if (($resourceType === 'image' || $resourceType === 'video') && strpos($publicId, '.') !== false) {
+                $pathInfo = pathinfo($publicId);
+                if (isset($pathInfo['extension'])) {
+                    $publicId = substr($publicId, 0, -(strlen($pathInfo['extension']) + 1));
+                }
+            }
+
+            if ($resourceType === 'image') {
+                $comp = new \Cloudinary\Asset\Image($publicId);
+            } elseif ($resourceType === 'video') {
+                $comp = new \Cloudinary\Asset\Video($publicId);
+            } else {
+                $comp = new \Cloudinary\Asset\File($publicId);
+            }
+
+            $comp->configuration($c->configuration);
+
+            // valid options for URL generation
+            // fl_attachment forces download
+            if ($resourceType !== 'raw') {
+                $comp->addGenericQualifier('fl', 'attachment');
+            }
+
+            // Sign the URL
+            $comp->signUrl(true);
+
+            return $comp->toUrl();
+
+        } catch (\Exception $e) {
+            Log::error('Cloudinary GetDownloadUrl Failed: ' . $e->getMessage());
+            return $url;
+        }
     }
 }
