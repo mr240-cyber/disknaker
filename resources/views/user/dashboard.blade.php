@@ -2302,7 +2302,7 @@
                         A. Yani Km 6 No 23 Banjarmasin).
                     </p>
 
-                    <form id="form" enctype="multipart/form-data" novalidate>
+                    <form id="form_pelkes" enctype="multipart/form-data" novalidate>
                         <!-- Hidden ID for Updates -->
                         <input type="hidden" id="editIdPengesahan">
                         <!-- Basic -->
@@ -2488,8 +2488,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                                                           color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                                                           padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -3326,7 +3326,7 @@
         // attach submit
 
         // attach submit
-        const formPelkes = document.getElementById('form_pelkes_full');
+        const formPelkes = document.getElementById('form_pelkes');
         if (formPelkes) {
             formPelkes.addEventListener('submit', submitReal);
         }
