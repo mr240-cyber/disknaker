@@ -14,12 +14,41 @@ class PengesahanK3Controller extends Controller
 {
     public function store(Request $request)
     {
+        // Increase execution time limit for file uploads (local and production)
+        set_time_limit(180); // 3 minutes
+
         // Validation (can be expanded)
         // $request->validate([ 'nama_perusahaan' => 'required', 'files.*' => 'mimes:pdf|max:2048' ]);
 
         $userId = Auth::id() ?? 1;
 
-        // Handle File Uploads
+        // FIRST: Insert form data into database (without files)
+        // This ensures data is saved even if file uploads fail
+        $insertId = DB::table('pelayanan_kesekerja')->insertGetId([
+            'user_id' => $userId,
+            'email' => $request->input('email'),
+            'jenis_pengajuan' => $request->input('jenis'),
+            'tanggal_pengusulan' => $request->input('tanggal'),
+            'nama_perusahaan' => $request->input('nama_perusahaan'),
+            'alamat_perusahaan' => $request->input('alamat'),
+            'sektor' => $request->input('sektor'),
+            'tk_wni_laki' => $request->input('wni_laki', 0),
+            'tk_wni_perempuan' => $request->input('wni_perempuan', 0),
+            'tk_wna_laki' => $request->input('wna_laki', 0),
+            'tk_wna_perempuan' => $request->input('wna_perempuan', 0),
+            'nama_dokter' => $request->input('dokter_nama'),
+            'ttl_dokter' => $request->input('dokter_ttl'),
+            'nomor_skp_dokter' => $request->input('nomor_skp'),
+            'masa_berlaku_skp' => $request->input('masa_skp'),
+            'nomor_hiperkes' => $request->input('no_hiperkes'),
+            'nomor_str' => $request->input('str'),
+            'nomor_sip' => $request->input('sip'),
+            'kontak' => $request->input('kontak'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // THEN: Handle File Uploads (update the record afterwards)
         $fileFields = [
             'permohonan' => 'f_permohonan',
             'struktur' => 'f_struktur',
@@ -38,48 +67,28 @@ class PengesahanK3Controller extends Controller
         $uploadedPaths = [];
         foreach ($fileFields as $inputName => $dbColumn) {
             if ($request->hasFile($inputName)) {
-                $blobUrl = VercelBlobService::upload(
-                    $request->file($inputName),
-                    'uploads/pelkes'
-                );
+                try {
+                    $blobUrl = VercelBlobService::upload(
+                        $request->file($inputName),
+                        'uploads/pelkes'
+                    );
 
-                if ($blobUrl) {
-                    $uploadedPaths[$dbColumn] = $blobUrl;
-                } else {
+                    if ($blobUrl) {
+                        $uploadedPaths[$dbColumn] = $blobUrl;
+                    }
+                } catch (\Exception $e) {
                     // Log error but continue with other uploads
-                    \Illuminate\Support\Facades\Log::warning("Failed to upload {$inputName} to Vercel Blob");
+                    \Illuminate\Support\Facades\Log::warning("Failed to upload {$inputName}: " . $e->getMessage());
                 }
             }
         }
 
-        // Insert into 'pelayanan_kesekerja'
-        DB::table('pelayanan_kesekerja')->insert(array_merge([
-            'user_id' => $userId,
-            'email' => $request->input('email'),
-            'jenis_pengajuan' => $request->input('jenis'),
-            'tanggal_pengusulan' => $request->input('tanggal'),
-            'nama_perusahaan' => $request->input('nama_perusahaan'),
-            'alamat_perusahaan' => $request->input('alamat'),
-            'sektor' => $request->input('sektor'),
+        // Update record with uploaded file URLs
+        if (!empty($uploadedPaths)) {
+            DB::table('pelayanan_kesekerja')->where('id', $insertId)->update($uploadedPaths);
+        }
 
-            'tk_wni_laki' => $request->input('wni_laki', 0),
-            'tk_wni_perempuan' => $request->input('wni_perempuan', 0),
-            'tk_wna_laki' => $request->input('wna_laki', 0),
-            'tk_wna_perempuan' => $request->input('wna_perempuan', 0),
-
-            'nama_dokter' => $request->input('dokter_nama'),
-            'ttl_dokter' => $request->input('dokter_ttl'),
-            'nomor_skp_dokter' => $request->input('nomor_skp'),
-            'masa_berlaku_skp' => $request->input('masa_skp'), // Ensure format YYYY-MM-DD or parse it
-            'nomor_hiperkes' => $request->input('no_hiperkes'),
-            'nomor_str' => $request->input('str'),
-            'nomor_sip' => $request->input('sip'),
-            'kontak' => $request->input('kontak'),
-
-            'created_at' => now(),
-            'updated_at' => now(),
-        ], $uploadedPaths));
-
+        // Send email notification
         try {
             $user = Auth::user() ?? \App\Models\User::find(1); // Fallback for testing if no auth
             if ($user) {

@@ -1002,6 +1002,166 @@
                     </select>
                 </div>
 
+                <!-- FORM PENGESAHAN PELAYANAN KESEHATAN KERJA (FULL) -->
+                <div id="form_pelkes_full" class="card formdata hidden">
+                    <h2>Pengesahan Penyelenggaraan Pelayanan Kesehatan Kerja di Perusahaan</h2>
+
+                    <form id="form_pelkes" onsubmit="submitReal(event)">
+                        <input type="hidden" id="editIdPengesahan" value="">
+
+                        <div class="fieldset">
+                            <h3>Informasi Pengajuan</h3>
+
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" required value="{{ Auth::user()->email ?? '' }}">
+
+                            <label for="jenis">Jenis Pengajuan *</label>
+                            <select id="jenis" required>
+                                <option value="">-- Pilih Jenis --</option>
+                                <option value="Baru">Pengajuan Baru</option>
+                                <option value="Perpanjangan">Perpanjangan</option>
+                            </select>
+
+                            <label for="tanggal">Tanggal Pengusulan *</label>
+                            <input type="date" id="tanggal" required value="{{ date('Y-m-d') }}">
+                        </div>
+
+                        <div id="data-umum" class="fieldset hidden">
+                            <h3>Data Umum Perusahaan</h3>
+
+                            <label for="nama-perusahaan">Nama Perusahaan *</label>
+                            <input type="text" id="nama-perusahaan" required
+                                placeholder="Contoh: PT. EXAMPLE INDONESIA">
+
+                            <label for="alamat">Alamat Perusahaan *</label>
+                            <textarea id="alamat" required placeholder="Alamat lengkap perusahaan"></textarea>
+
+                            <label for="sektor">Sektor Usaha *</label>
+                            <select id="sektor" required>
+                                <option value="">-- Pilih Sektor --</option>
+                                <option value="Manufaktur">Manufaktur</option>
+                                <option value="Konstruksi">Konstruksi</option>
+                                <option value="Pertambangan">Pertambangan</option>
+                                <option value="Perkebunan">Perkebunan</option>
+                                <option value="Jasa">Jasa</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+
+                            <h4>Jumlah Tenaga Kerja</h4>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="wni-laki">WNI Laki-laki</label>
+                                    <input type="number" id="wni-laki" value="0" min="0">
+                                </div>
+                                <div class="col">
+                                    <label for="wni-perempuan">WNI Perempuan</label>
+                                    <input type="number" id="wni-perempuan" value="0" min="0">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="wna-laki">WNA Laki-laki</label>
+                                    <input type="number" id="wna-laki" value="0" min="0">
+                                </div>
+                                <div class="col">
+                                    <label for="wna-perempuan">WNA Perempuan</label>
+                                    <input type="number" id="wna-perempuan" value="0" min="0">
+                                </div>
+                            </div>
+
+                            <h4>Data Dokter Penanggung Jawab</h4>
+                            <label for="dokter">Nama Dokter *</label>
+                            <input type="text" id="dokter" required placeholder="dr. Nama Lengkap">
+
+                            <label for="ttl">Tempat/Tanggal Lahir Dokter *</label>
+                            <input type="text" id="ttl" required placeholder="Jakarta, 01-01-1980">
+
+                            <label for="nomor-skp">Nomor SKP Dokter *</label>
+                            <input type="text" id="nomor-skp" required placeholder="Nomor Surat Keterangan Praktik">
+
+                            <label for="masa-skp">Masa Berlaku SKP *</label>
+                            <input type="date" id="masa-skp" required>
+
+                            <label for="no-hiperkes">Nomor Sertifikat Hiperkes *</label>
+                            <input type="text" id="no-hiperkes" required placeholder="Nomor sertifikat Hiperkes">
+
+                            <label for="str">Nomor STR *</label>
+                            <input type="text" id="str" required placeholder="Surat Tanda Registrasi">
+
+                            <label for="sip">Nomor SIP *</label>
+                            <input type="text" id="sip" required placeholder="Surat Izin Praktik">
+
+                            <label for="kontak">Kontak (HP/WhatsApp) *</label>
+                            <input type="tel" id="kontak" required placeholder="08xxxxxxxxxx">
+                        </div>
+
+                        <div id="uploads" class="fieldset hidden">
+                            <h3>Upload Dokumen Persyaratan</h3>
+                            <p class="file-hint">Semua file harus berformat PDF dengan ukuran maksimal 1 MB</p>
+
+                            <label for="f-permohonan">Surat Permohonan *</label>
+                            <input type="file" id="f-permohonan" accept="application/pdf" required>
+                            <div id="err-permohonan" class="error"></div>
+
+                            <label for="f-struktur">Struktur Organisasi *</label>
+                            <input type="file" id="f-struktur" accept="application/pdf" required>
+                            <div id="err-struktur" class="error"></div>
+
+                            <label for="f-pernyataan">Surat Pernyataan Kesanggupan *</label>
+                            <input type="file" id="f-pernyataan" accept="application/pdf" required>
+                            <div id="err-pernyataan" class="error"></div>
+
+                            <label for="f-skp">SKP Dokter *</label>
+                            <input type="file" id="f-skp" accept="application/pdf" required>
+                            <div id="err-skp" class="error"></div>
+
+                            <label for="f-hiperkes-dokter">Sertifikat Hiperkes Dokter *</label>
+                            <input type="file" id="f-hiperkes-dokter" accept="application/pdf" required>
+                            <div id="err-hiperkes-dokter" class="error"></div>
+
+                            <label for="f-hiperkes-paramedis">Sertifikat Hiperkes Paramedis</label>
+                            <input type="file" id="f-hiperkes-paramedis" accept="application/pdf">
+                            <div id="err-hiperkes-paramedis" class="error"></div>
+
+                            <label for="f-str-dokter">STR Dokter *</label>
+                            <input type="file" id="f-str-dokter" accept="application/pdf" required>
+                            <div id="err-str-dokter" class="error"></div>
+
+                            <label for="f-sip-dokter">SIP Dokter *</label>
+                            <input type="file" id="f-sip-dokter" accept="application/pdf" required>
+                            <div id="err-sip-dokter" class="error"></div>
+
+                            <label for="f-sarana">Daftar Sarana K3 *</label>
+                            <input type="file" id="f-sarana" accept="application/pdf" required>
+                            <div id="err-sarana" class="error"></div>
+
+                            <label for="f-bpjs-kt">BPJS Ketenagakerjaan *</label>
+                            <input type="file" id="f-bpjs-kt" accept="application/pdf" required>
+                            <div id="err-bpjs-kt" class="error"></div>
+
+                            <label for="f-bpjs-kes">BPJS Kesehatan *</label>
+                            <input type="file" id="f-bpjs-kes" accept="application/pdf" required>
+                            <div id="err-bpjs-kes" class="error"></div>
+
+                            <label for="f-wlkp">WLKP (Wajib Lapor Ketenagakerjaan) *</label>
+                            <input type="file" id="f-wlkp" accept="application/pdf" required>
+                            <div id="err-wlkp" class="error"></div>
+                        </div>
+
+                        <div class="actions">
+                            <button type="button" id="preview" class="ghost">Pratinjau</button>
+                            <button type="button" id="reset" class="ghost">Reset</button>
+                            <button type="submit" style="margin-left: auto;">Kirim Pengajuan</button>
+                        </div>
+
+                        <div id="result" class="card hidden mt-14">
+                            <h3>Pratinjau Data (JSON)</h3>
+                            <pre id="json-output" class="json-preview"></pre>
+                            <button type="button" id="download" class="ghost mt-8">Download JSON</button>
+                        </div>
+                    </form>
+                </div>
+
                 <div id="form_kk_pak" class="card formdata hidden">
                     <h2>Pelaporan Kecelakaan Kerja (KK) / Penyakit Akibat Kerja (PAK)</h2>
 
@@ -1541,8 +1701,7 @@
                             }, 50);
                         });
 
-                        // prevent actual submit
-                        (default behavior)
+                        // prevent actual submit (default behavior)
                         formEl.addEventListener('submit', e => { e.preventDefault(); });
 
                         // REAL SUBMIT TO SERVER
@@ -2488,8 +2647,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                                                               color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                                                               padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -3235,8 +3394,10 @@
 
         // submitReal (attached to form submit)
         async function submitReal(e) {
+            console.log('🚀 submitReal() dipanggil!');
             e.preventDefault();
             const formEl = document.getElementById('form_pelkes');
+            console.log('📝 Form element:', formEl);
             const formData = new FormData();
 
             const editId = document.getElementById('editIdPengesahan').value;
@@ -3303,6 +3464,9 @@
             }
 
             try {
+                console.log('📤 Mengirim ke:', url);
+                console.log('📋 FormData fields:', [...formData.keys()]);
+
                 const resp = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -3312,14 +3476,64 @@
                     },
                     body: formData
                 });
-                const json = await resp.json();
-                if (!resp.ok) throw json;
-                alert('Terima kasih — ' + (json.message || 'Pengajuan sukses'));
-                // window.location.reload();
+
+                console.log('📥 Response status:', resp.status, resp.statusText);
+
+                // Try to parse as JSON, but handle non-JSON responses
+                let json;
+                const contentType = resp.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    json = await resp.json();
+                } else {
+                    const text = await resp.text();
+                    console.error('❌ Server mengembalikan non-JSON:', text.substring(0, 500));
+                    throw new Error('Server error (bukan JSON): ' + text.substring(0, 200));
+                }
+
+                console.log('📥 Response data:', json);
+
+                if (!resp.ok) {
+                    // Show detailed error from Laravel validation
+                    let errorMsg = 'Error ' + resp.status + ': ';
+                    if (json.errors) {
+                        // Laravel validation errors
+                        const allErrors = Object.values(json.errors).flat();
+                        errorMsg += allErrors.join('\n• ');
+                    } else if (json.message) {
+                        errorMsg += json.message;
+                    } else {
+                        errorMsg += JSON.stringify(json);
+                    }
+                    throw new Error(errorMsg);
+                }
+
+                alert('✅ Terima kasih — ' + (json.message || 'Pengajuan sukses'));
                 window.location.reload();
             } catch (err) {
-                console.error(err);
-                alert('Gagal mengirim: ' + (err.message || JSON.stringify(err)));
+                console.error('❌ Error lengkap:', err);
+
+                // Check if it's a CSRF error (419)
+                if (err.message && err.message.includes('419')) {
+                    if (confirm('⚠️ Sesi telah kedaluwarsa (CSRF Token Expired).\n\nKlik OK untuk refresh halaman dan coba lagi.\nData formulir Anda mungkin sudah tersimpan - cek dashboard setelah refresh.')) {
+                        window.location.reload();
+                    }
+                    return;
+                }
+
+                // Build detailed error message for other errors
+                let detailMsg = '❌ GAGAL MENGIRIM FORMULIR\n\n';
+                detailMsg += '📍 Endpoint: ' + url + '\n\n';
+
+                if (err.message) {
+                    detailMsg += '💬 Pesan Error:\n' + err.message + '\n\n';
+                }
+
+                detailMsg += '💡 Tips:\n';
+                detailMsg += '• Pastikan semua field wajib terisi\n';
+                detailMsg += '• Pastikan file PDF tidak lebih dari 1MB\n';
+                detailMsg += '• Coba refresh halaman (Ctrl+F5) jika masalah berlanjut';
+
+                alert(detailMsg);
             }
         }
 
@@ -3327,8 +3541,12 @@
 
         // attach submit
         const formPelkes = document.getElementById('form_pelkes');
+        console.log('🔍 Mencari form_pelkes:', formPelkes);
         if (formPelkes) {
             formPelkes.addEventListener('submit', submitReal);
+            console.log('✅ Event listener submit terpasang ke form_pelkes');
+        } else {
+            console.error('❌ form_pelkes TIDAK DITEMUKAN! Form tidak akan bisa submit.');
         }
 
 

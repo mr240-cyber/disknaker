@@ -793,8 +793,14 @@
                     // Render File Fields
                     for (const [key, value] of Object.entries(fileFields)) {
                         let label = key.replace(/^f_|^file_/, '').toUpperCase().replace(/_/g, ' ');
+                        // Check if value is a full URL (Vercel Blob) or local storage path
+                        let fileUrl = value;
+                        if (value && !value.startsWith('http://') && !value.startsWith('https://')) {
+                            // Local storage path - add /storage/ prefix
+                            fileUrl = '/storage/' + value;
+                        }
                         let fileLink = value
-                            ? `<a href="/storage/${value}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">📂 Download / Lihat File</a>`
+                            ? `<a href="${fileUrl}" target="_blank" style="color: #198754; font-weight: 600; text-decoration: none; border-bottom: 1px dotted #198754;">📂 Download / Lihat File</a>`
                             : `<span style="color: #9ca3af; font-style: italic;">Tidak ada file</span>`;
 
                         html += `
