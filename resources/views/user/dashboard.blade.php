@@ -573,13 +573,12 @@
 
                     alert("✅ Formulir telah diisi dengan data sebelumnya. Silakan perbaiki bagian yang salah dan upload ulang file jika diperlukan.");
                     window.scrollTo(0, 0);
-                }
-                // Handle SK P2K3 edit
+                }                // Handle SK P2K3 edit
                 else if (type === 'sk_p2k3') {
                     // 1. Show Form SK P2K3
                     showPage('pelayanan');
 
-                    // Show the SK P2K3 form (form_sk_wrapper)
+// Show the SK P2K3 form (form_sk_wrapper)
                     if (typeof tampilFormCard === 'function') {
                         tampilFormCard('pelkes'); // 'pelkes' maps to form_sk_wrapper
                     } else {
@@ -628,33 +627,91 @@
                     showPage('pelayanan');
                     if (typeof tampilFormCard === 'function') {
                         tampilFormCard('p2k3');
+                    } else {
+              document.querySelectorAll('.formdata').forEach(f => f.classList.add('hidden'));
+                        const formP2k3 = document.getElementById('form_p2k3');
+                        if (formP2k3) formP2k3.classList.remove('hidden');
                     }
 
-                    // Fill form fields
-                    setVal('p2k3_editId', data.id);
-                    setVal('p2k3_email', data.email);
-                    setVal('p2k3_perusahaan', data.nama_perusahaan);
-                    setVal('p2k3_alamat', data.alamat);
-                    setVal('p2k3_sektor', data.sektor);
+                    // Store edit ID
+                    let editIdField = document.getElementById('p2k3_editId');
+                    if (!editIdField) {
+                        const form = document.getElementById('form_p2k3_short');
+                        if (form) {
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.id = 'p2k3_editId';
+                            hiddenInput.name = 'edit_id';
+                            hiddenInput.value = data.id;
+                            form.appendChild(hiddenInput);
+                        }
+                    } else {
+                        editIdField.value = data.id;
+                    }
 
-                    alert("✅ Formulir Pelaporan P2K3 telah diisi dengan data sebelumnya.\n\nSilakan perbaiki bagian yang salah.");
+                    // Fill form fields with correct IDs from form_p2k3_short
+                    setVal('p2k3_email', data.email);
+                    setVal('p2k3_nama', data.nama_perusahaan);
+                    setVal('p2k3_alamat', data.alamat || data.alamat_perusahaan);
+                    setVal('p2k3_sektor', data.sektor);
+                    setVal('p2k3_pimpinan', data.nama_pimpinan);
+                    setVal('p2k3_jabatan', data.jabatan_pimpinan);
+                    setVal('p2k3_wni_laki', data.tk_wni_laki || 0);
+                    setVal('p2k3_wni_perempuan', data.tk_wni_perempuan || 0);
+                    setVal('p2k3_wna_laki', data.tk_wna_laki || 0);
+                    setVal('p2k3_wna_perempuan', data.tk_wna_perempuan || 0);
+                    setVal('p2k3_tahun', data.tahun_pelaporan);
+                    setVal('p2k3_tanggal', data.tanggal_pelaporan);
+
+                    alert("✅ Formulir Pelaporan P2K3 telah diisi dengan data sebelumnya.\n\nSilakan perbaiki bagian yang salah dan upload ulang file jika diperlukan.");
                     window.scrollTo(0, 0);
                 }
                 else if (type === 'pelaporan_kk_pak') {
                     showPage('pelayanan');
                     if (typeof tampilFormCard === 'function') {
                         tampilFormCard('kk_pak');
+                    } else {
+                        document.querySelectorAll('.formdata').forEach(f => f.classList.add('hidden'));
+                        const formKkPak = document.getElementById('form_kk_pak');
+                        if (formKkPak) formKkPak.classList.remove('hidden');
                     }
 
-                    // Fill form fields
+                    // Store edit ID
+                    let editIdField = document.getElementById('kkpak_editId');
+                    if (!editIdField) {
+                        const form = document.getElementById('laporForm');
+                        if (form) {
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.id = 'kkpak_editId';
+                            hiddenInput.name = 'edit_id';
+                            hiddenInput.value = data.id;
+                            form.appendChild(hiddenInput);
+                        }
+                    } else {
+                        editIdField.value = data.id;
+                    }
+
+                    // Fill form fields with correct IDs from laporForm
                     setVal('reporterEmail', data.email);
                     setVal('reporterName', data.nama_pelapor);
                     setVal('reporterPhone', data.no_hp_pelapor);
                     setVal('companyName', data.nama_perusahaan);
                     setVal('companyAddress', data.alamat_perusahaan);
                     setVal('companySector', data.sektor);
+                    setVal('companyLeader', data.nama_pimpinan);
+                    setVal('leaderAddress', data.alamat_pimpinan);
+                    
+                    // Set radio button for jenis pelaporan
+                    if (data.jenis_pelaporan === 'kk' || data.jenis_pelaporan === 'Kecelakaan Kerja') {
+                        const radioKk = document.querySelector('input[name="jenisPelaporan"][value="kk"]');
+                        if (radioKk) radioKk.checked = true;
+                    } else if (data.jenis_pelaporan === 'pak' || data.jenis_pelaporan === 'Penyakit Akibat Kerja') {
+                        const radioPak = document.querySelector('input[name="jenisPelaporan"][value="pak"]');
+                        if (radioPak) radioPak.checked = true;
+                    }
 
-                    alert("✅ Formulir Pelaporan KK/PAK telah diisi dengan data sebelumnya.\n\nSilakan perbaiki bagian yang salah.");
+                    alert("✅ Formulir Pelaporan KK/PAK telah diisi dengan data sebelumnya.\n\nSilakan perbaiki bagian yang salah dan upload ulang file jika diperlukan.");
                     window.scrollTo(0, 0);
                 }
                 else {
@@ -2655,8 +2712,8 @@
                             </div>
                         @endforeach
                     @else
-                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
-                        @endif
+                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                    @endif
                     </div>
                 </div>
             </div>
