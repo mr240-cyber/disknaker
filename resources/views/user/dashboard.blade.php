@@ -519,6 +519,12 @@
                 if (!res.ok) throw new Error("Gagal mengambil data.");
                 let data = await res.json();
 
+                // Helper function
+                const setVal = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el && val !== null && val !== undefined) el.value = val;
+                };
+
                 if (type === 'pelayanan_kesekerja') {
                     // 1. Show Form
                     showPage('pelayanan'); // Use the helper
@@ -536,11 +542,6 @@
                     }
 
                     // 2. Fill Data
-                    const setVal = (id, val) => {
-                        const el = document.getElementById(id);
-                        if (el && val !== null && val !== undefined) el.value = val;
-                    };
-
                     setVal('editIdPengesahan', data.id); // Important: ID for Update
                     setVal('email', data.email);
                     setVal('jenis', data.jenis_pengajuan);
@@ -572,8 +573,92 @@
 
                     alert("✅ Formulir telah diisi dengan data sebelumnya. Silakan perbaiki bagian yang salah dan upload ulang file jika diperlukan.");
                     window.scrollTo(0, 0);
-                } else {
-                    alert("⚠️ Fitur edit untuk layanan tipe ini belum tersedia di demo ini.");
+                }
+                // Handle SK P2K3 edit
+                else if (type === 'sk_p2k3') {
+                    // 1. Show Form SK P2K3
+                    showPage('pelayanan');
+
+                    // Show the SK P2K3 form (form_sk_wrapper)
+                    if (typeof tampilFormCard === 'function') {
+                        tampilFormCard('pelkes'); // 'pelkes' maps to form_sk_wrapper
+                    } else {
+                        document.querySelectorAll('.formdata').forEach(f => f.classList.add('hidden'));
+                        const formWrapper = document.getElementById('form_sk_wrapper');
+                        if (formWrapper) formWrapper.classList.remove('hidden');
+                    }
+
+                    // 2. Fill Data
+                    // Store edit ID for update
+                    let editIdField = document.getElementById('editIdSkP2k3');
+                    if (!editIdField) {
+                        // Create hidden input for edit ID
+                        const form = document.getElementById('real_form_sk_p2k3');
+                        if (form) {
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.id = 'editIdSkP2k3';
+                            hiddenInput.name = 'edit_id';
+                            hiddenInput.value = data.id;
+                            form.appendChild(hiddenInput);
+                        }
+                    } else {
+                        editIdField.value = data.id;
+                    }
+
+                    // Fill form fields
+                    setVal('sk_jenis', data.jenis || data.jenis_pengajuan);
+                    setVal('sk_nama_perusahaan', data.nama_perusahaan);
+                    setVal('sk_alamat', data.alamat);
+                    setVal('sk_sektor', data.sektor);
+                    setVal('sk_tk_laki', data.jumlah_tk || 0);
+                    setVal('sk_tk_perempuan', data.tk_perempuan || 0);
+                    setVal('sk_ahli_k3', data.ahli_k3);
+                    setVal('sk_kontak', data.kontak);
+
+                    // Trigger jenis change to show/hide SK lama field
+                    const skJenisEl = document.getElementById('sk_jenis');
+                    if (skJenisEl) skJenisEl.dispatchEvent(new Event('change'));
+
+                    alert("✅ Formulir SK P2K3 telah diisi dengan data sebelumnya.\n\nSilakan perbaiki bagian yang salah dan upload ulang file jika diperlukan.");
+                    window.scrollTo(0, 0);
+                }
+                // Handle other types (P2K3 pelaporan, KK/PAK)
+                else if (type === 'pelaporan_p2k3') {
+                    showPage('pelayanan');
+                    if (typeof tampilFormCard === 'function') {
+                        tampilFormCard('p2k3');
+                    }
+
+                    // Fill form fields
+                    setVal('p2k3_editId', data.id);
+                    setVal('p2k3_email', data.email);
+                    setVal('p2k3_perusahaan', data.nama_perusahaan);
+                    setVal('p2k3_alamat', data.alamat);
+                    setVal('p2k3_sektor', data.sektor);
+
+                    alert("✅ Formulir Pelaporan P2K3 telah diisi dengan data sebelumnya.\n\nSilakan perbaiki bagian yang salah.");
+                    window.scrollTo(0, 0);
+                }
+                else if (type === 'pelaporan_kk_pak') {
+                    showPage('pelayanan');
+                    if (typeof tampilFormCard === 'function') {
+                        tampilFormCard('kk_pak');
+                    }
+
+                    // Fill form fields
+                    setVal('reporterEmail', data.email);
+                    setVal('reporterName', data.nama_pelapor);
+                    setVal('reporterPhone', data.no_hp_pelapor);
+                    setVal('companyName', data.nama_perusahaan);
+                    setVal('companyAddress', data.alamat_perusahaan);
+                    setVal('companySector', data.sektor);
+
+                    alert("✅ Formulir Pelaporan KK/PAK telah diisi dengan data sebelumnya.\n\nSilakan perbaiki bagian yang salah.");
+                    window.scrollTo(0, 0);
+                }
+                else {
+                    alert("⚠️ Fitur edit untuk layanan tipe ini belum tersedia.\n\nSilakan hubungi admin atau ajukan pengajuan baru.");
                 }
             } catch (e) {
                 console.error(e);
@@ -2261,14 +2346,16 @@
                         </div>
 
                         <label>Surat Permohonan Pengesahan P2K3 <span class="text-red-500">*</span> (PDF)</label>
-                        <input id="sk_file_permohonan" name="f_surat_permohonan" type="file" accept="application/pdf" required>
+                        <input id="sk_file_permohonan" name="f_surat_permohonan" type="file" accept="application/pdf"
+                            required>
 
                         <label>Nama Ahli K3 / Sekretaris P2K3 <span class="text-red-500">*</span></label>
                         <input id="sk_ahli_k3" name="ahli_k3" type="text" required>
 
                         <label>Sertifikat Ahli K3, SKP dan Kartu Kewenangan <span class="text-red-500">*</span>
                             (PDF)</label>
-                        <input id="sk_file_sertifikat" name="f_sertifikat_ahli_k3" type="file" accept="application/pdf" required>
+                        <input id="sk_file_sertifikat" name="f_sertifikat_ahli_k3" type="file" accept="application/pdf"
+                            required>
 
                         <label>Sertifikat Ahli K3 Tambahan (Jika Ada) (PDF)</label>
                         <input id="sk_file_tambahan" name="f_sertifikat_tambahan" type="file" accept="application/pdf">
@@ -2548,8 +2635,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                                                                                                                   color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                                                                                                                   padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                                                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                                                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
