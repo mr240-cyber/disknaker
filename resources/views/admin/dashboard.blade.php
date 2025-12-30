@@ -623,6 +623,8 @@
                 <label><strong>Template:</strong></label>
                 <select id="draftTemplate" onchange="applyTemplate()" style="padding: 5px;">
                     <option value="sk_pengesahan">SK Pengesahan Pelayanan Kesehatan Kerja</option>
+                    <option value="sk_p2k3_baru">SK Pengesahan P2K3 (Baru)</option>
+                    <option value="sk_p2k3_perubahan">SK Pengesahan P2K3 (Perubahan)</option>
                 </select>
                 <span style="font-size: 12px; color: #666;">*Data otomatis diisi dari sistem</span>
             </div>
@@ -968,143 +970,394 @@
             let data = currentDraftData || {};
             let today = new Date();
             let year = today.getFullYear();
+            let templateType = document.getElementById('draftTemplate').value;
 
             // Format Dates
             let dateString = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
             // Data Mapping (Handle nulls)
-            // Use specific fields from 'pelayanan_kesekerja' table
             let namaPerusahaan = data.nama_perusahaan || data.subtitle || data.perusahaan || "....................";
-            let alamatPerusahaan = data.alamat_perusahaan || "....................";
+            let alamatPerusahaan = data.alamat_perusahaan || data.alamat || "....................";
+            let sektorPerusahaan = data.sektor || data.sektor_usaha || "....................";
 
-            // Doctor Details
+            // Doctor Details (for Pelkes)
             let namaDokter = data.nama_dokter || data.personil_nama || "....................";
             let ttlDokter = data.ttl_dokter || "....................";
             let nomorStr = data.nomor_str || "....................";
             let nomorSkp = data.nomor_skp_dokter || "....................";
 
-            // Header HTML
+            // P2K3 Details
+            let ahliK3 = data.ahli_k3 || "....................";
+            let jumlahTk = (parseInt(data.jumlah_tk) || 0) + (parseInt(data.tk_perempuan) || 0);
+            let nomorSkLama = data.nomor_sk_lama || "";
+
+            // Header HTML (KOP SURAT)
             let kop = `
                 <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 10px; margin-bottom: 20px;">
-                    <img src="{{ asset('logo_kalsel.png') }}" style="height: 80px; position: absolute; left: 40px; top: 40px;"> 
-                    <h3 style="margin:0; font-weight: normal; font-size: 14pt;">PEMERINTAH PROVINSI KALIMANTAN SELATAN</h3>
+                    <h3 style="margin:0; font-weight: normal; font-size: 14pt; color: #c00;">PEMERINTAH PROVINSI KALIMANTAN SELATAN</h3>
                     <h2 style="margin:0; font-size: 16pt;">DINAS TENAGA KERJA DAN TRANSMIGRASI</h2>
                     <p style="margin:0; font-size: 10pt;">Alamat : Jalan. Jend. A. Yani Km.6 No.23 Banjarmasin Kode Pos 70249</p>
                     <p style="margin:0; font-size: 10pt;">Email: nakertranskalsel@yahoo.co.id Website: disnakertrans.kalselprov.go.id</p>
                 </div>
             `;
 
-            let content = `
-                ${kop}
-                <div style="text-align: center;">
-                    <strong style="font-size: 14pt;">KEPUTUSAN</strong><br>
-                    <strong style="font-size: 14pt;">KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
-                    <strong style="font-size: 14pt;">PROVINSI KALIMANTAN SELATAN</strong><br>
-                    <span>Nomor : 500.15.18/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/Disnakertrans/${year}</span>
+            let content = '';
+
+            // Template SK Pengesahan Pelayanan Kesehatan Kerja
+            if (templateType === 'sk_pengesahan') {
+                content = `
+                    ${kop}
+                    <div style="text-align: center;">
+                        <strong style="font-size: 14pt;">KEPUTUSAN</strong><br>
+                        <strong style="font-size: 14pt;">KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
+                        <strong style="font-size: 14pt;">PROVINSI KALIMANTAN SELATAN</strong><br>
+                        <span>Nomor : 500.15.18/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/Disnakertrans/${year}</span>
+                        <br><br>
+                        <strong>TENTANG</strong><br>
+                        <strong>PENGESAHAN PENYELENGGARAAN PELAYANAN</strong><br>
+                        <strong>KESEHATAN KERJA DI PERUSAHAAN</strong><br>
+                        <strong style="text-transform: uppercase;">${namaPerusahaan}</strong>
+                        <br><br>
+                        <strong>KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
+                        <strong>PROVINSI KALIMANTAN SELATAN</strong>
+                    </div>
+                    <br>
+
+                    <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
+                        <tr>
+                            <td style="width: 120px; vertical-align: top;">Menimbang</td>
+                            <td style="width: 20px; vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                <ol type="a" style="margin: 0; padding-left: 20px;">
+                                    <li>bahwa keselamatan tenaga kerja yang setinggi-tingginya dapat dicapai bila kesehatan tenaga kerja berada dalam taraf yang sebaik-baiknya;</li>
+                                    <li>bahwa untuk mencapai taraf kesehatan tenaga kerja tersebut perlu dibentuk suatu sistem pelayanan kesehatan kerja di perusahaan;</li>
+                                    <li>bahwa untuk maksud huruf a dan b konsideran diatas perlu dituangkan dalam Keputusan Kepala Dinas Tenaga Kerja dan Transmigrasi Provinsi Kalimantan Selatan.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">Mengingat</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                 <ol style="margin: 0; padding-left: 20px;">
+                                    <li>Undang-Undang Nomor 14 Tahun 1969 tentang Ketentuan-Ketentuan Pokok Mengenai Tenaga Kerja;</li>
+                                    <li>Undang-Undang Nomor 1 Tahun 1970 tentang Keselamatan Kerja pasal 9 dan 10;</li>
+                                    <li>Peraturan Menteri Tenaga Kerja dan Transmigrasi Nomor: PER.01/MEN/1976 tentang Kewajiban Latihan Hyperkes bagi Dokter Perusahaan;</li>
+                                    <li>Peraturan Menteri Tenaga Kerja dan Transmigrasi Nomor: PER.01/MEN/1979 tentang Kewajiban Latihan Hygiene Perusahaan;</li>
+                                 </ol>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td style="vertical-align: top;">Memperhatikan</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                 Surat Permohonan dari <strong>${namaPerusahaan}</strong> Perihal Pengesahan Pelayanan Kesehatan Kerja di Perusahaan.
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <div style="text-align: center;"><strong>MEMUTUSKAN</strong></div>
+                    <br>
+
+                     <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
+                        <tr>
+                            <td style="width: 120px; vertical-align: top;">Menetapkan</td>
+                            <td style="width: 20px; vertical-align: top;">:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">PERTAMA</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Mengesahkan Penyelenggaraan Pelayanan Kesehatan Kerja di Perusahaan <strong>${namaPerusahaan}</strong>, Alamat: ${alamatPerusahaan}.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">KEDUA</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Dokter Perusahaan yang bertanggungjawab dalam pelayanan kesehatan kerja:<br>
+                                <table style="width: 100%;">
+                                    <tr><td style="width: 140px;">Nama</td><td>: <strong>${namaDokter}</strong></td></tr>
+                                    <tr><td>Tempat, Tgl. Lahir</td><td>: ${ttlDokter}</td></tr>
+                                    <tr><td>Nomor STR Dokter</td><td>: ${nomorStr}</td></tr>
+                                    <tr><td>SKP Dokter Pemeriksa</td><td>: ${nomorSkp}</td></tr>
+                                </table>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td style="vertical-align: top;">KETIGA</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Pelayanan Kesehatan Kerja dapat segera melaksanakan kegiatan sesuai dengan tugas dan fungsi yang telah ditetapkan serta melaporkan secara berkala hasil kegiatannya.
+                            </td>
+                        </tr>
+                         <tr>
+                            <td style="vertical-align: top;">KEEMPAT</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Keputusan ini berlaku selama 3 (tiga) tahun terhitung sejak tanggal ditetapkannya dan apabila ternyata dikemudian hari terdapat kekeliruan dalam penetapan surat keputusan ini, akan diadakan perbaikan sebagaimana mestinya.
+                            </td>
+                        </tr>
+                    </table>
+
                     <br><br>
-                    <strong>TENTANG</strong><br>
-                    <strong>PENGESAHAN PENYELENGGARAAN PELAYANAN</strong><br>
-                    <strong>KESEHATAN KERJA DI PERUSAHAAN</strong><br>
-                    <strong style="text-transform: uppercase;">${namaPerusahaan}</strong>
+                    <div style="float: right; width: 40%; text-align: center;">
+                        Ditetapkan di : Banjarmasin<br>
+                        Pada tanggal : ${dateString}
+                        <br><br>
+                        <strong>KEPALA DINAS</strong>
+                        <br><br><br><br><br>
+                        <strong><u>IRFAN SAYUTI, S.Sos. M.Si</u></strong><br>
+                        Pembina Utama Muda<br>
+                        NIP. 19720305 199811 1 001
+                    </div>
+                    <div style="clear: both;"></div>
+                `;
+            }
+            // Template SK P2K3 BARU
+            else if (templateType === 'sk_p2k3_baru') {
+                content = `
+                    ${kop}
+                    <div style="text-align: center;">
+                        <strong style="font-size: 14pt;">KEPUTUSAN</strong><br>
+                        <strong style="font-size: 14pt;">KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
+                        <strong style="font-size: 14pt;">PROVINSI KALIMANTAN SELATAN</strong><br>
+                        <span>Nomor : 566/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/Was-NKT/${year}</span>
+                        <br><br>
+                        <strong>TENTANG</strong><br>
+                        <strong>PENGESAHAN PANITIA PEMBINA KESELAMATAN DAN</strong><br>
+                        <strong>KESEHATAN KERJA DI PERUSAHAAN</strong><br>
+                        <strong style="text-transform: uppercase; color: #c00;">&lt;&lt; ${namaPerusahaan} &gt;&gt;</strong>
+                        <br><br>
+                        <strong>KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
+                        <strong>PROVINSI KALIMANTAN SELATAN</strong>
+                    </div>
+                    <br>
+
+                    <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
+                        <tr>
+                            <td style="width: 120px; vertical-align: top;">Menimbang</td>
+                            <td style="width: 20px; vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                <ol type="a" style="margin: 0; padding-left: 20px;">
+                                    <li>bahwa dalam rangka meningkatkan dan mengembangkan upaya-upaya Keselamatan dan Kesehatan Kerja di perusahaan perlu dilakukan pembinaan secara terus menerus dan terarah;</li>
+                                    <li>bahwa untuk melakukan pembinaan keselamatan dan kesehatan kerja yang terus menerus di perusahaan atau tempat kerja, perlu dibentuk dan disahkan Panitia Pembina Keselamatan dan Kesehatan Kerja;</li>
+                                    <li>bahwa untuk maksud huruf a dan b konsideran diatas perlu dituangkan dalam Keputusan Kepala Dinas Tenaga Kerja dan Transmigrasi Provinsi Kalimantan Selatan.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">Mengingat</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                <ol style="margin: 0; padding-left: 20px;">
+                                    <li>Undang-undang Nomor 13 Tahun 2003 tentang Ketenagakerjaan pasal 86 dan 87;</li>
+                                    <li>Undang-undang Nomor 1 Tahun 1970 tentang Keselamatan Kerja pasal 9 dan 10;</li>
+                                    <li>Peraturan Presiden Republik Indonesia Nomor 21 Tahun 2010 Tentang Pengawasan Ketenagakerjaan;</li>
+                                    <li>Peraturan Menteri Tenaga Kerja R.I. Nomor: Per – 04/MEN/1987 tentang Panitia Keselamatan dan Kesehatan Kerja serta tatacara Penunjukan Ahli Keselamatan Kerja;</li>
+                                    <li>Peraturan Menteri Tenaga Kerja R.I. Nomor: Per – 02/MEN/1992 tentang tatacara Penunjukan, Kewajiban dan Wewenang Ahli Keselamatan dan Kesehatan Kerja;</li>
+                                    <li>Peraturan Menteri Ketenagakerjaan RI Nomor 18 Tahun 2016 tentang Dewan Keselamatan dan Kesehatan Kerja.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">Memperhatikan</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                <ol style="margin: 0; padding-left: 20px;">
+                                    <li>Surat Permohonan dari ${namaPerusahaan} perihal Permohonan Pengesahan Struktur P2K3;</li>
+                                    <li>Hasil verifikasi Tim Verifikator Permohonan Pengesahan Lembaga Panitia Pembina Keselamatan dan Kesehatan Kerja (P2K3) di Perusahaan.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <div style="text-align: center; letter-spacing: 5px;"><strong>M E M U T U S K A N</strong></div>
+                    <br>
+
+                    <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
+                        <tr>
+                            <td style="width: 100px; vertical-align: top;">Menetapkan</td>
+                            <td style="width: 20px; vertical-align: top;">:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">KESATU</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Mengesahkan Panitia Pembina Keselamatan dan Kesehatan Kerja di Perusahaan <strong>${namaPerusahaan}</strong>, ${alamatPerusahaan} sebagaimana lampiran surat keputusan ini.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">KEDUA</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Panitia Pembina Keselamatan dan Kesehatan Kerja dapat segera melaksanakan kegiatan sesuai dengan tugas dan fungsi yang telah ditetapkan serta melaporkan secara berkala hasil kegiatannya.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">KETIGA</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Keputusan ini berlaku selama perusahaan dan susunan pengurusnya tidak berubah dengan ketentuan apabila ternyata dikemudian hari terdapat kekeliruan dalam penetapan surat keputusan ini, akan diadakan perbaikan sebagaimana mestinya.
+                            </td>
+                        </tr>
+                    </table>
+
                     <br><br>
-                    <strong>KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
-                    <strong>PROVINSI KALIMANTAN SELATAN</strong>
-                </div>
-                <br>
+                    <div style="float: right; width: 45%; text-align: center;">
+                        Ditetapkan di : Banjarmasin<br>
+                        Pada tanggal : ${dateString}
+                        <br><br>
+                        <strong>KEPALA DINAS</strong>
+                        <br><br><br><br><br>
+                        <strong><u>IRFAN SAYUTI, S.Sos, M.Si</u></strong><br>
+                        Pembina Utama Muda<br>
+                        NIP. 19720305 199811 1 001
+                    </div>
+                    <div style="clear: both;"></div>
 
-                <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
-                    <tr>
-                        <td style="width: 120px; vertical-align: top;">Menimbang</td>
-                        <td style="width: 20px; vertical-align: top;">:</td>
-                        <td style="text-align: justify;">
-                            <ol type="a" style="margin: 0; padding-left: 20px;">
-                                <li>bahwa keselamatan tenaga kerja yang setinggi-tingginya dapat dicapai bila kesehatan tenaga kerja berada dalam taraf yang sebaik-baiknya;</li>
-                                <li>bahwa untuk mencapai taraf kesehatan tenaga kerja tersebut perlu dibentuk suatu sistem pelayanan kesehatan kerja di perusahaan;</li>
-                                <li>bahwa untuk maksud huruf a dan b konsideran diatas perlu dituangkan dalam Keputusan Kepala Dinas Tenaga Kerja dan Transmigrasi Provinsi Kalimantan Selatan.</li>
-                            </ol>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="vertical-align: top;">Mengingat</td>
-                        <td style="vertical-align: top;">:</td>
-                        <td style="text-align: justify;">
-                             <ol style="margin: 0; padding-left: 20px;">
-                                <li>Undang-Undang Nomor 14 Tahun 1969 tentang Ketentuan-Ketentuan Pokok Mengenai Tenaga Kerja;</li>
-                                <li>Undang-Undang Nomor 1 Tahun 1970 tentang Keselamatan Kerja pasal 9 dan 10;</li>
-                                <li>Peraturan Menteri Tenaga Kerja dan Transmigrasi Nomor: PER.01/MEN/1976 tentang Kewajiban Latihan Hyperkes bagi Dokter Perusahaan;</li>
-                                <li>Peraturan Menteri Tenaga Kerja dan Transmigrasi Nomor: PER.01/MEN/1979 tentang Kewajiban Latihan Hygiene Perusahaan;</li>
-                             </ol>
-                        </td>
-                    </tr>
-                     <tr>
-                        <td style="vertical-align: top;">Memperhatikan</td>
-                        <td style="vertical-align: top;">:</td>
-                        <td style="text-align: justify;">
-                             Surat Permohonan dari <strong>${namaPerusahaan}</strong> Perihal Pengesahan Pelayanan Kesehatan Kerja di Perusahaan.
-                        </td>
-                    </tr>
-                </table>
-
-                <br>
-                <div style="text-align: center;"><strong>MEMUTUSKAN</strong></div>
-                <br>
-
-                 <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
-                    <tr>
-                        <td style="width: 120px; vertical-align: top;">Menetapkan</td>
-                        <td style="width: 20px; vertical-align: top;">:</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="vertical-align: top;">PERTAMA</td>
-                        <td style="vertical-align: top;">:</td>
-                        <td style="text-align: justify;">
-                            Mengesahkan Penyelenggaraan Pelayanan Kesehatan Kerja di Perusahaan <strong>${namaPerusahaan}</strong>, Alamat: ${alamatPerusahaan}.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="vertical-align: top;">KEDUA</td>
-                        <td style="vertical-align: top;">:</td>
-                        <td style="text-align: justify;">
-                            Dokter Perusahaan yang bertanggungjawab dalam pelayanan kesehatan kerja:<br>
-                            <table style="width: 100%;">
-                                <tr><td style="width: 140px;">Nama</td><td>: <strong>${namaDokter}</strong></td></tr>
-                                <tr><td>Tempat, Tgl. Lahir</td><td>: ${ttlDokter}</td></tr>
-                                <tr><td>Nomor STR Dokter</td><td>: ${nomorStr}</td></tr>
-                                <tr><td>SKP Dokter Pemeriksa</td><td>: ${nomorSkp}</td></tr>
-                            </table>
-                        </td>
-                    </tr>
-                     <tr>
-                        <td style="vertical-align: top;">KETIGA</td>
-                        <td style="vertical-align: top;">:</td>
-                        <td style="text-align: justify;">
-                            Pelayanan Kesehatan Kerja dapat segera melaksanakan kegiatan sesuai dengan tugas dan fungsi yang telah ditetapkan serta melaporkan secara berkala hasil kegiatannya.
-                        </td>
-                    </tr>
-                     <tr>
-                        <td style="vertical-align: top;">KEEMPAT</td>
-                        <td style="vertical-align: top;">:</td>
-                        <td style="text-align: justify;">
-                            Keputusan ini berlaku selama 3 (tiga) tahun terhitung sejak tanggal ditetapkannya dan apabila ternyata dikemudian hari terdapat kekeliruan dalam penetapan surat keputusan ini, akan diadakan perbaikan sebagaimana mestinya.
-                        </td>
-                    </tr>
-                </table>
-
-                <br><br>
-                <div style="float: right; width: 40%; text-align: center;">
-                    Ditetapkan di : Banjarmasin<br>
-                    Pada tanggal : ${dateString}
                     <br><br>
-                    <strong>KEPALA DINAS</strong>
-                    <br><br><br><br><br>
-                    <strong><u>IRFAN SAYUTI, S.Sos. M.Si</u></strong><br>
-                    Pembina Utama Muda<br>
-                    NIP. 19720305 199811 1 001
-                </div>
-                <div style="clear: both;"></div>
+                    <div style="font-size: 11pt;">
+                        <strong>Tembusan Yth :</strong>
+                        <ol style="margin: 5px 0; padding-left: 20px;">
+                            <li>Menteri Ketenagakerjaan R.I. di JAKARTA.</li>
+                            <li>Dirjen Binwasnaker dan K3 Kementerian Ketenagakerjaan R.I. di JAKARTA.</li>
+                            <li>Direktur PNK3 Kementerian Ketenagakerjaan R.I. di JAKARTA.</li>
+                            <li>Anggota P2K3 yang bersangkutan.</li>
+                            <li>A r s i p.</li>
+                        </ol>
+                    </div>
+                `;
+            }
+            // Template SK P2K3 PERUBAHAN
+            else if (templateType === 'sk_p2k3_perubahan') {
+                content = `
+                    ${kop}
+                    <div style="text-align: center;">
+                        <strong style="font-size: 14pt;">KEPUTUSAN</strong><br>
+                        <strong style="font-size: 14pt;">KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
+                        <strong style="font-size: 14pt;">PROVINSI KALIMANTAN SELATAN</strong><br>
+                        <span>Nomor : 566/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/Was-NKT/${year}</span>
+                        <br><br>
+                        <strong>TENTANG</strong><br>
+                        <strong>PENGESAHAN PERUBAHAN PANITIA PEMBINA KESELAMATAN DAN</strong><br>
+                        <strong>KESEHATAN KERJA DI PERUSAHAAN</strong><br>
+                        <strong style="text-transform: uppercase; color: #c00;">&lt;&lt; ${namaPerusahaan} &gt;&gt;</strong>
+                        <br><br>
+                        <strong>KEPALA DINAS TENAGA KERJA DAN TRANSMIGRASI</strong><br>
+                        <strong>PROVINSI KALIMANTAN SELATAN</strong>
+                    </div>
+                    <br>
 
-            `;
+                    <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
+                        <tr>
+                            <td style="width: 120px; vertical-align: top;">Menimbang</td>
+                            <td style="width: 20px; vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                <ol type="a" style="margin: 0; padding-left: 20px;">
+                                    <li>bahwa dalam rangka meningkatkan dan mengembangkan upaya-upaya Keselamatan dan Kesehatan Kerja di perusahaan perlu dilakukan pembinaan secara terus menerus dan terarah;</li>
+                                    <li>bahwa untuk melakukan pembinaan keselamatan dan kesehatan kerja yang terus menerus di perusahaan atau tempat kerja, perlu dibentuk dan disahkan Panitia Pembina Keselamatan dan Kesehatan Kerja;</li>
+                                    <li>bahwa untuk maksud huruf a dan b konsideran diatas perlu dituangkan dalam Keputusan Kepala Dinas Tenaga Kerja dan Transmigrasi Provinsi Kalimantan Selatan.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">Mengingat</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                <ol style="margin: 0; padding-left: 20px;">
+                                    <li>Undang-undang Nomor 13 Tahun 2003 tentang Ketenagakerjaan pasal 86 dan 87;</li>
+                                    <li>Undang-undang Nomor 1 Tahun 1970 tentang Keselamatan Kerja pasal 9 dan 10;</li>
+                                    <li>Peraturan Presiden Republik Indonesia Nomor 21 Tahun 2010 Tentang Pengawasan Ketenagakerjaan;</li>
+                                    <li>Peraturan Menteri Tenaga Kerja R.I. Nomor: Per – 04/MEN/1987 tentang Panitia Keselamatan dan Kesehatan Kerja serta tatacara Penunjukan Ahli Keselamatan Kerja;</li>
+                                    <li>Peraturan Menteri Tenaga Kerja R.I. Nomor: Per – 02/MEN/1992 tentang tatacara Penunjukan, Kewajiban dan Wewenang Ahli Keselamatan dan Kesehatan Kerja;</li>
+                                    <li>Peraturan Menteri Ketenagakerjaan RI Nomor 18 Tahun 2016 tentang Dewan Keselamatan dan Kesehatan Kerja.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">Memperhatikan</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                <ol style="margin: 0; padding-left: 20px;">
+                                    <li>Surat Permohonan dari ${namaPerusahaan} perihal Permohonan Pengesahan Struktur P2K3;</li>
+                                    <li>Hasil verifikasi Tim Verifikator Permohonan Pengesahan Lembaga Panitia Pembina Keselamatan dan Kesehatan Kerja (P2K3) di Perusahaan;</li>
+                                    <li>Surat Keputusan Kepala Dinas Tenaga Kerja dan Transmigrasi Provinsi Kalimantan Selatan Nomor: <strong style="color: #c00;">${nomorSkLama || '..................'}</strong> tentang Pengesahan Panitia Pembina Keselamatan dan Kesehatan Kerja di ${namaPerusahaan}.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <div style="text-align: center; letter-spacing: 5px;"><strong>M E M U T U S K A N</strong></div>
+                    <br>
+
+                    <table style="width: 100%; border-collapse: collapse; vertical-align: top;">
+                        <tr>
+                            <td style="width: 100px; vertical-align: top;">Menetapkan</td>
+                            <td style="width: 20px; vertical-align: top;">:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">KESATU</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Mencabut Surat Keputusan Kepala Dinas Tenaga Kerja dan Transmigrasi Provinsi Kalimantan Selatan Nomor: <strong>${nomorSkLama || '..................'}</strong> tentang Pengesahan Panitia Pembina Keselamatan dan Kesehatan Kerja di ${namaPerusahaan} dan dinyatakan tidak berlaku lagi.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">KEDUA</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Mengesahkan Perubahan Panitia Pembina Keselamatan dan Kesehatan Kerja di Perusahaan <strong>${namaPerusahaan}</strong>, ${alamatPerusahaan} sebagaimana lampiran surat keputusan ini.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">KETIGA</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Panitia Pembina Keselamatan dan Kesehatan Kerja dapat segera melaksanakan kegiatan sesuai dengan tugas dan fungsi yang telah ditetapkan serta melaporkan secara berkala hasil kegiatannya.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">KEEMPAT</td>
+                            <td style="vertical-align: top;">:</td>
+                            <td style="text-align: justify;">
+                                Keputusan ini berlaku selama perusahaan dan susunan pengurusnya tidak berubah dengan ketentuan apabila ternyata dikemudian hari terdapat kekeliruan dalam penetapan surat keputusan ini, akan diadakan perbaikan sebagaimana mestinya.
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br><br>
+                    <div style="float: right; width: 45%; text-align: center;">
+                        Ditetapkan di : Banjarmasin<br>
+                        Pada tanggal : ${dateString}
+                        <br><br>
+                        <strong>KEPALA DINAS</strong>
+                        <br><br><br><br><br>
+                        <strong><u>IRFAN SAYUTI, S.Sos, M.Si</u></strong><br>
+                        Pembina Utama Muda<br>
+                        NIP. 19720305 199811 1 001
+                    </div>
+                    <div style="clear: both;"></div>
+
+                    <br><br>
+                    <div style="font-size: 11pt;">
+                        <strong>Tembusan Yth :</strong>
+                        <ol style="margin: 5px 0; padding-left: 20px;">
+                            <li>Menteri Ketenagakerjaan R.I. di JAKARTA.</li>
+                            <li>Dirjen Binwasnaker dan K3 Kementerian Ketenagakerjaan R.I. di JAKARTA.</li>
+                            <li>Direktur PNK3 Kementerian Ketenagakerjaan R.I. di JAKARTA.</li>
+                            <li>Anggota P2K3 yang bersangkutan.</li>
+                            <li>A r s i p.</li>
+                        </ol>
+                    </div>
+                `;
+            }
 
             document.getElementById("draftPreview").innerHTML = content;
         }
