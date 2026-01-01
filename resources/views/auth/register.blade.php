@@ -31,7 +31,7 @@
         }
 
         .register-header {
-            background: linear-gradient(135deg, #48484aff 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2e5c46 0%, #1a3d2e 100%);
             color: white;
             padding: 40px 30px;
             text-align: center;
@@ -81,25 +81,26 @@
 
         input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #2e5c46;
+            box-shadow: 0 0 0 3px rgba(46, 92, 70, 0.1);
         }
 
         .btn-register {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #739E82;
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
             margin-top: 10px;
         }
 
         .btn-register:hover {
+            background: #5a8069;
             transform: translateY(-2px);
         }
 
@@ -111,9 +112,14 @@
         }
 
         .login-link a {
-            color: #667eea;
+            color: #2e5c46;
             text-decoration: none;
             font-weight: 600;
+        }
+
+        .login-link a:hover {
+            color: #1a3d2e;
+            text-decoration: underline;
         }
 
         .error-message {

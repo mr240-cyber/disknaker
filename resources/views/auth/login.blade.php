@@ -222,6 +222,29 @@
             text-align: left;
         }
 
+        /* Register Link */
+        .register-link {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .register-link p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .register-link a {
+            color: #2e5c46;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .register-link a:hover {
+            color: #1a3d2e;
+            text-decoration: underline;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 900px) {
 
@@ -324,6 +347,11 @@
 
                 <button type="submit" class="btn-submit">Sign In</button>
             </form>
+
+            <!-- Link Buat Akun Baru -->
+            <div class="register-link">
+                <p>Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a></p>
+            </div>
         </div>
     </div>
 
