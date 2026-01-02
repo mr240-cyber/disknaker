@@ -9,6 +9,27 @@ use App\Http\Controllers\KKPAKController;
 use App\Http\Controllers\PelaporanP2K3Controller;
 use App\Http\Controllers\DashboardController;
 
+// Temporary route to create admin - DELETE AFTER USE
+Route::get('/create-admin-dina', function () {
+    $user = \App\Models\User::firstOrCreate(
+        ['email' => 'dina26@gmail.com'],
+        [
+            'nama_lengkap' => 'Dina Admin',
+            'password' => \Illuminate\Support\Facades\Hash::make('123456789'),
+            'role' => 'admin',
+        ]
+    );
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Admin account created/verified',
+        'email' => 'dina26@gmail.com',
+        'password' => '123456789',
+        'user_id' => $user->id,
+        'was_created' => $user->wasRecentlyCreated
+    ]);
+});
+
 // Debug route removed (Cloudinary no longer used)
 
 // Migration Route: Cloudinary to Vercel Blob (Admin only, run once)

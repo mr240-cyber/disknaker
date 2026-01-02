@@ -13,15 +13,26 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'nama_lengkap' => 'Administrator',
-            'email' => 'admin@pelayanan-k3.com',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@pelayanan-k3.com'],
+            [
+                'nama_lengkap' => 'Administrator',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+            ]
+        );
 
-        $this->command->info('Admin user created successfully!');
-        $this->command->info('Email: admin@pelayanan-k3.com');
-        $this->command->info('Password: admin123');
+        User::firstOrCreate(
+            ['email' => 'dina26@gmail.com'],
+            [
+                'nama_lengkap' => 'Dina Admin',
+                'password' => Hash::make('123456789'),
+                'role' => 'admin',
+            ]
+        );
+
+        $this->command->info('Admin users created/verified successfully!');
+        $this->command->info('Email: admin@pelayanan-k3.com | Password: admin123');
+        $this->command->info('Email: dina26@gmail.com | Password: 123456789');
     }
 }
