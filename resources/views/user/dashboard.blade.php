@@ -578,7 +578,7 @@
                     // 1. Show Form SK P2K3
                     showPage('pelayanan');
 
-// Show the SK P2K3 form (form_sk_wrapper)
+                    // Show the SK P2K3 form (form_sk_wrapper)
                     if (typeof tampilFormCard === 'function') {
                         tampilFormCard('pelkes'); // 'pelkes' maps to form_sk_wrapper
                     } else {
@@ -628,7 +628,7 @@
                     if (typeof tampilFormCard === 'function') {
                         tampilFormCard('p2k3');
                     } else {
-              document.querySelectorAll('.formdata').forEach(f => f.classList.add('hidden'));
+                        document.querySelectorAll('.formdata').forEach(f => f.classList.add('hidden'));
                         const formP2k3 = document.getElementById('form_p2k3');
                         if (formP2k3) formP2k3.classList.remove('hidden');
                     }
@@ -701,7 +701,7 @@
                     setVal('companySector', data.sektor);
                     setVal('companyLeader', data.nama_pimpinan);
                     setVal('leaderAddress', data.alamat_pimpinan);
-                    
+
                     // Set radio button for jenis pelaporan
                     if (data.jenis_pelaporan === 'kk' || data.jenis_pelaporan === 'Kecelakaan Kerja') {
                         const radioKk = document.querySelector('input[name="jenisPelaporan"][value="kk"]');
@@ -2692,8 +2692,8 @@
                                     <div>
                                         <span class="badge"
                                             style="background: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#fee2e2' : '#e6fdf0' }}; 
-                                                                                                                                                                                                                                       color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
-                                                                                                                                                                                                                                       padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
+                                                                                                                                                                                                                                               color: {{ ($item->status === 'DITOLAK' || $item->status === 'PERLU REVISI') ? '#dc2626' : '#198754' }}; 
+                                                                                                                                                                                                                                               padding: 2px 8px; border-radius: 4px; font-size: 12px;">{{ $item->status ?? 'Diproses' }}</span>
                                         <span
                                             style="font-size: 12px; color: #888; margin-left: 6px;">({{ $item->type }})</span>
                                     </div>
@@ -2712,8 +2712,8 @@
                             </div>
                         @endforeach
                     @else
-                        <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
-                    @endif
+                            <p style="color: #666; font-style: italic;">Belum ada riwayat pengajuan.</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -2731,12 +2731,12 @@
                     }
 
                     .unduh-hero {
-                        background: linear-gradient(135deg, #061c47 0%, #0c2c66 50%, #1e40af 100%);
+                        background: linear-gradient(135deg, #0d503c 0%, #198754 50%, #28a745 100%);
                         color: white;
                         padding: 50px;
                         border-radius: 32px;
                         margin-bottom: 40px;
-                        box-shadow: 0 20px 40px -15px rgba(12, 44, 102, 0.5);
+                        box-shadow: 0 20px 40px -15px rgba(25, 135, 84, 0.5);
                         position: relative;
                         overflow: hidden;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -2803,8 +2803,8 @@
 
                     .doc-card:hover {
                         transform: translateY(-12px) scale(1.02);
-                        box-shadow: 0 30px 60px -12px rgba(12, 44, 102, 0.15);
-                        border-color: #0c2c66;
+                        box-shadow: 0 30px 60px -12px rgba(25, 135, 84, 0.15);
+                        border-color: #198754;
                     }
 
                     .doc-icon-float {
@@ -2830,7 +2830,7 @@
                     .doc-type {
                         font-size: 11px;
                         font-weight: 800;
-                        color: #3b82f6;
+                        color: #198754;
                         text-transform: uppercase;
                         margin-bottom: 12px;
                         letter-spacing: 1.5px;
@@ -2852,7 +2852,7 @@
                     }
 
                     .btn-trigger-ultra {
-                        background: #0c2c66;
+                        background: #198754;
                         color: white;
                         border: none;
                         padding: 14px 24px;
@@ -2869,8 +2869,8 @@
                     }
 
                     .btn-trigger-ultra:hover {
-                        background: #1e40af;
-                        box-shadow: 0 10px 20px rgba(12, 44, 102, 0.3);
+                        background: #146c43;
+                        box-shadow: 0 10px 20px rgba(25, 135, 84, 0.3);
                     }
 
                     /* Glassmorphism Modal */
@@ -2880,7 +2880,7 @@
                         left: 0;
                         width: 100%;
                         height: 100%;
-                        background: rgba(6, 28, 71, 0.5);
+                        background: rgba(13, 80, 60, 0.5);
                         backdrop-filter: blur(12px);
                         display: none;
                         align-items: center;
@@ -2954,7 +2954,7 @@
                     .label-floating {
                         display: block;
                         font-size: 14px;
-                        color: #0c2c66;
+                        color: #198754;
                         margin-bottom: 8px;
                         font-weight: 700;
                         margin-left: 5px;
@@ -3019,21 +3019,21 @@
                     }
 
                     .radio-chip:has(input:checked) {
-                        border-color: #0c2c66;
-                        background: rgba(12, 44, 102, 0.03);
+                        border-color: #198754;
+                        background: rgba(25, 135, 84, 0.03);
                     }
 
                     .radio-chip:has(input:checked) i {
-                        color: #0c2c66;
+                        color: #198754;
                         transform: scale(1.2);
                     }
 
                     .radio-chip:has(input:checked) span {
-                        color: #0c2c66;
+                        color: #198754;
                     }
 
                     .btn-submit-ultra {
-                        background: linear-gradient(135deg, #0c2c66 0%, #1e40af 100%);
+                        background: linear-gradient(135deg, #0d503c 0%, #198754 100%);
                         color: white;
                         border: none;
                         padding: 18px 40px;
@@ -3042,14 +3042,14 @@
                         cursor: pointer;
                         font-size: 16px;
                         width: 100%;
-                        box-shadow: 0 15px 35px -10px rgba(12, 44, 102, 0.4);
+                        box-shadow: 0 15px 35px -10px rgba(25, 135, 84, 0.4);
                         transition: all 0.3s;
                         margin-top: 20px;
                     }
 
                     .btn-submit-ultra:hover {
                         transform: translateY(-3px);
-                        box-shadow: 0 20px 45px -12px rgba(12, 44, 102, 0.5);
+                        box-shadow: 0 20px 45px -12px rgba(25, 135, 84, 0.5);
                     }
 
                     /* Success Reveal */
@@ -3057,7 +3057,7 @@
                         background: white;
                         border-radius: 24px;
                         padding: 25px;
-                        border-left: 8px solid #0c2c66;
+                        border-left: 8px solid #198754;
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
@@ -3066,7 +3066,7 @@
                     }
 
                     .btn-dl-ultra {
-                        background: #0c2c66;
+                        background: #198754;
                         color: white;
                         text-decoration: none;
                         padding: 14px 28px;
@@ -3080,7 +3080,7 @@
                     }
 
                     .btn-dl-ultra:hover {
-                        background: #1e40af;
+                        background: #146c43;
                         transform: scale(1.05);
                     }
 
@@ -3150,7 +3150,7 @@
                                 <div
                                     style="margin-bottom: 35px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px;">
                                     <h1
-                                        style="font-size: 32px; font-weight: 800; color: #0c2c66; margin-bottom: 8px; letter-spacing: -0.5px;">
+                                        style="font-size: 32px; font-weight: 800; color: #198754; margin-bottom: 8px; letter-spacing: -0.5px;">
                                         Lengkapi Tanda Terima</h1>
                                     <p style="color: #64748b; font-size: 16px; line-height: 1.6;">Demi keperluan
                                         arsip
@@ -3235,7 +3235,7 @@
                                         style="width: 100px; height: 100px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 45px; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
                                         <i class="fas fa-check"></i>
                                     </div>
-                                    <h1 style="font-size: 32px; font-weight: 800; color: #0c2c66; margin-bottom: 10px;">
+                                    <h1 style="font-size: 32px; font-weight: 800; color: #198754; margin-bottom: 10px;">
                                         Verifikasi Berhasil!</h1>
                                     <p style="color: #64748b; font-size: 16px;">Tanda terima Anda telah disimpan
                                         dalam
@@ -3286,7 +3286,7 @@
                         container.innerHTML = `
                             <div class="link-box-ultra">
                                 <div style="text-align:left;">
-                                    <div style="font-size:11px; color:#3b82f6; text-transform:uppercase; font-weight:800; letter-spacing:1px; margin-bottom:5px;">Dokumen Siap</div>
+                                    <div style="font-size:11px; color:#198754; text-transform:uppercase; font-weight:800; letter-spacing:1px; margin-bottom:5px;">Dokumen Siap</div>
                                     <div style="font-weight:800; font-size:18px; color:#1e293b;">${label}</div>
                                 </div>
                                 <a href="${url}" id="auto_download_link" class="btn-dl-ultra">
