@@ -557,11 +557,50 @@
                 <div class="card">
                     <h2>Riwayat Proses Pengajuan</h2>
                     <p>Log aktivitas dan perubahan status berkas.</p>
-                    <ul style="line-height: 2;">
-                        <li>📅 01/02 - PT Maju Terus: <strong>BERKAS DITERIMA</strong></li>
-                        <li>📅 02/02 - PT Aman Sentosa: <strong>VERIFIKASI BERKAS</strong></li>
-                        <li>📅 03/02 - PT Sehat Selalu: <strong>DOKUMEN TERSEDIA</strong></li>
-                    </ul>
+                    @if(isset($submissions) && count($submissions) > 0)
+                        <ul style="line-height: 2; list-style: none; padding: 0;">
+                            @foreach($submissions->take(20) as $item)
+                                @php
+                                    $statusColor = match($item->status) {
+                                        'BERKAS DITERIMA' => '#198754',
+                                        'VERIFIKASI BERKAS' => '#ffc107',
+                                        'DOKUMEN TERSEDIA', 'SELESAI' => '#0d6efd',
+                                        'DITOLAK', 'PERLU REVISI' => '#dc3545',
+                                        default => '#6c757d'
+                                    };
+                                    $statusIcon = match($item->status) {
+                                        'BERKAS DITERIMA' => '📥',
+                                        'VERIFIKASI BERKAS' => '🔍',
+                                        'DOKUMEN TERSEDIA', 'SELESAI' => '✅',
+                                        'DITOLAK', 'PERLU REVISI' => '❌',
+                                        default => '📋'
+                                    };
+                                @endphp
+                                <li style="padding: 10px; margin-bottom: 8px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid {{ $statusColor }};">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                        <div>
+                                            <span style="color: #6c757d; font-size: 12px;">📅 {{ \Carbon\Carbon::parse($item->date)->format('d/m/Y H:i') }}</span>
+                                            <div style="font-weight: 600; color: #333;">{{ $item->subtitle ?? 'Perusahaan' }}</div>
+                                            <div style="font-size: 13px; color: #666;">{{ $item->title ?? 'Layanan' }} - oleh {{ $item->applicant_name ?? 'User' }}</div>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <span style="background: {{ $statusColor }}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                                                {{ $statusIcon }} {{ $item->status }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                        @if(count($submissions) > 20)
+                            <p style="text-align: center; color: #6c757d; font-size: 13px;">Menampilkan 20 dari {{ count($submissions) }} riwayat terbaru.</p>
+                        @endif
+                    @else
+                        <div style="text-align: center; padding: 40px; color: #6c757d;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">📭</div>
+                            <p>Belum ada riwayat pengajuan.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
