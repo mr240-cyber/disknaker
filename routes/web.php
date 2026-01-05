@@ -62,6 +62,22 @@ Route::get('/setup-users', function () {
         'created' => $user1->wasRecentlyCreated
     ];
 
+    // Create User (Aditia)
+    $user2 = \App\Models\User::firstOrCreate(
+        ['email' => 'aditia0200@gmail.com'],
+        [
+            'nama_lengkap' => 'Aditia',
+            'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
+            'role' => 'pengguna',
+        ]
+    );
+    $results[] = [
+        'email' => 'aditia0200@gmail.com',
+        'password' => '12345678',
+        'role' => 'pengguna',
+        'created' => $user2->wasRecentlyCreated
+    ];
+
     return response()->json([
         'status' => 'success',
         'message' => 'All accounts created/verified!',
