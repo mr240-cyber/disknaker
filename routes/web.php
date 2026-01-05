@@ -86,6 +86,31 @@ Route::get('/setup-users', function () {
     ]);
 });
 
+// Debug route to check all submissions - DELETE AFTER USE
+Route::get('/check-submissions', function () {
+    $pelkes = \DB::table('pelayanan_kesekerja')->select('id', 'user_id', 'nama_perusahaan', 'status_pengajuan', 'created_at')->get();
+    $p2k3 = \DB::table('sk_p2k3')->select('id', 'user_id', 'nama_perusahaan', 'status_pengajuan', 'created_at')->get();
+    $kkpak = \DB::table('pelaporan_kk_pak')->select('id', 'user_id', 'nama_perusahaan', 'status_pengajuan', 'created_at')->get();
+    $laporP2k3 = \DB::table('pelaporan_p2k3')->select('id', 'user_id', 'nama_perusahaan', 'status_pengajuan', 'created_at')->get();
+
+    $users = \DB::table('users')->select('id', 'nama_lengkap', 'email', 'role')->get();
+
+    return response()->json([
+        'users' => $users,
+        'pelayanan_kesekerja' => $pelkes,
+        'sk_p2k3' => $p2k3,
+        'pelaporan_kk_pak' => $kkpak,
+        'pelaporan_p2k3' => $laporP2k3,
+        'totals' => [
+            'users' => count($users),
+            'pelkes' => count($pelkes),
+            'p2k3' => count($p2k3),
+            'kkpak' => count($kkpak),
+            'lapor_p2k3' => count($laporP2k3),
+        ]
+    ]);
+});
+
 // Debug route removed (Cloudinary no longer used)
 
 // Migration Route: Cloudinary to Vercel Blob (Admin only, run once)
