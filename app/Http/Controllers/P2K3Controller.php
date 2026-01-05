@@ -13,7 +13,19 @@ class P2K3Controller extends Controller
 {
     public function store(Request $request)
     {
+        // DEBUG: Log all incoming data
+        \Illuminate\Support\Facades\Log::info('P2K3 Form Submission', [
+            'user_id' => Auth::id(),
+            'all_data' => $request->all(),
+            'has_files' => $request->allFiles(),
+        ]);
+
         $userId = Auth::id();
+
+        if (!$userId) {
+            \Illuminate\Support\Facades\Log::error('P2K3: User not authenticated');
+            return response()->json(['status' => 'error', 'message' => 'User tidak terautentikasi'], 401);
+        }
 
         // Handle file uploads
         $paths = [];
