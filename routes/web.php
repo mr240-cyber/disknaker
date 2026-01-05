@@ -9,9 +9,29 @@ use App\Http\Controllers\KKPAKController;
 use App\Http\Controllers\PelaporanP2K3Controller;
 use App\Http\Controllers\DashboardController;
 
-// Temporary route to create admin - DELETE AFTER USE
-Route::get('/create-admin-dina', function () {
-    $user = \App\Models\User::firstOrCreate(
+// Temporary route to create all users - DELETE AFTER USE
+// Access: https://disknaker.vercel.app/setup-users
+Route::get('/setup-users', function () {
+    $results = [];
+
+    // Create Admin 1
+    $admin1 = \App\Models\User::firstOrCreate(
+        ['email' => 'admin@pelayanan-k3.com'],
+        [
+            'nama_lengkap' => 'Administrator',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+            'role' => 'admin',
+        ]
+    );
+    $results[] = [
+        'email' => 'admin@pelayanan-k3.com',
+        'password' => 'admin123',
+        'role' => 'admin',
+        'created' => $admin1->wasRecentlyCreated
+    ];
+
+    // Create Admin 2 (Dina)
+    $admin2 = \App\Models\User::firstOrCreate(
         ['email' => 'dina26@gmail.com'],
         [
             'nama_lengkap' => 'Dina Admin',
@@ -19,14 +39,34 @@ Route::get('/create-admin-dina', function () {
             'role' => 'admin',
         ]
     );
+    $results[] = [
+        'email' => 'dina26@gmail.com',
+        'password' => '123456789',
+        'role' => 'admin',
+        'created' => $admin2->wasRecentlyCreated
+    ];
+
+    // Create User (Dina Mawaddah)
+    $user1 = \App\Models\User::firstOrCreate(
+        ['email' => 'dinamawaddah2004@gmail.com'],
+        [
+            'nama_lengkap' => 'Dina Mawaddah',
+            'password' => \Illuminate\Support\Facades\Hash::make('Banjarmasin'),
+            'role' => 'pengguna',
+        ]
+    );
+    $results[] = [
+        'email' => 'dinamawaddah2004@gmail.com',
+        'password' => 'Banjarmasin',
+        'role' => 'pengguna',
+        'created' => $user1->wasRecentlyCreated
+    ];
 
     return response()->json([
         'status' => 'success',
-        'message' => 'Admin account created/verified',
-        'email' => 'dina26@gmail.com',
-        'password' => '123456789',
-        'user_id' => $user->id,
-        'was_created' => $user->wasRecentlyCreated
+        'message' => 'All accounts created/verified!',
+        'accounts' => $results,
+        'note' => 'DELETE THIS ROUTE AFTER USE for security!'
     ]);
 });
 
