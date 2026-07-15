@@ -7,12 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-dark: #2e5c46;
-            --primary-light: #448063;
-            --accent: #f59e0b;
-            --text-dark: #1f2937;
-            --text-light: #f3f4f6;
-            --bg-color: #f9fafb;
+            --primary-dark: #047857;
+            --primary-light: #10b981;
+            --accent: #3b82f6;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --bg-color: #f8fafc;
         }
 
         * {
