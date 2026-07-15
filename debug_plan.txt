@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Support\Facades\DB;
+
+// Bootstrap Laravel (since we are running from CLI/artisan context usually requires creating a command or route, 
+// but if we use `php artisan Tinker` logic or a route it's easier. 
+// I'll create a standalone script that requires loading the app, but simpler to just make a temporary route or console command?
+// Actually, `php artisan tinker` is hard to automate output reading.
+// I will create a temporary route in web.php that I can call via curl or just read via tool if run via php? 
+// No, running `php public/index.php` is hard.
+// Best way: Create a custom artisan command or a simple script that bootstraps laravel.
+// Or effectively, I can just use a route and `read_url_content` if I had a server running? I don't control the server.
+// I can write a script that I run with `php` but I need to include `vendor/autoload.php` and `bootstrap/app.php`.
+
+// Simpler approach: Create a temporary route `/debug-db` in `web.php` that returns the JSON data, 
+// but I cannot "hit" it from here easily without `curl` to localhost if the user has the server running.
+// The user has the server running? "User says: di databases sudah ada data masuk".
+// I don't have access to the running server.
+// I have `read_url_content` but I don't know the port.
+
+// Alternative: Write a script that manually connects to DB using credentials from `.env`.
+// I'll read `.env` first to get credentials.
+?>
