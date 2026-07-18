@@ -3053,44 +3053,53 @@
         }
 
         // preview JSON
-        document.getElementById('preview').addEventListener('click', () => {
-            // quick required checks (basic)
-            const requiredIds = ['email', 'jenis', 'tanggal', 'nama-perusahaan', 'alamat', 'sektor', 'kontak', 'dokter', 'ttl', 'nomor-skp', 'masa-skp', 'no-hiperkes', 'str', 'sip'];
-            for (const id of requiredIds) {
-                const el = document.getElementById(id);
-                if (el && !el.value) {
-                    alert('Mohon isi field wajib: ' + id); return;
+        const previewBtn = document.getElementById('preview');
+        if (previewBtn) {
+            previewBtn.addEventListener('click', () => {
+                // quick required checks (basic)
+                const requiredIds = ['email', 'jenis', 'tanggal', 'nama-perusahaan', 'alamat', 'sektor', 'kontak', 'dokter', 'ttl', 'nomor-skp', 'masa-skp', 'no-hiperkes', 'str', 'sip'];
+                for (const id of requiredIds) {
+                    const el = document.getElementById(id);
+                    if (el && !el.value) {
+                        alert('Mohon isi field wajib: ' + id); return;
+                    }
                 }
-            }
-            // files
-            for (const inp of fileInputs) {
-                if (!validateFileInput(inp)) { alert('Periksa file: ' + inp.id); return; }
-            }
-            const data = collectFormDataForPreview();
-            document.getElementById('json-output').textContent = JSON.stringify(data, null, 2);
-            document.getElementById('result').classList.remove('hidden');
-            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-        });
+                // files
+                for (const inp of fileInputs) {
+                    if (!validateFileInput(inp)) { alert('Periksa file: ' + inp.id); return; }
+                }
+                const data = collectFormDataForPreview();
+                document.getElementById('json-output').textContent = JSON.stringify(data, null, 2);
+                document.getElementById('result').classList.remove('hidden');
+                document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
 
         // download JSON preview
-        document.getElementById('download').addEventListener('click', () => {
-            const txt = document.getElementById('json-output').textContent;
-            const blob = new Blob([txt], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'pengesahan_pengajuan.json';
-            a.click();
-            URL.revokeObjectURL(a.href);
-        });
+        const downloadBtn = document.getElementById('download');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => {
+                const txt = document.getElementById('json-output').textContent;
+                const blob = new Blob([txt], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'pengesahan_pengajuan.json';
+                a.click();
+                URL.revokeObjectURL(a.href);
+            });
+        }
 
         // reset
-        document.getElementById('reset').addEventListener('click', () => {
-            if (confirm('Reset semua isian?')) {
-                document.getElementById('form').reset();
-                document.getElementById('result').classList.add('hidden');
-                document.getElementById('editIdPengesahan').value = ''; // Clear edit ID on reset
-            }
-        });
+        const resetBtn = document.getElementById('reset');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (confirm('Reset semua isian?')) {
+                    document.getElementById('form').reset();
+                    document.getElementById('result').classList.add('hidden');
+                    document.getElementById('editIdPengesahan').value = ''; // Clear edit ID on reset
+                }
+            });
+        }
 
         // story mock
         // story mock removed  -  using server-side rendering
