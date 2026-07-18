@@ -6,6 +6,37 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Panel K3</title>
     <link rel="stylesheet" href="{{ asset('css/modern-design.css') }}">
+    <style>
+        body {
+            background: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+            background-color: #f8fafc;
+            background-attachment: fixed;
+            animation: bgShift 15s ease-in-out infinite alternate;
+        }
+        @keyframes bgShift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        
+        /* Modern Glassmorphic Enhancements for Admin Dashboard */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .card.tilt-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+    </style>
 </head>
 
 <body>
@@ -1132,6 +1163,22 @@
             const overlay = document.querySelector('.overlay');
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+        }
+
+        // Add 3D Tilt Effect to Dashboard Cards
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('tilt-card');
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left - (rect.width / 2);
+                    const y = e.clientY - rect.top - (rect.height / 2);
+                    card.style.transform = \`perspective(1000px) rotateX(\${-y/30}deg) rotateY(\${x/30}deg) scale3d(1.01, 1.01, 1.01)\`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                });
+            });
         }
     </script>
 </body>

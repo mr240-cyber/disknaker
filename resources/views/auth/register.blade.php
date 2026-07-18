@@ -4,216 +4,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar - Pelayanan K3</title>
+    <title>Daftar - SIPENAKER</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/modern-design.css') }}">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #198754 100%);
+            /* Animated Mesh Gradient Background */
+            background: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.2) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.2) 0px, transparent 50%);
+            background-color: #f8fafc;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            animation: bgShift 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Glassmorphism Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
+            height: 90px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .register-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-            width: 100%;
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
         }
 
-        .register-header {
-            background: linear-gradient(135deg, #2e5c46 0%, #1a3d2e 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
+        .navbar-brand img {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
 
-        .register-header img {
-            height: 60px;
-            margin-bottom: 10px;
+        .brand-text h1 {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2px;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.5px;
         }
 
-        .register-header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+        .brand-text p {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 500;
         }
 
-        .register-header p {
-            opacity: 0.9;
+        .navbar-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .navbar-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
             font-size: 14px;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 20px;
         }
 
-        .register-body {
-            padding: 40px 30px;
+        .navbar-links a:hover {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-dark);
+        }
+
+        .navbar-links a.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Main Section */
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            perspective: 1000px;
+        }
+
+        /* Glassmorphism Card with 3D Tilt */
+        .register-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 40px 50px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255,255,255,0.5);
+            text-align: left;
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+        }
+
+        .welcome-text {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            transform: translateZ(20px);
+        }
+
+        .register-title {
+            color: var(--text-main);
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            font-family: 'Outfit', sans-serif;
+            transform: translateZ(30px);
         }
 
         .form-group {
             margin-bottom: 20px;
+            transform: translateZ(20px);
         }
 
-        label {
+        .form-group label {
             display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #2e5c46;
-            box-shadow: 0 0 0 3px rgba(46, 92, 70, 0.1);
-        }
-
-        .btn-register {
-            width: 100%;
-            padding: 14px;
-            background: #739E82;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn-register:hover {
-            background: #5a8069;
-            transform: translateY(-2px);
+        .input-group {
+            position: relative;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            transition: var(--transition);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+        
+        .toggle-password:hover {
+            color: var(--primary);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+            transform: translateZ(25px);
+        }
+
+        .btn-submit:hover {
+            transform: translateZ(30px) translateY(-2px);
+            box-shadow: 0 15px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .error-alert {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transform: translateZ(10px);
+        }
+
+        .error-alert ul {
+            margin: 0;
+            padding-left: 20px;
         }
 
         .login-link {
-            text-align: center;
             margin-top: 25px;
-            color: #666;
+            text-align: center;
+            transform: translateZ(10px);
+        }
+
+        .login-link p {
             font-size: 14px;
+            color: var(--text-muted);
         }
 
         .login-link a {
-            color: #2e5c46;
+            color: var(--primary);
+            font-weight: 700;
             text-decoration: none;
-            font-weight: 600;
+            transition: var(--transition);
         }
 
         .login-link a:hover {
-            color: #1a3d2e;
+            color: var(--primary-dark);
             text-decoration: underline;
         }
 
-        .error-message {
-            background: #fee;
-            border: 1px solid #fcc;
-            color: #c33;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
+        @media (max-width: 500px) {
+            .navbar {
+                padding: 10px 20px;
+                height: auto;
+                flex-direction: column;
+                gap: 15px;
             }
-
-            .register-container {
-                max-width: 100%;
-                border-radius: 15px;
-            }
-
-            .register-header {
+            .register-card {
                 padding: 30px 20px;
-            }
-
-            .register-header img {
-                height: 50px;
-            }
-
-            .register-header h1 {
-                font-size: 24px;
-            }
-
-            .register-header p {
-                font-size: 13px;
-            }
-
-            .register-body {
-                padding: 30px 20px;
-            }
-
-            .form-group {
-                margin-bottom: 18px;
-            }
-
-            input[type="text"],
-            input[type="email"],
-            input[type="password"] {
-                padding: 14px 15px;
-                font-size: 16px;
-                /* Prevent zoom on iOS */
-            }
-
-            .btn-register {
-                padding: 16px;
-                font-size: 16px;
-                min-height: 48px;
-                /* Touch-friendly */
-            }
-
-            label {
-                font-size: 13px;
-            }
-
-            .login-link {
-                font-size: 13px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .register-header {
-                padding: 25px 15px;
-            }
-
-            .register-body {
-                padding: 25px 15px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="register-container">
-        <div class="register-header">
-            <img src="{{ asset('logo_kalsel.png') }}" alt="Provinsi Logo">
-            <h1>Daftar Akun</h1>
-            <p>Buat akun baru untuk mengakses layanan K3</p>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{{ url('/') }}" class="navbar-brand">
+            <img src="{{ asset('logo_kalsel.png') }}" alt="Logo">
+            <div class="brand-text">
+                <h1>SIPENAKER</h1>
+                <p>Sistem Informasi Pengaduan Ketenagakerjaan</p>
+            </div>
+        </a>
+        <div class="navbar-links">
+            <a href="{{ route('register') }}" class="active">Daftar</a>
+            <a href="{{ route('login') }}">Login</a>
         </div>
-        <div class="register-body">
+    </nav>
+
+    <!-- Main Section -->
+    <div class="main-container">
+        <div class="register-card" id="tiltCard">
+            <p class="welcome-text">Bergabung Sekarang</p>
+            <h2 class="register-title">Daftar Akun Baru</h2>
+
             @if ($errors->any())
-                <div class="error-message">
-                    <ul style="list-style: none; padding: 0;">
+                <div class="error-alert">
+                    <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -225,34 +316,62 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="nama_lengkap">Nama Lengkap</label>
-                    <input type="text" id="nama_lengkap" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required
-                        autofocus>
+                    <label for="nama_lengkap">Nama Lengkap Pemohon</label>
+                    <input type="text" id="nama_lengkap" name="nama_lengkap" class="form-control" value="{{ old('nama_lengkap') }}" required autofocus placeholder="Contoh: Budi Santoso">
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+                    <label for="email">Alamat Email</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}" required placeholder="Contoh: budi@perusahaan.com">
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <label for="password">Kata Sandi</label>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" class="form-control" required placeholder="Minimal 8 karakter">
+                        <button type="button" class="toggle-password" onclick="togglePassword('password')" title="Lihat Password">👁️</button>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="password_confirmation">Konfirmasi Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" required>
+                    <label for="password_confirmation">Konfirmasi Kata Sandi</label>
+                    <div class="input-group">
+                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required placeholder="Ulangi kata sandi">
+                        <button type="button" class="toggle-password" onclick="togglePassword('password_confirmation')" title="Lihat Password">👁️</button>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn-register">Daftar</button>
+                <button type="submit" class="btn-submit">Daftar Sekarang</button>
             </form>
 
             <div class="login-link">
-                Sudah punya akun? <a href="{{ route('login') }}">Masuk di sini</a>
+                <p>Sudah punya akun? <a href="{{ route('login') }}">Masuk di sini</a></p>
             </div>
         </div>
     </div>
-</body>
 
+    <script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+
+        // 3D Tilt Effect on Desktop
+        const card = document.getElementById('tiltCard');
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            document.addEventListener('mousemove', (e) => {
+                let xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+                let yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+                card.style.transform = \`rotateY(\${xAxis}deg) rotateX(\${yAxis}deg)\`;
+            });
+            document.addEventListener('mouseleave', () => {
+                card.style.transform = \`rotateY(0deg) rotateX(0deg)\`;
+            });
+        }
+    </script>
+</body>
 </html>

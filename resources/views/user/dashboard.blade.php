@@ -7,474 +7,77 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Pelayanan Bidang Pengawasan K3 - Pengguna</title>
+    <link rel="stylesheet" href="{{ asset('css/modern-design.css') }}">
     <style>
-        :root {
-            --blue: #198754;
-            /* SIPENAKER Green */
-            --blue-2: #146c43;
-            --muted: #6b7280
-        }
-
         body {
-            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
-            margin: 0;
-            background: #f3f6fb;
-            color: #0b1a2b
+            background: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+            background-color: #f8fafc;
+            background-attachment: fixed;
+            animation: bgShift 15s ease-in-out infinite alternate;
         }
-
-        header {
-            background: linear-gradient(90deg, var(--blue), var(--blue-2));
-            color: #fff;
-            padding: 14px 20px;
-            font-size: 20px;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+        @keyframes bgShift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
         }
-
-        .layout {
-            display: flex;
-            min-height: calc(100vh - 60px)
-        }
-
-        .sidebar {
-            width: 240px;
-            background: #198754;
-            color: #fff;
-            padding: 18px 14px;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .sidebar h3 {
-            margin: 0 0 12px;
-            font-size: 16px
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0
-        }
-
-        .sidebar li {
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            cursor: pointer
-        }
-
-        .sidebar li:hover {
-            background: rgba(255, 255, 255, 0.04)
-        }
-
-        main {
-            flex: 1;
-            padding: 20px
-        }
-
+        
+        /* Modern Glassmorphic Enhancements for User Dashboard */
         .card {
-            background: #fff;
-            padding: 18px;
-            border-radius: 12px;
-            box-shadow: 0 6px 18px rgba(12, 44, 102, 0.06);
-            margin-bottom: 18px
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin: 10px 0 6px;
-            font-size: 14px
+        
+        .stat-card.tilt-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
-
-        .small {
-            font-size: 13px;
-            color: var(--muted);
-            margin-top: -8px;
-            margin-bottom: 8px
-        }
-
-        .input-hint {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 4px;
-            margin-bottom: 10px;
-        }
-
-        input[type=text],
-        input[type=email],
-        input[type=tel],
-        input[type=date],
-        input[type=month],
-        select,
-        textarea,
-        input[type=number] {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #e6eefc;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            min-height: 70px;
-            resize: vertical
-        }
-
-        .row {
-            display: flex;
-            gap: 12px
-        }
-
-        .col {
-            flex: 1
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 14px
-        }
-
-        button {
-            background: var(--blue);
-            color: #fff;
-            padding: 10px 14px;
-            border: 0;
-            border-radius: 10px;
-            cursor: pointer
-        }
-
-        .ghost {
-            background: transparent;
-            color: var(--blue);
-            border: 1px solid rgba(12, 44, 102, 0.12)
-        }
-
-        .note {
-            background: #fff8e6;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ffedd5;
-            color: #7a4f00
-        }
-
-        .fieldset {
-            margin: 12px 0;
-            padding: 12px;
-            border: 1px dashed #e6eefc;
-            border-radius: 8px
-        }
-
-        .hidden {
-            display: none
-        }
-
-        .error {
-            color: #b00020;
-            font-size: 13px;
-            margin-top: 6px
-        }
-
-        .file-hint {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 4px;
-            margin-bottom: 10px
-        }
-
-        .status {
-            padding: 10px;
-            border-radius: 8px;
-            background: #e6f2ff;
-            color: #0c2c66;
-            margin-bottom: 12px
-        }
-
-        .no-border-padding {
-            border: 0;
-            padding: 0;
-            margin: 0
-        }
-
-        .separator {
-            margin: 14px 0;
-            border: none;
-            border-top: 1px solid #eef2ff
-        }
-
-        .flex-buttons {
-            margin-top: 12px;
-            display: flex;
-            gap: 8px;
-            align-items: center
-        }
-
-        .ml-auto {
-            margin-left: auto
-        }
-
-        .mt-14 {
-            margin-top: 14px
-        }
-
-        .mt-8 {
-            margin-top: 8px
-        }
-
-        .json-preview {
-            white-space: pre-wrap;
-            max-height: 300px;
-            overflow: auto
-        }
-
-        .bold-title {
-            font-weight: 700
-        }
-
-        .login-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px
-        }
-
-        .account-info {
-            display: flex;
-            gap: 8px;
-            align-items: center
-        }
-
-        .email-display {
-            background: #f3f4f6;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #e6e9ef
-        }
-
-        .doc-links-container {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap
-        }
-
-        /* Service Card Buttons */
-        .service-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
+        
+        .stat-card h3, .stat-card .number {
+            transform: translateZ(20px);
         }
 
         .service-btn {
-            background-color: #4c956c;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 16px;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             text-align: left;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+            position: relative;
+            overflow: hidden;
         }
-
+        .service-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-20deg);
+            transition: all 0.5s ease;
+        }
+        .service-btn:hover::after {
+            left: 150%;
+        }
         .service-btn:hover {
-            background-color: #2c6e49;
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
         }
-
-        .service-btn:active {
-            transform: translateY(0);
-        }
-
-        .mt-6 {
-            margin-top: 6px
-        }
-
-        /* Hamburger Menu */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            gap: 4px;
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1001;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: white;
-            border-radius: 2px;
-            transition: 0.3s;
-        }
-
-        /* Overlay for mobile menu */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-
-        /* Mobile Responsive */
-        @media(max-width:1024px) {
-            aside {
-                position: fixed;
-                left: -280px;
-                top: 0;
-                width: 280px;
-                height: 100vh;
-                z-index: 1000;
-                transition: left 0.3s;
-                overflow-y: auto;
-            }
-
-            aside.active {
-                left: 0;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            main {
-                margin-left: 0;
-                padding: 80px 15px 20px 15px;
-            }
-
-            header {
-                padding-left: 60px;
-            }
-
-            .row {
-                flex-direction: column;
-            }
-
-            .stats {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-
-            .stat-card {
-                padding: 15px;
-            }
-
-            table {
-                font-size: 13px;
-            }
-
-            table th,
-            table td {
-                padding: 10px 8px;
-            }
-
-            .modal-content {
-                width: 95%;
-                max-width: 95%;
-                padding: 20px;
-                max-height: 90vh;
-                overflow-y: auto;
-            }
-
-            input,
-            select,
-            textarea {
-                font-size: 16px !important;
-                /* Prevent zoom on iOS */
-            }
-
-            button {
-                min-height: 44px;
-                /* Touch-friendly */
-            }
-        }
-
-        @media(max-width:768px) {
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            main {
-                padding: 70px 10px 15px 10px;
-            }
-
-            header {
-                font-size: 14px;
-                padding: 12px 12px 12px 55px;
-            }
-
-            header img {
-                height: 30px;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            table th,
-            table td {
-                padding: 8px 5px;
-            }
-
-            /* Make tables scrollable horizontally */
-            .table-wrapper {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .card {
-                padding: 15px;
-            }
-
-            h2 {
-                font-size: 1.3rem;
-            }
-
-            h3 {
-                font-size: 1.1rem;
-            }
-        }
-
-        @media(max-width:480px) {
-            main {
-                padding: 65px 8px 12px 8px;
-            }
-
-            .stat-card h3 {
-                font-size: 0.9rem;
-            }
-
-            .stat-card .number {
-                font-size: 1.5rem;
-            }
-
-            button,
-            .btn {
-                font-size: 14px;
-                padding: 10px 15px;
-            }
+        
+        .json-preview {
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow: auto;
         }
     </style>
     <script>
@@ -3675,6 +3278,23 @@
         const toggleBtn = document.getElementById('toggleSidebar');
         if (toggleBtn) {
             toggleBtn.addEventListener('click', toggleSidebar);
+        }
+
+        // Add 3D Tilt Effect to Dashboard Cards
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            document.querySelectorAll('.card, .stat-card, .service-btn').forEach(card => {
+                card.classList.add('tilt-card');
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left - (rect.width / 2);
+                    const y = e.clientY - rect.top - (rect.height / 2);
+                    const multiplier = card.classList.contains('service-btn') ? 10 : 20;
+                    card.style.transform = \`perspective(1000px) rotateX(\${-y/multiplier}deg) rotateY(\${x/multiplier}deg) scale3d(1.02, 1.02, 1.02)\`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                });
+            });
         }
     </script>
 </body>

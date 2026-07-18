@@ -5,59 +5,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SIPENAKER</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/modern-design.css') }}">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #2e5c46;
-            /* Base Dark Green */
+            /* Animated Mesh Gradient Background */
+            background: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.2) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.2) 0px, transparent 50%);
+            background-color: #f8fafc;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            animation: bgShift 15s ease-in-out infinite alternate;
         }
 
-        /* NAVBAR */
+        @keyframes bgShift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Glassmorphism Navbar */
         .navbar {
-            background: white;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             padding: 15px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             height: 90px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 15px;
+            text-decoration: none;
         }
 
         .navbar-brand img {
             height: 50px;
             width: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
 
         .brand-text h1 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a1a;
-            line-height: 1.2;
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 2px;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.5px;
         }
 
         .brand-text p {
             font-size: 11px;
-            color: #555;
+            color: var(--text-muted);
             margin: 0;
+            font-weight: 500;
         }
 
         .navbar-links {
@@ -67,87 +84,83 @@
 
         .navbar-links a {
             text-decoration: none;
-            color: #333;
-            font-weight: 500;
+            color: var(--text-muted);
+            font-weight: 600;
             font-size: 14px;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .navbar-links a:hover {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-dark);
         }
 
         .navbar-links a.active {
-            color: #2e5c46;
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
 
-        /* MAIN CONTENT */
+        /* Main Section */
         .main-container {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            padding: 20px;
+            padding: 40px 20px;
+            perspective: 1000px;
         }
 
-        /* CHARACTERS (Illustrations) */
-        /* To simulate the "peeking" effect, we place them absolutely or flexibly relative to the card */
-        .character-img {
-            position: absolute;
-            height: 380px;
-            /* Adjust based on real image size */
-            z-index: 1;
-            bottom: auto;
-            /* Aligned relative to card center usually, but here hardcoded for demo */
-        }
-
-        .char-left {
-            margin-right: 480px;
-            /* Push to left of card placeholder */
-            transform: translateX(-50px);
-        }
-
-        .char-right {
-            margin-left: 480px;
-            transform: translateX(50px);
-        }
-
-        /* LOGIN CARD */
+        /* Glassmorphism Card with 3D Tilt */
         .login-card {
-            background: white;
-            padding: 40px 50px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 50px;
             width: 100%;
-            max-width: 420px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-            /* Sit above chars */
-            position: relative;
-            text-align: center;
+            max-width: 450px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255,255,255,0.5);
+            text-align: left;
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
         }
 
         .welcome-text {
-            color: #555;
+            color: var(--primary);
             font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 5px;
-            text-align: left;
+            transform: translateZ(20px);
         }
 
         .login-title {
-            color: #2e5c46;
-            font-size: 32px;
-            font-weight: 700;
+            color: var(--text-main);
+            font-size: 36px;
+            font-weight: 800;
             margin-bottom: 30px;
-            text-align: left;
+            font-family: 'Outfit', sans-serif;
+            transform: translateZ(30px);
         }
 
         .form-group {
-            margin-bottom: 20px;
-            text-align: left;
+            margin-bottom: 24px;
+            transform: translateZ(20px);
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
-            color: #333;
+            font-size: 13px;
+            color: var(--text-muted);
             margin-bottom: 8px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .input-group {
@@ -156,19 +169,22 @@
 
         .form-control {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #777;
-            /* Darker border as per image */
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            transition: all 0.3s;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            transition: var(--transition);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .form-control:focus {
-            border-color: #2e5c46;
-            box-shadow: 0 0 0 2px rgba(46, 92, 70, 0.1);
+            outline: none;
+            border-color: var(--primary-light);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
 
         .toggle-password {
@@ -179,81 +195,89 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 16px;
-            color: #333;
+            font-size: 18px;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+        
+        .toggle-password:hover {
+            color: var(--primary);
         }
 
         .forgot-pass {
             display: block;
             text-align: right;
-            font-size: 11px;
-            color: #888;
+            font-size: 13px;
+            color: var(--primary);
             text-decoration: none;
-            margin-top: 5px;
+            margin-top: 8px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .forgot-pass:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
         }
 
         .btn-submit {
-            background: #739E82;
-            /* Matches mockup button color */
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: none;
-            border-radius: 6px;
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
             cursor: pointer;
-            margin-top: 30px;
-            transition: background 0.3s;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+            transform: translateZ(25px);
         }
 
         .btn-submit:hover {
-            background: #5a8069;
+            transform: translateZ(30px) translateY(-2px);
+            box-shadow: 0 15px 25px rgba(16, 185, 129, 0.3);
         }
 
-        /* Error Message */
         .error-alert {
-            background: #fee2e2;
+            background: rgba(239, 68, 68, 0.1);
             color: #dc2626;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            margin-bottom: 15px;
-            text-align: left;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateZ(10px);
         }
 
-        /* Register Link */
         .register-link {
-            margin-top: 25px;
+            margin-top: 30px;
             text-align: center;
+            transform: translateZ(10px);
         }
 
         .register-link p {
             font-size: 14px;
-            color: #666;
+            color: var(--text-muted);
         }
 
         .register-link a {
-            color: #2e5c46;
-            font-weight: 600;
+            color: var(--primary);
+            font-weight: 700;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: var(--transition);
         }
 
         .register-link a:hover {
-            color: #1a3d2e;
+            color: var(--primary-dark);
             text-decoration: underline;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-
-            .char-left,
-            .char-right {
-                opacity: 0.3;
-                /* Fade specific images on smaller screens if overlapping */
-                height: 300px;
-            }
         }
 
         @media (max-width: 500px) {
@@ -261,50 +285,25 @@
                 padding: 10px 20px;
                 height: auto;
                 flex-direction: column;
-                text-align: center;
-                gap: 10px;
-            }
-
-            .navbar-links {
                 gap: 15px;
             }
-
-            .navbar-brand {
-                gap: 8px;
-            }
-
-            .brand-text h1 {
-                font-size: 16px;
-            }
-
-            .brand-text p {
-                font-size: 10px;
-            }
-
-            .character-img {
-                display: none;
-            }
-
-            /* Hide characters on mobile */
             .login-card {
-                padding: 25px;
+                padding: 30px 20px;
             }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Header / Navbar -->
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="navbar-brand">
-            <!-- Ganti dengan logo provinsi -->
+        <a href="{{ url('/') }}" class="navbar-brand">
             <img src="{{ asset('logo_kalsel.png') }}" alt="Logo">
             <div class="brand-text">
                 <h1>SIPENAKER</h1>
-                <p>Sistem Informasi Pengaduan Pengawasan Ketenagakerjaan</p>
+                <p>Sistem Informasi Pengaduan Ketenagakerjaan</p>
             </div>
-        </div>
+        </a>
         <div class="navbar-links">
             <a href="{{ route('register') }}">Daftar</a>
             <a href="{{ route('login') }}" class="active">Login</a>
@@ -313,42 +312,37 @@
 
     <!-- Main Section -->
     <div class="main-container">
-
-
-
-        <div class="login-card">
-            <p class="welcome-text">welcome !!!</p>
-            <h2 class="login-title">Log In</h2>
+        <div class="login-card" id="tiltCard">
+            <p class="welcome-text">Selamat Datang Kembali</p>
+            <h2 class="login-title">Masuk Akun</h2>
 
             @if ($errors->any())
                 <div class="error-alert">
-                    {{ $errors->first() }}
+                    <span>⚠️</span> {{ $errors->first() }}
                 </div>
             @endif
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" class="form-control" required autofocus placeholder="">
+                    <label for="email">Alamat Email</label>
+                    <input type="email" name="email" id="email" class="form-control" required autofocus placeholder="Masukkan email Anda">
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password">Kata Sandi</label>
                     <div class="input-group">
-                        <input type="password" name="password" id="password" class="form-control" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword()">
-                            <!-- Icon mata sederhana -->
-                            &#128065;
+                        <input type="password" name="password" id="password" class="form-control" required placeholder="Masukkan kata sandi">
+                        <button type="button" class="toggle-password" onclick="togglePassword()" title="Lihat Password">
+                            👁️
                         </button>
                     </div>
-                    <a href="#" class="forgot-pass">Forgot Password ?</a>
+                    <a href="#" class="forgot-pass">Lupa kata sandi?</a>
                 </div>
 
                 <button type="submit" class="btn-submit">Sign In</button>
             </form>
 
-            <!-- Link Buat Akun Baru -->
             <div class="register-link">
                 <p>Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a></p>
             </div>
@@ -364,7 +358,19 @@
                 input.type = 'password';
             }
         }
+
+        // 3D Tilt Effect on Desktop
+        const card = document.getElementById('tiltCard');
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            document.addEventListener('mousemove', (e) => {
+                let xAxis = (window.innerWidth / 2 - e.pageX) / 40;
+                let yAxis = (window.innerHeight / 2 - e.pageY) / 40;
+                card.style.transform = \`rotateY(\${xAxis}deg) rotateX(\${yAxis}deg)\`;
+            });
+            document.addEventListener('mouseleave', () => {
+                card.style.transform = \`rotateY(0deg) rotateX(0deg)\`;
+            });
+        }
     </script>
 </body>
-
 </html>
