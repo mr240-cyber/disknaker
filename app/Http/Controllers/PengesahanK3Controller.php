@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SubmissionReceived;
@@ -22,9 +23,12 @@ class PengesahanK3Controller extends Controller
 
         $userId = Auth::id() ?? 1;
 
+        $resi = 'K3-26-' . strtoupper(Str::random(6));
+
         // FIRST: Insert form data into database (without files)
         // This ensures data is saved even if file uploads fail
         $insertId = DB::table('pelayanan_kesekerja')->insertGetId([
+            'resi_pengajuan' => $resi,
             'user_id' => $userId,
             'email' => $request->input('email'),
             'jenis_pengajuan' => $request->input('jenis'),
@@ -100,7 +104,7 @@ class PengesahanK3Controller extends Controller
 
         return response()->json([
             "status" => "success",
-            "message" => "Data pengesahan stored successfully"
+            "message" => "Data pengesahan stored successfully. Resi: " . $resi
         ]);
     }
     public function update(Request $request)

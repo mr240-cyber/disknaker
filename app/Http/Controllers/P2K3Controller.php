@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use App\Mail\SubmissionReceived;
 use App\Services\VercelBlobService;
 
@@ -21,6 +22,7 @@ class P2K3Controller extends Controller
         ]);
 
         $userId = Auth::id();
+        $resi = 'K3-26-' . strtoupper(Str::random(6));
 
         if (!$userId) {
             \Illuminate\Support\Facades\Log::error('P2K3: User not authenticated');
@@ -53,6 +55,7 @@ class P2K3Controller extends Controller
         }
 
         DB::table('sk_p2k3')->insert(array_merge([
+            'resi_pengajuan' => $resi,
             'user_id' => $userId,
             'jenis_pengajuan' => $request->input('jenis'),
             'nama_perusahaan' => $request->input('nama_perusahaan'),
@@ -75,7 +78,7 @@ class P2K3Controller extends Controller
 
         return response()->json([
             "status" => "success",
-            "message" => "Pengajuan SK P2K3 telah tersimpan."
+            "message" => "Pengajuan SK P2K3 telah tersimpan. Resi: " . $resi
         ]);
     }
 }

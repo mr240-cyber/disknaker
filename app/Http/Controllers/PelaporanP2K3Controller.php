@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use App\Mail\SubmissionReceived;
 use App\Services\VercelBlobService;
 
@@ -14,6 +15,7 @@ class PelaporanP2K3Controller extends Controller
     public function store(Request $request)
     {
         $userId = Auth::id();
+        $resi = 'K3-26-' . strtoupper(Str::random(6));
 
         $uploadPath = null;
         if ($request->hasFile('dokumen')) {
@@ -28,6 +30,7 @@ class PelaporanP2K3Controller extends Controller
         $extras = $request->except(['dokumen', 'p2k3_hambatan', 'p2k3_tindaklanjut', 'p2k3_triwulan', 'p2k3_nama']);
 
         DB::table('pelaporan_p2k3')->insert([
+            'resi_pengajuan' => $resi,
             'user_id' => $userId,
             'nama_perusahaan' => $request->input('p2k3_nama') ?? $request->input('nama_perusahaan'),
             'periode' => ($request->input('p2k3_triwulan') ?? '') . ' ' . ($request->input('p2k3_tahun') ?? ''),
@@ -48,7 +51,7 @@ class PelaporanP2K3Controller extends Controller
 
         return response()->json([
             "status" => "success",
-            "message" => "Laporan P2K3 berhasil dikirim."
+            "message" => "Laporan P2K3 berhasil dikirim. Resi: " . $resi
         ]);
     }
 }

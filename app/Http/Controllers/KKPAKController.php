@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use App\Mail\SubmissionReceived;
 use App\Services\VercelBlobService;
 
@@ -14,6 +15,7 @@ class KKPAKController extends Controller
     public function store(Request $request)
     {
         $userId = Auth::id();
+        $resi = 'K3-26-' . strtoupper(Str::random(6));
 
         $uploadPath = null;
         if ($request->hasFile('dokumen')) {
@@ -39,6 +41,7 @@ class KKPAKController extends Controller
             ", Tgl Lahir: " . ($extras['tgl_lahir'] ?? '-');
 
         DB::table('pelaporan_kk_pak')->insert([
+            'resi_pengajuan' => $resi,
             'user_id' => $userId,
             'nama_perusahaan' => $request->input('nama_perusahaan'),
             'alamat_perusahaan' => $request->input('alamat'),
@@ -63,7 +66,7 @@ class KKPAKController extends Controller
 
         return response()->json([
             "status" => "success",
-            "message" => "Laporan KK/PAK berhasil dikirim."
+            "message" => "Laporan KK/PAK berhasil dikirim. Resi: " . $resi
         ]);
     }
 }

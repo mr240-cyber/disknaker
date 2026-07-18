@@ -350,6 +350,7 @@
             </div>
         </a>
         <div class="nav-links">
+            <a href="/lacak" style="margin-right: 15px; color: var(--primary-dark); font-weight: 700;">Lacak Berkas</a>
             <a href="#layanan">Layanan</a>
             <a href="{{ route('login') }}" class="btn-login">Masuk Portal</a>
         </div>

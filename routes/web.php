@@ -8,6 +8,7 @@ use App\Http\Controllers\P2K3Controller;
 use App\Http\Controllers\KKPAKController;
 use App\Http\Controllers\PelaporanP2K3Controller;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TrackingController;
 
 // Temporary route to create all users - DELETE AFTER USE
 // Access: https://disknaker.vercel.app/setup-users
@@ -113,6 +114,13 @@ Route::get('/check-submissions', function () {
 
 // Debug route removed (Cloudinary no longer used)
 
+// Temp migration route
+Route::get('/run-migration-resi', function () {
+    $migration = require_once base_path('database/migrations/2026_07_18_093200_add_resi_and_rating_to_submissions.php');
+    $migration->up();
+    return 'Migration success! Added resi_pengajuan and rating_ikm to tables.';
+});
+
 // Migration Route: Cloudinary to Vercel Blob (Admin only, run once)
 Route::get('/migrate-to-blob', function () {
     // Simple auth check - you should protect this better in production
@@ -191,6 +199,11 @@ Route::get('/migrate-to-blob', function () {
 Route::get('/', function () {
     return view('landing');
 });
+
+// Tracking Routes
+Route::get('/lacak', [TrackingController::class, 'index']);
+Route::post('/lacak/cek', [TrackingController::class, 'track']);
+Route::post('/lacak/rating', [TrackingController::class, 'rate']);
 
 if (app()->isLocal()) {
     // Manual Migration Runner (Bypass Artisan Migrate)
