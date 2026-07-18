@@ -192,7 +192,11 @@ class DashboardController extends Controller
             return response()->json(['error' => 'Unknown type: ' . $type], 400);
         }
 
-        $data = DB::table($table)->where('id', $id)->first();
+        $data = DB::table($table)
+            ->join('users', $table . '.user_id', '=', 'users.id')
+            ->where($table . '.id', $id)
+            ->select($table . '.*', 'users.email')
+            ->first();
 
         if (!$data) {
             return response()->json(['error' => 'Data not found'], 404);
