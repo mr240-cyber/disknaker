@@ -3305,23 +3305,7 @@
             toggleBtn.addEventListener('click', toggleSidebar);
         }
 
-        // Add 3D Tilt Effect to Dashboard Cards
-        if (window.matchMedia("(min-width: 768px)").matches) {
-            document.querySelectorAll('.card, .stat-card, .service-btn').forEach(card => {
-                card.classList.add('tilt-card');
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left - (rect.width / 2);
-                    const y = e.clientY - rect.top - (rect.height / 2);
-                    const multiplier = card.classList.contains('service-btn') ? 10 : 20;
-                    card.style.transform = `perspective(1000px) rotateX(${-y/multiplier}deg) rotateY(${x/multiplier}deg) scale3d(1.02, 1.02, 1.02)`;
-                });
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-                });
-            });
-        }
-    </script>
+            </script>
 </body>
 
 </html>
