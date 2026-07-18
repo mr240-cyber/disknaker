@@ -1040,7 +1040,7 @@
             let content = document.getElementById("draftPreview").innerHTML;
             let win = window.open('', '', 'height=700,width=800');
             win.document.write('<html><head><title>Cetak SK</title>');
-            win.document.write('<link rel="stylesheet" href="{{ asset(\'css/modern-design.css\') }}">');
+            win.document.write('<link rel="stylesheet" href="{{ asset("css/modern-design.css") }}">');
             win.document.write('</head><body>');
             win.document.write(content);
             win.document.write('</body></html>');
