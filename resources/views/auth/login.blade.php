@@ -198,13 +198,17 @@
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
-            background: none;
-            border: none;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
             cursor: pointer;
             font-size: 18px;
             color: var(--text-muted);
             transition: color 0.3s;
             z-index: 10;
+            width: auto;
+            height: auto;
         }
         
         .toggle-password:hover {
