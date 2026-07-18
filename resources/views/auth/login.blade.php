@@ -169,7 +169,7 @@
 
         .form-control {
             width: 100%;
-            padding: 14px 16px;
+            padding: 14px 45px 14px 16px;
             background: rgba(255, 255, 255, 0.9);
             border: 2px solid transparent;
             border-radius: 12px;
@@ -178,6 +178,12 @@
             color: var(--text-main);
             transition: var(--transition);
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* Hide Edge default password reveal */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
         }
 
         .form-control:focus {
@@ -198,6 +204,7 @@
             font-size: 18px;
             color: var(--text-muted);
             transition: color 0.3s;
+            z-index: 10;
         }
         
         .toggle-password:hover {
