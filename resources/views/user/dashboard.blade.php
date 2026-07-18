@@ -394,7 +394,7 @@
                 <li onclick="showPage('unduhDok')">
                     <i class="fas fa-download"></i> Unduh Dokumen
                 </li>
-                <li onclick="window.location.href='{{ route('profile') }}'">
+                <li onclick="showPage('profil')">
                     <i class="fas fa-user"></i> Profil
                 </li>
             </ul>
@@ -2925,7 +2925,35 @@
                 </script>
             </div>
 
-        </main>
+        
+            <!-- PROFIL -->
+            <div id="profil" class="page hidden">
+                <div class="card" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 40px 20px;">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=198754&color=fff&size=128"
+                        alt="Avatar" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <h2 style="color: var(--primary); font-size: 28px; margin-bottom: 5px;">{{ Auth::user()->name }}</h2>
+                    <p style="color: #64748b; font-size: 16px; margin-bottom: 20px;">{{ Auth::user()->email }}</p>
+                    
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: inline-block; min-width: 250px;">
+                        <span style="display: block; color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 5px;">Role Pengguna</span>
+                        <span style="font-size: 18px; font-weight: 600; color: #334155;">{{ Auth::user()->role ?? 'Pengguna' }}</span>
+                    </div>
+
+                    @if (!Auth::user()->hasVerifiedEmail())
+                        <form method="POST" action="{{ route('verification.resend') }}">
+                            @csrf
+                            <button type="submit" class="service-btn" style="width: auto; display: inline-block; padding: 12px 30px;">
+                                Kirim Verifikasi Email
+                            </button>
+                        </form>
+                    @else
+                        <div style="color: #10b981; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fas fa-check-circle"></i> Email sudah terverifikasi
+                        </div>
+                    @endif
+                </div>
+            </div>
+</main>
     </div>
 
     <script>
@@ -3296,6 +3324,13 @@
         }
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash) {
+                const page = window.location.hash.substring(1);
+                if (document.getElementById(page)) {
+                    showPage(page);
+                    return;
+                }
+            }
             showPage('dashboard');
         });
 

@@ -1,0 +1,210 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<title>Proposal e-Government SIPENAKER</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face {font-family:"Times New Roman"; panose-1:2 2 6 3 5 4 5 2 3 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+    {margin:0cm;
+    margin-bottom:.0001pt;
+    font-size:12.0pt;
+    font-family:"Times New Roman",serif;
+    line-height: 1.5;}
+ h1
+    {margin-top:24.0pt;
+    margin-right:0cm;
+    margin-bottom:0cm;
+    margin-left:0cm;
+    page-break-after:avoid;
+    font-size:14.0pt;
+    font-family:"Times New Roman",serif;
+    font-weight:bold;
+    text-align: center;}
+ h2
+    {margin-top:12.0pt;
+    margin-right:0cm;
+    margin-bottom:6.0pt;
+    margin-left:0cm;
+    page-break-after:avoid;
+    font-size:12.0pt;
+    font-family:"Times New Roman",serif;
+    font-weight:bold;}
+ h3
+    {margin-top:12.0pt;
+    margin-right:0cm;
+    margin-bottom:6.0pt;
+    margin-left:0cm;
+    page-break-after:avoid;
+    font-size:12.0pt;
+    font-family:"Times New Roman",serif;
+    font-weight:bold;}
+ p.cover-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 14.0pt;
+    margin-top: 100pt;
+ }
+ p.cover-subtitle {
+    text-align: center;
+    font-weight: bold;
+    font-size: 12.0pt;
+    margin-bottom: 100pt;
+ }
+ p.cover-author {
+    text-align: center;
+    font-size: 12.0pt;
+    margin-top: 12.0pt;
+ }
+ p.cover-bottom {
+    text-align: center;
+    font-weight: bold;
+    font-size: 14.0pt;
+    margin-top: 150pt;
+ }
+ .page-break { page-break-before: always; }
+ ol { margin-top: 0; margin-bottom: 0; }
+ li { margin-bottom: 6.0pt; text-align: justify; }
+ p { text-align: justify; margin-bottom: 10.0pt; line-height: 1.5; }
+-->
+</style>
+</head>
+
+<body lang=ID>
+
+<div class=WordSection1>
+
+<p style='text-align:right'><i>Lomba e-Government</i></p>
+
+<p class="cover-title">PROPOSAL E-GOVERNMENT</p>
+<p class="cover-title" style="margin-top: 12.0pt;">SIPENAKER: INOVASI DIGITAL PELAYANAN DAN PENGAWASAN KESELAMATAN DAN KESEHATAN KERJA (K3)</p>
+
+<p class="cover-author" style="margin-top: 80pt;">Oleh :<br>
+<b>Ratikwara Tim</b></p>
+<p class="cover-author">1. ZOYA NUJULA RAMADHONI<br>
+2. MUHAMMAD IRFAN AKBAR<br>
+3. NURUL TRI AMELIA</p>
+
+<p class="cover-bottom">POLITEKNIK NEGERI BANJARMASIN<br>TAHUN 2025</p>
+
+<br clear=all style='page-break-before:always'>
+
+<h1 style="text-align:center;">DAFTAR ISI</h1>
+<p>
+DAFTAR ISI .......................................................................................................... i<br>
+BAB 1. PENDAHULUAN ................................................................................... 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.1 Latar Belakang ........................................................................................ 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.2 Tujuan ..................................................................................................... 2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.3 Manfaat ................................................................................................... 2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.4 Target Pengguna...................................................................................... 2<br>
+BAB 2. TINJAUAN PUSTAKA.......................................................................... 3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.1 Kondisi Aktual Permasalahan................................................................. 3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.2 Inovasi Teknologi.................................................................................... 4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.3 Rancangan Mockup................................................................................. 8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.4 Uraian dan Peran Kontribusi Pihak yang Terlibat ................................ 17<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.5 Tahapan - Tahapan Strategis................................................................. 17<br>
+BAB 3. KESIMPULAN ..................................................................................... 19<br>
+</p>
+
+<br clear=all style='page-break-before:always'>
+
+<h1>BAB 1. PENDAHULUAN</h1>
+
+<h2>1.1 Latar Belakang</h2>
+<p>Keselamatan dan Kesehatan Kerja (K3) merupakan aspek fundamental yang wajib dipenuhi oleh setiap perusahaan guna menjamin kesejahteraan tenaga kerja dan kelancaran produktivitas. Pengawasan pelaksanaan K3 di lingkungan kerja menjadi tanggung jawab Dinas Tenaga Kerja (Disnaker). Namun, dalam praktiknya, proses administrasi terkait pelaporan, pengesahan, dan pengawasan K3 seringkali masih dilakukan secara manual.</p>
+
+<p>Metode konvensional ini mengharuskan perwakilan perusahaan untuk datang langsung ke kantor instansi guna menyerahkan berkas fisik. Hal ini tidak hanya memakan waktu dan biaya, tetapi juga berisiko terhadap kehilangan dokumen, lambatnya proses verifikasi, serta kesulitan dalam pelacakan (tracking) status permohonan. Oleh karena itu, diperlukan sebuah transformasi digital untuk menyederhanakan birokrasi dan meningkatkan efisiensi pelayanan.</p>
+
+<p>Sebagai solusi atas permasalahan tersebut, dikembangkanlah inovasi digital bernama <b>"SIPENAKER" (Sistem Pelayanan Ketenagakerjaan)</b>. Sistem ini merupakan platform <i>e-government</i> yang dirancang khusus untuk mendigitalisasi proses pengesahan Panitia Pembina Keselamatan dan Kesehatan Kerja (P2K3), Pelayanan Kesehatan Kerja, serta pelaporan Kecelakaan Kerja (KK) dan Penyakit Akibat Kerja (PAK). Melalui platform ini, diharapkan tercipta tata kelola pelayanan publik yang transparan, cepat, dan responsif guna mewujudkan lingkungan kerja yang aman dan produktif.</p>
+
+<h2>1.2 Tujuan</h2>
+<p>Berikut adalah penjabaran tujuan utama pengembangan sistem SIPENAKER yaitu:</p>
+<ol>
+<li>Mengidentifikasi kendala birokrasi dan administrasi dalam proses pelayanan dan pengawasan K3 secara konvensional di lingkungan instansi ketenagakerjaan.</li>
+<li>Merancang dan membangun <i>website</i> pelayanan publik yang terintegrasi untuk memfasilitasi pengajuan dokumen pengesahan dan pelaporan insiden kerja secara <i>online</i>.</li>
+<li>Mengimplementasikan sistem yang mempercepat proses verifikasi oleh pihak instansi (Admin) serta memberikan kemudahan pelacakan status dokumen bagi perusahaan (Pengguna).</li>
+</ol>
+
+<h2>1.3 Manfaat</h2>
+<p>Berikut adalah penjabaran manfaat yang diharapkan dari pengembangan sistem ini yaitu:</p>
+<ol>
+<li><b>Bagi Perusahaan:</b> Menghemat waktu dan biaya operasional karena pengajuan dan pelaporan dapat dilakukan secara daring tanpa harus membawa berkas fisik ke kantor dinas.</li>
+<li><b>Bagi Pemerintah (Disnaker):</b> Meningkatkan efisiensi kerja pegawai dalam memverifikasi dokumen, memudahkan pengarsipan data secara digital, serta mendukung pengambilan kebijakan berbasis data historis yang akurat.</li>
+<li><b>Bagi Tenaga Kerja:</b> Memastikan bahwa perusahaan tempat mereka bekerja telah mematuhi standar K3 dan pelaporan kecelakaan kerja dapat ditindaklanjuti dengan cepat.</li>
+<li><b>Mendukung Indonesia Emas:</b> Mendorong terciptanya lingkungan kerja nasional yang lebih aman, sehat, dan berdaya saing global melalui perpaduan teknologi dan pelayanan publik.</li>
+</ol>
+
+<h2>1.4 Target Pengguna</h2>
+<p>Target pengguna untuk <i>website</i> ini adalah:</p>
+<p><b>A. Perusahaan / Masyarakat Umum</b><br>
+Perusahaan yang membutuhkan layanan pengesahan kelembagaan K3 (P2K3, Pelayanan Kesehatan Kerja) serta pihak yang ingin melaporkan terjadinya Kecelakaan Kerja atau Penyakit Akibat Kerja.</p>
+<p><b>B. Dinas Tenaga Kerja (Admin Instansi)</b><br>
+Pegawai instansi atau pengawas ketenagakerjaan yang bertugas menerima, memverifikasi, dan menyetujui pengajuan berkas serta menindaklanjuti laporan kecelakaan kerja yang masuk.</p>
+
+<br clear=all style='page-break-before:always'>
+
+<h1>BAB 2. TINJAUAN PUSTAKA</h1>
+
+<h2>2.1 Kondisi Aktual Permasalahan</h2>
+<p>Pelayanan administrasi publik di bidang ketenagakerjaan, khususnya pengawasan K3, seringkali dihadapkan pada tumpukan dokumen fisik. Berdasarkan keluhan dari berbagai perusahaan, proses pengajuan pengesahan P2K3 membutuhkan proses bolak-balik jika terdapat kekurangan berkas. Selain itu, keterlambatan pelaporan Kecelakaan Kerja (KK) dapat berakibat fatal terhadap pemenuhan hak-hak pekerja (seperti asuransi dan kompensasi) serta menghambat evaluasi pencegahan kecelakaan di masa depan. Ketiadaan platform terpusat membuat pendataan menjadi tidak terstruktur, sulit untuk diaudit, dan memperlambat respons pemerintah terhadap aduan masyarakat.</p>
+
+<h2>2.2 Inovasi Teknologi</h2>
+<p>SIPENAKER hadir sebagai inovasi teknologi <i>e-government</i> yang mengubah paradigma pelayanan dari <i>paper-based</i> menjadi <i>paperless</i> dan <i>real-time</i>.</p>
+
+<p><b>A. Fitur Utama</b><br>
+Website ini dilengkapi dengan berbagai fitur inovatif yang dirancang untuk memudahkan perusahaan dan pemerintah, antara lain:</p>
+<ol>
+<li><b>Pengajuan Pengesahan P2K3 & Pelkes <i>Online</i>:</b> Pengguna dapat mengisi formulir dan mengunggah dokumen persyaratan secara digital.</li>
+<li><b>Pelaporan Kecelakaan Kerja (KK) / Penyakit Akibat Kerja (PAK):</b> Fitur pelaporan cepat yang terintegrasi dengan data perusahaan untuk respons tanggap darurat dan investigasi.</li>
+<li><b>Riwayat & Pelacakan Proses (<i>Tracking</i>):</b> Pengguna dapat melihat status permohonannya secara transparan (Menunggu, Diproses, Selesai, atau Ditolak beserta alasannya).</li>
+<li><b>Unduh Dokumen Digital:</b> Dokumen yang telah disahkan dapat langsung diunduh dari <i>dashboard</i> tanpa harus mengambil cetakan fisik.</li>
+<li><b>Dashboard Admin Integratif:</b> Admin memiliki akses ke seluruh data pengajuan, statistik harian, serta panel verifikasi yang sangat mudah digunakan.</li>
+</ol>
+
+<p><b>B. Keunggulan</b><br>
+Berdasarkan fitur yang tersedia terdapat beberapa keunggulan yang ada pada SIPENAKER, antara lain:</p>
+<ol>
+<li><b>Desain UI/UX Modern & Responsif:</b> Menggunakan pendekatan desain elegan dengan warna yang bersih, elemen <i>glassmorphism</i>, dan <i>layout grid</i> yang rapi, sehingga memberikan pengalaman pengguna yang sangat profesional.</li>
+<li><b>Sistem Terpusat dan Transparan:</b> Menghilangkan hambatan birokrasi yang berbelit, memastikan setiap dokumen yang masuk dapat dilacak progresnya secara langsung (<i>real-time</i>).</li>
+<li><b>Notifikasi dan Validasi Cerdas:</b> Sistem dilengkapi dengan validasi data untuk meminimalisir kesalahan <i>input</i> dari pengguna, sehingga berkas yang masuk sudah dipastikan kelengkapannya.</li>
+</ol>
+
+<p><b>C. Teknologi yang digunakan</b><br>
+Beberapa jenis teknologi yang digunakan dalam pengembangan <i>website</i> ini yaitu:</p>
+<ol>
+<li><b>Laravel:</b> Laravel adalah <i>framework open source</i> berbasis PHP yang dirancang untuk memudahkan dan mempercepat proses pengembangan aplikasi <i>web</i> dengan struktur yang terorganisir dan efisien. Laravel diadopsi karena arsitektur <i>Model-View-Controller</i> (MVC) yang memisahkan logika aplikasi, tampilan, dan pengelolaan data sehingga kode menjadi lebih aman.</li>
+<li><b>MySQL:</b> Sistem manajemen basis data relasional yang andal untuk menyimpan data sensitif perusahaan, riwayat pelaporan, dan dokumen verifikasi dengan terstruktur dan aman.</li>
+<li><b>Vanilla CSS & JavaScript Modern:</b> Digunakan untuk membangun antarmuka interaktif. Melalui CSS kustom tanpa bergantung sepenuhnya pada pustaka eksternal, desain UI dibangun dengan tingkat eksklusivitas tinggi, memuat animasi transisi, dan responsivitas tata letak secara sempurna.</li>
+</ol>
+
+<h2>2.3 Rancangan Mockup</h2>
+<p><i>(Pada dokumen final, bagian ini diisi dengan tangkapan layar / screenshot dari halaman Dashboard Pengguna, halaman Pilihan Layanan, formulir pelaporan, dan Dashboard Admin sistem SIPENAKER.)</i></p>
+
+<h2>2.4 Uraian dan Peran Kontribusi Pihak yang Terlibat</h2>
+<p>Berikut adalah uraian peran dan kontribusi pihak-pihak yang terlibat dalam implementasi *website* SIPENAKER:</p>
+<p><b>A. Perusahaan / Pengguna Layanan</b><br>
+Berperan aktif dalam mendaftarkan akun, mengisi data dengan valid, dan memanfaatkan platform untuk melaporkan kondisi K3 dan mengajukan pengesahan dokumen. Partisipasi mereka penting untuk menciptakan pengawasan ketenagakerjaan yang akurat dan berbasis data.</p>
+<p><b>B. Dinas Tenaga Kerja (Disnaker)</b><br>
+Berperan sebagai pengelola sistem (Admin), penentu kebijakan, dan pihak yang melakukan verifikasi serta persetujuan dokumen. Disnaker bertanggung jawab menjaga kualitas respon (SLA) dalam memberikan tanggapan atas permohonan yang masuk dari masyarakat dan perusahaan.</p>
+
+<h2>2.5 Tahapan - Tahapan Strategis</h2>
+<p>Agar pengembangan <i>website</i> ini sukses perlu dilakukan langkah-langkah strategis. Dimulai dengan analisis kebutuhan alur birokrasi, sistem kemudian dibangun dan akan diuji secara terbatas (versi <i>beta</i>) pada beberapa instansi. Melalui fase ini, masukan penting dikumpulkan untuk penyempurnaan UI/UX maupun kestabilan <i>server</i>. Proses validasi keamanan dokumen menjadi prioritas utama.</p>
+<p>Setelah penyempurnaan, *website* akan dirilis resmi dengan sosialisasi menyeluruh kepada perwakilan perusahaan tentang tata cara pengajuan dokumen <i>online</i>. Selanjutnya, pemantauan (<i>monitoring</i>) akan dilakukan secara berkala. Pengembangan fitur lanjutan juga akan terus diupayakan berdasarkan tanggapan balik (<i>feedback</i>) demi tercapainya digitalisasi layanan K3 yang optimal.</p>
+
+<br clear=all style='page-break-before:always'>
+
+<h1>BAB 3. KESIMPULAN</h1>
+<p>Pelayanan dan pengawasan K3 yang efisien merupakan aspek krusial dalam menciptakan ekosistem kerja yang produktif, aman, dan berdaya saing. Peran aktif perusahaan sangat dibutuhkan dalam melaporkan kegiatan K3. Namun, birokrasi manual selama ini menjadi hambatan kecepatan layanan. Oleh karena itu, dikembangkanlah platform <b>SIPENAKER</b> sebagai solusi *e-government* yang mengubah proses berbasis kertas menjadi sepenuhnya terdigitalisasi secara <i>online</i>.</p>
+<p>Untuk keberhasilan implementasi platform ini, dukungan penuh dari instansi pemerintah sangat diperlukan, khususnya dalam sosialisasi dan komitmen operasional sistem. Diharapkan dengan hadirnya SIPENAKER, terjalin komunikasi yang lebih efektif antara perusahaan dan instansi ketenagakerjaan. Pada akhirnya, tata kelola administrasi publik yang transparan, bebas hambatan, dan cepat dapat terwujud demi peningkatan kualitas hidup dan keselamatan kerja berskala nasional.</p>
+
+</div>
+
+</body>
+</html>

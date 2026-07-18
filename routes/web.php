@@ -323,7 +323,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', function () {
-        return view('user.profile');
+        return redirect('/dashboard#profil');
     })->name('profile');
 
     Route::post('/email/verification-notification', function (Illuminate\Http\Request $request) {
