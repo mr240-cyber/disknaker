@@ -248,6 +248,8 @@ button.ghost {
 button.ghost:hover {
   background: #f0fdf4;
   border-color: var(--primary);
+  transform: none;
+  box-shadow: none;
 }
 
 button.danger {
