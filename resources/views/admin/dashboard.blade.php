@@ -51,9 +51,14 @@
     <!-- Overlay for mobile -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
-    <header style="display: flex; align-items: center; gap: 15px;">
-        <img src="{{ asset('logo_k3.png') }}" alt="Logo K3" style="height: 40px;">
-        <span style="font-weight: 600; font-size: 1.1rem;">ADMIN PANEL – Pelayanan Pengawasan K3</span>
+    <header>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button id="toggleSidebar" style="background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer;">
+                <i class="fas fa-bars"></i>
+            </button>
+            <img src="{{ asset('logo_k3.png') }}" alt="Logo K3" style="height: 40px;">
+            <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-main);">Pelayanan Bidang Pengawasan K3 – Admin</span>
+        </div>
     </header>
 
     <div class="container">
@@ -81,7 +86,7 @@
 
             <!-- DASHBOARD -->
             <div id="dashboard" class="page active">
-                <h2 style="color: var(--blue); margin-bottom: 20px;">Dashboard Admin</h2>
+                <h2 style="color: var(--primary); margin-bottom: 20px;">Dashboard Admin</h2>
 
                 <!-- Stats Grid -->
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">

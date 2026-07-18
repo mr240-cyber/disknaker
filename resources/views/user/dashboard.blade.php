@@ -365,13 +365,14 @@
     <!-- Overlay for mobile -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
-    <header style="display: flex; align-items: center; gap: 15px;">
-        <button id="toggleSidebar"
-            style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">
-            <i class="fas fa-bars"></i>
-        </button>
-        <img src="{{ asset('logo_k3.png') }}" alt="Logo K3" style="height: 40px;">
-        <span style="font-weight: 600; font-size: 1.1rem;">Pelayanan Bidang Pengawasan K3 – Pengguna</span>
+    <header>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button id="toggleSidebar" style="background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer;">
+                <i class="fas fa-bars"></i>
+            </button>
+            <img src="{{ asset('logo_k3.png') }}" alt="Logo K3" style="height: 40px;">
+            <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-main);">Pelayanan Bidang Pengawasan K3 – Pengguna</span>
+        </div>
     </header>
 
     <div class="layout">
@@ -381,14 +382,21 @@
                 SIPENAKER
             </div>
             <ul>
-                <li onclick="showPage('dashboard')"> Dashboard
+                <li onclick="showPage('dashboard')">
+                    <i class="fas fa-home"></i> Dashboard
                 </li>
-                <li onclick="showPage('pelayanan')"> Pelayanan
+                <li onclick="showPage('pelayanan')">
+                    <i class="fas fa-concierge-bell"></i> Pelayanan
                 </li>
-                <li onclick="showPage('story')"> Riwayat Proses</li>
-                <li onclick="showPage('unduhDok')"> Unduh Dokumen
+                <li onclick="showPage('story')">
+                    <i class="fas fa-history"></i> Riwayat Proses
                 </li>
-                <li onclick="window.location.href='{{ route('profile') }}'"> Profil</li>
+                <li onclick="showPage('unduhDok')">
+                    <i class="fas fa-download"></i> Unduh Dokumen
+                </li>
+                <li onclick="window.location.href='{{ route('profile') }}'">
+                    <i class="fas fa-user"></i> Profil
+                </li>
             </ul>
             <form method="POST" action="{{ route('logout') }}" style="padding: 20px 0;" id="userLogoutForm">
                 @csrf
@@ -399,27 +407,27 @@
             </form>
         </aside>
 
-        <main>
+        <main class="content">
             <!-- DASHBOARD -->
             <div id="dashboard" class="page">
-                <h2 style="color: var(--blue); margin-bottom: 20px;">Dashboard Pengguna</h2>
+                <h2 style="color: var(--primary); margin-bottom: 20px;">Dashboard Pengguna</h2>
 
                 <!-- Stats Grid -->
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
-                    <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
+                    <div class="card" style="text-align: center; border-left: 5px solid var(--primary);">
                         <h3 style="color: #666; font-size: 14px;">Layanan Masuk</h3>
                         <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['total'] ?? 0 }}</div>
                     </div>
-                    <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
+                    <div class="card" style="text-align: center; border-left: 5px solid var(--primary);">
                         <h3 style="color: #666; font-size: 14px;">Sedang Diproses</h3>
                         <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['diproses'] ?? 0 }}
                         </div>
                     </div>
-                    <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
+                    <div class="card" style="text-align: center; border-left: 5px solid var(--primary);">
                         <h3 style="color: #666; font-size: 14px;">Selesai</h3>
                         <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['selesai'] ?? 0 }}</div>
                     </div>
-                    <div class="card" style="text-align: center; border-left: 5px solid var(--blue);">
+                    <div class="card" style="text-align: center; border-left: 5px solid var(--primary);">
                         <h3 style="color: #666; font-size: 14px;">Revisi</h3>
                         <div style="font-size: 32px; font-weight: bold; color: #333;">{{ $stats['revisi'] ?? 0 }}</div>
                     </div>
@@ -428,46 +436,46 @@
                 <!-- Progress Bars -->
                 <div class="card">
                     <h3
-                        style="color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 10px; margin-bottom: 20px;">
+                        style="color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px;">
                         Rekap Status Layanan</h3>
 
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Layanan Masuk</span>
-                            <span style="font-weight: bold; color: var(--blue);">{{ $stats['total'] ?? 0 }}</span>
+                            <span style="font-weight: bold; color: var(--primary);">{{ $stats['total'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
-                            <div style="width: 0%; height: 100%; background: var(--blue);"></div>
+                            <div style="width: 0%; height: 100%; background: var(--primary);"></div>
                         </div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Sedang Diproses</span>
-                            <span style="font-weight: bold; color: var(--blue);">{{ $stats['diproses'] ?? 0 }}</span>
+                            <span style="font-weight: bold; color: var(--primary);">{{ $stats['diproses'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
-                            <div style="width: 100%; height: 100%; background: var(--blue);"></div>
+                            <div style="width: 100%; height: 100%; background: var(--primary);"></div>
                         </div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Selesai</span>
-                            <span style="font-weight: bold; color: var(--blue);">{{ $stats['selesai'] ?? 0 }}</span>
+                            <span style="font-weight: bold; color: var(--primary);">{{ $stats['selesai'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
-                            <div style="width: 100%; height: 100%; background: var(--blue);"></div>
+                            <div style="width: 100%; height: 100%; background: var(--primary);"></div>
                         </div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; mb-2;">
                             <span>Revisi</span>
-                            <span style="font-weight: bold; color: var(--blue);">{{ $stats['revisi'] ?? 0 }}</span>
+                            <span style="font-weight: bold; color: var(--primary);">{{ $stats['revisi'] ?? 0 }}</span>
                         </div>
                         <div style="background: #e9ecef; height: 15px; border-radius: 10px; overflow: hidden;">
-                            <div style="width: 100%; height: 100%; background: var(--blue);"></div>
+                            <div style="width: 100%; height: 100%; background: var(--primary);"></div>
                         </div>
                     </div>
                 </div>
@@ -475,28 +483,28 @@
                 <!-- Chart Placeholder -->
                 <div class="card">
                     <h3
-                        style="color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 10px; margin-bottom: 20px;">
+                        style="color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px;">
                         Grafik Pengajuan per Bulan</h3>
                     <div
                         style="display: flex; align-items: flex-end; justify-content: space-around; height: 200px; padding-top: 20px;">
-                        <div style="width: 40px; height: 40%; background: var(--blue); border-radius: 4px 4px 0 0;">
+                        <div style="width: 40px; height: 40%; background: var(--primary); border-radius: 4px 4px 0 0;">
                         </div>
-                        <div style="width: 40px; height: 70%; background: var(--blue); border-radius: 4px 4px 0 0;">
+                        <div style="width: 40px; height: 70%; background: var(--primary); border-radius: 4px 4px 0 0;">
                         </div>
-                        <div style="width: 40px; height: 30%; background: var(--blue); border-radius: 4px 4px 0 0;">
+                        <div style="width: 40px; height: 30%; background: var(--primary); border-radius: 4px 4px 0 0;">
                         </div>
-                        <div style="width: 40px; height: 90%; background: var(--blue); border-radius: 4px 4px 0 0;">
+                        <div style="width: 40px; height: 90%; background: var(--primary); border-radius: 4px 4px 0 0;">
                         </div>
-                        <div style="width: 40px; height: 50%; background: var(--blue); border-radius: 4px 4px 0 0;">
+                        <div style="width: 40px; height: 50%; background: var(--primary); border-radius: 4px 4px 0 0;">
                         </div>
-                        <div style="width: 40px; height: 80%; background: var(--blue); border-radius: 4px 4px 0 0;">
+                        <div style="width: 40px; height: 80%; background: var(--primary); border-radius: 4px 4px 0 0;">
                         </div>
                     </div>
                 </div>
                 <!-- Riwayat Pengajuan -->
                 <div class="card" style="margin-top: 30px;">
                     <h3
-                        style="color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 10px; margin-bottom: 20px;">
+                        style="color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px;">
                         Riwayat Pengajuan Saya</h3>
 
                     <div
@@ -662,7 +670,7 @@
 
             <!-- RIWAYAT PROSES PENGAJUAN -->
             <div id="story" class="page hidden">
-                <h2 style="color: var(--blue); margin-bottom: 20px;">Riwayat Proses Pengajuan</h2>
+                <h2 style="color: var(--primary); margin-bottom: 20px;">Riwayat Proses Pengajuan</h2>
 
                 @if(count($submissions) > 0)
                     <div style="position: relative; padding-left: 30px;">
