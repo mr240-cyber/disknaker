@@ -211,8 +211,11 @@
             height: auto;
         }
         
-        .toggle-password:hover {
+        .toggle-password:hover, .toggle-password:focus, .toggle-password:active {
             color: var(--primary);
+            transform: translateY(-50%) !important;
+            box-shadow: none !important;
+            background: transparent !important;
         }
 
         .btn-submit {
