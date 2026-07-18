@@ -84,11 +84,17 @@
         // --- CORE NAVIGATION (Moved to Head for Safety) ---
         function showPage(pageId) {
             // Hide all pages
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+                p.classList.add('hidden');
+            });
 
             // Show target
             const el = document.getElementById(pageId);
-            if (el) el.classList.remove('hidden');
+            if (el) {
+                el.classList.remove('hidden');
+                el.classList.add('active');
+            }
 
             // Close sidebar on mobile
             const sidebar = document.querySelector('aside');
