@@ -3254,15 +3254,17 @@
 
 
         // show data-umum & uploads when jenis changes
-        document.getElementById('jenis').addEventListener('change', (e) => {
-            const show = !!e.target.value;
-            document.getElementById('data-umum').classList.toggle('hidden', !show);
-            document.getElementById('uploads').classList.toggle('hidden', !show);
-        });
-
-        // When page loads, make sure file validation nodes exist (for preview)
         window.addEventListener('DOMContentLoaded', () => {
-            // nothing else for no      w
+            const jenisEl = document.getElementById('jenis');
+            if (jenisEl) {
+                jenisEl.addEventListener('change', (e) => {
+                    const show = !!e.target.value;
+                    const dataUmum = document.getElementById('data-umum');
+                    const uploads = document.getElementById('uploads');
+                    if (dataUmum) dataUmum.classList.toggle('hidden', !show);
+                    if (uploads) uploads.classList.toggle('hidden', !show);
+                });
+            }
         });
 
         // editSubmission moved to HEAD for safety
