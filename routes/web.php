@@ -114,6 +114,17 @@ Route::get('/check-submissions', function () {
 
 // Debug route removed (Cloudinary no longer used)
 
+// Temp route to reset syauqi password
+Route::get('/reset-syauqi', function () {
+    $user = \App\Models\User::where('email', 'syauqi0200@gmail.com')->first();
+    if ($user) {
+        $user->password = \Illuminate\Support\Facades\Hash::make('12345678');
+        $user->save();
+        return 'Password untuk syauqi0200@gmail.com berhasil direset menjadi: 12345678';
+    }
+    return 'User tidak ditemukan.';
+});
+
 // Temp migration route
 Route::get('/run-migration-resi', function () {
     $migration = require_once base_path('database/migrations/2026_07_18_093200_add_resi_and_rating_to_submissions.php');
