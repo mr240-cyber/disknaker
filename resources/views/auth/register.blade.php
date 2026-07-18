@@ -340,7 +340,7 @@
                     <label for="password">Kata Sandi</label>
                     <div class="input-group">
                         <input type="password" id="password" name="password" class="form-control" required placeholder="Minimal 8 karakter">
-                        <button type="button" class="toggle-password" onclick="togglePassword('password')" title="Lihat Password">👁️</button>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)" title="Lihat Password">👁️</button>
                     </div>
                 </div>
 
@@ -348,7 +348,7 @@
                     <label for="password_confirmation">Konfirmasi Kata Sandi</label>
                     <div class="input-group">
                         <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required placeholder="Ulangi kata sandi">
-                        <button type="button" class="toggle-password" onclick="togglePassword('password_confirmation')" title="Lihat Password">👁️</button>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password_confirmation', this)" title="Lihat Password">👁️</button>
                     </div>
                 </div>
 
@@ -362,26 +362,17 @@
     </div>
 
     <script>
-        function togglePassword(id) {
+        function togglePassword(id, btn) {
             const input = document.getElementById(id);
             if (input.type === 'password') {
                 input.type = 'text';
+                btn.innerText = '🙈';
+                btn.title = 'Sembunyikan Password';
             } else {
                 input.type = 'password';
+                btn.innerText = '👁️';
+                btn.title = 'Lihat Password';
             }
-        }
-
-        // 3D Tilt Effect on Desktop
-        const card = document.getElementById('tiltCard');
-        if (window.matchMedia("(min-width: 768px)").matches) {
-            document.addEventListener('mousemove', (e) => {
-                let xAxis = (window.innerWidth / 2 - e.pageX) / 50;
-                let yAxis = (window.innerHeight / 2 - e.pageY) / 50;
-                card.style.transform = \`rotateY(\${xAxis}deg) rotateX(\${yAxis}deg)\`;
-            });
-            document.addEventListener('mouseleave', () => {
-                card.style.transform = \`rotateY(0deg) rotateX(0deg)\`;
-            });
         }
     </script>
 </body>

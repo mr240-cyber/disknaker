@@ -344,7 +344,7 @@
                     <label for="password">Kata Sandi</label>
                     <div class="input-group">
                         <input type="password" name="password" id="password" class="form-control" required placeholder="Masukkan kata sandi">
-                        <button type="button" class="toggle-password" onclick="togglePassword()" title="Lihat Password">
+                        <button type="button" class="toggle-password" onclick="togglePassword(this)" title="Lihat Password">
                             👁️
                         </button>
                     </div>
@@ -361,26 +361,17 @@
     </div>
 
     <script>
-        function togglePassword() {
+        function togglePassword(btn) {
             const input = document.getElementById('password');
             if (input.type === 'password') {
                 input.type = 'text';
+                btn.innerText = '🙈';
+                btn.title = 'Sembunyikan Password';
             } else {
                 input.type = 'password';
+                btn.innerText = '👁️';
+                btn.title = 'Lihat Password';
             }
-        }
-
-        // 3D Tilt Effect on Desktop
-        const card = document.getElementById('tiltCard');
-        if (window.matchMedia("(min-width: 768px)").matches) {
-            document.addEventListener('mousemove', (e) => {
-                let xAxis = (window.innerWidth / 2 - e.pageX) / 40;
-                let yAxis = (window.innerHeight / 2 - e.pageY) / 40;
-                card.style.transform = \`rotateY(\${xAxis}deg) rotateX(\${yAxis}deg)\`;
-            });
-            document.addEventListener('mouseleave', () => {
-                card.style.transform = \`rotateY(0deg) rotateX(0deg)\`;
-            });
         }
     </script>
 </body>
