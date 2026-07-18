@@ -344,7 +344,6 @@
     <nav class="navbar">
         <a href="/" class="navbar-brand">
             <img src="{{ asset('logo_kalsel.png') }}" alt="Logo Kalsel">
-            <img src="{{ asset('logo_k3.png') }}" alt="Logo K3" style="height: 40px;">
             <div class="brand-text">
                 <h1>SIPENAKER</h1>
                 <p>Dinas Tenaga Kerja</p>
