@@ -348,7 +348,7 @@
                     <div class="input-group">
                         <input type="password" name="password" id="password" class="form-control" required placeholder="Masukkan kata sandi">
                         <button type="button" class="toggle-password" onclick="togglePassword(this)" title="Lihat Password">
-                            👁️
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#64748b"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                         </button>
                     </div>
                     <a href="#" class="forgot-pass">Lupa kata sandi?</a>
@@ -364,15 +364,18 @@
     </div>
 
     <script>
+        const iconEye = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#64748b"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
+        const iconEyeOff = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#64748b"><path d="M11.83 9L15 12.16V12a3 3 0 0 0-3-3h-.17zm-4.3.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.3-6.46l-2.04 2.04A11.723 11.723 0 0 1 12 4.5c5 0 9.27 3.11 11 7.5-.71 1.79-1.85 3.32-3.23 4.46l-2.04-2.04C18.92 13.51 20.31 12.83 21 12c-1.57-3.53-5.22-6.16-9.17-6.16zm-7.77-1.4l1.37 1.37a11.758 11.758 0 0 0-4.43 4.69c1.57 3.53 5.22 6.16 9.17 6.16 1.48 0 2.87-.36 4.12-.99l2.45 2.45 1.41-1.41L2.65 1.93 1.24 3.34z"/></svg>`;
+
         function togglePassword(btn) {
             const input = document.getElementById('password');
             if (input.type === 'password') {
                 input.type = 'text';
-                btn.innerText = '🙈';
+                btn.innerHTML = iconEyeOff;
                 btn.title = 'Sembunyikan Password';
             } else {
                 input.type = 'password';
-                btn.innerText = '👁️';
+                btn.innerHTML = iconEye;
                 btn.title = 'Lihat Password';
             }
         }
