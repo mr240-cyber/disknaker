@@ -397,3 +397,72 @@ table tr:hover td {
     flex-direction: column;
   }
 }
+
+/* ADMIN PANEL SPECIFIC FIXES */
+.container {
+  display: flex;
+  min-height: calc(100vh - 73px);
+}
+.content {
+  flex: 1;
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.page {
+  display: none;
+}
+.page.active {
+  display: block;
+}
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: var(--surface);
+  width: 90%;
+  max-width: 700px;
+  padding: 30px;
+  border-radius: var(--radius-lg);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+.overlay.active {
+  display: block;
+}
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  gap: 4px;
+}
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: var(--primary-dark);
+}
+@media (max-width: 900px) {
+  .hamburger {
+    display: flex;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 101;
+  }
+}
