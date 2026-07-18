@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIPENAKER - Dinas Tenaga Kerja</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-dark: #047857;
-            --primary-light: #10b981;
+            --primary-dark: #064e3b; /* Emerald 900 */
+            --primary-light: #10b981; /* Emerald 500 */
             --accent: #3b82f6;
-            --text-dark: #1e293b;
+            --text-dark: #0f172a;
             --text-light: #f8fafc;
             --bg-color: #f8fafc;
         }
@@ -19,7 +22,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif;
         }
 
         body {
@@ -39,9 +46,11 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 5%;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
             z-index: 1000;
             transition: all 0.3s ease;
         }
@@ -105,7 +114,12 @@
             align-items: center;
             justify-content: center;
             padding: 120px 5% 50px;
-            background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
+            background-color: #f0fdf4;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(158, 82%, 87%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(198, 93%, 89%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(202, 100%, 89%, 1) 0, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(152, 100%, 89%, 1) 0, transparent 50%);
             position: relative;
             overflow: hidden;
         }
@@ -260,19 +274,22 @@
         }
 
         .feature-card {
-            background: var(--bg-color);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding: 40px 30px;
-            border-radius: 20px;
+            border-radius: 24px;
             text-align: center;
-            transition: all 0.4s ease;
-            border: 1px solid rgba(0,0,0,0.03);
+            transition: all 0.1s ease-out; /* Fast for JS mousemove */
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+            transform-style: preserve-3d;
         }
 
         .feature-card:hover {
-            transform: translateY(-10px);
-            background: white;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            border-color: rgba(46, 92, 70, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 30px 60px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.2);
         }
 
         .feature-icon {
@@ -330,10 +347,73 @@
         }
 
         /* Responsive */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background-color: var(--primary-dark);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        .link-lacak {
+            margin-right: 15px; 
+            color: var(--primary-dark) !important; 
+            font-weight: 700 !important;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .link-lacak:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
             .hero-buttons { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
-            .nav-links { display: none; }
+            
+            .hamburger { display: flex; }
+            
+            .nav-links { 
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                gap: 30px;
+            }
+            .nav-links.active {
+                right: 0;
+            }
+            .nav-links a {
+                margin: 0;
+                font-size: 1.5rem;
+            }
+            .link-lacak { margin: 0; }
         }
     </style>
     <!-- Add FontAwesome for icons -->
@@ -349,8 +429,13 @@
                 <p>Dinas Tenaga Kerja</p>
             </div>
         </a>
-        <div class="nav-links">
-            <a href="/lacak" style="margin-right: 15px; color: var(--primary-dark); font-weight: 700;">Lacak Berkas</a>
+        <div class="hamburger" id="mobile-menu-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links" id="nav-links">
+            <a href="/lacak" class="link-lacak">Lacak Berkas</a>
             <a href="#layanan">Layanan</a>
             <a href="{{ route('login') }}" class="btn-login">Masuk Portal</a>
         </div>
@@ -402,8 +487,39 @@
     </section>
 
     <footer>
-        <p>&copy; {{ date('Y') }} Dinas Tenaga Kerja. All rights reserved.</p>
+        <p>&copy; {{ date('Y') }} Dinas Tenaga Kerja Prov. Kalimantan Selatan. All rights reserved.</p>
     </footer>
 
+    <!-- Interactive Scripts -->
+    <script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const nav = document.getElementById('nav-links');
+        
+        btn.addEventListener('click', () => {
+            nav.classList.toggle('active');
+            btn.classList.toggle('active');
+        });
+
+        // 3D Tilt Effect on Feature Cards
+        const cards = document.querySelectorAll('.feature-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+    </script>
 </body>
 </html>
